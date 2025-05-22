@@ -50,4 +50,4 @@ jobs:
       - name: Build Android App
         env:
           EXPO_TOKEN: ${{ secrets.FRONTEND_TOKEN }}  # ✅ Use your custom-named secret
-        run: eas build --platform android --non-interactive
+        run: eas build --platform android --profile production --non-interactive

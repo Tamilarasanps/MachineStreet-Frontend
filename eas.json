@@ -4,8 +4,9 @@
   },
   "build": {
     "production": {
-      "platform": "android",
-      "workflow": "managed"
+      "android": {
+        "workflow": "managed"
+      }
     }
   }
 }
