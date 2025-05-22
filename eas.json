@@ -1,10 +1,9 @@
 {
-  "cli": {
-    "version": ">= 3.0.0"
-  },
   "build": {
-    "android-production": {
-      "workflow": "managed"
+    "production": {
+      "android": {
+        "buildType": "apk"
+      }
     }
   }
 }
