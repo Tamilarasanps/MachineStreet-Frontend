@@ -1,20 +1,11 @@
 {
-  "build": {
-    "web": {
-      "development": {
-        "production": false
-      },
-      "production": {
-        "production": true
-      }
-    },
-    "android": {
-      "release": {
-        "workflow": "managed"
-      }
-    }
-  },
   "cli": {
     "version": ">= 3.0.0"
+  },
+  "build": {
+    "production": {
+      "platform": "android",
+      "workflow": "managed"
+    }
   }
 }
