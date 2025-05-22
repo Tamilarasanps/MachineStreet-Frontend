@@ -47,8 +47,7 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      - name: Authenticate with Expo
-        run: eas login --token ${{ secrets.EXPO_TOKEN }}
-
       - name: Build Android App
+        env:
+          EXPO_TOKEN: ${{ secrets.FRONTEND_TOKEN }}  # ✅ Use your custom-named secret
         run: eas build --platform android --non-interactive
