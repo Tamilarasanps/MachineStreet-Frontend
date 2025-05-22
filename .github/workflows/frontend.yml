@@ -3,22 +3,21 @@ name: Expo Frontend CI/CD
 on:
   push:
     branches: [main]
-    paths:
-      - 'frontend/**'
+  workflow_dispatch:
 
 jobs:
   build-web:
-    name: Build Web App
+    name: Build Expo Web App
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: frontend
 
     steps:
-      - name: Checkout Repo
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Node
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -33,17 +32,17 @@ jobs:
         run: expo export:web
 
   build-android:
-    name: Build Android (Expo EAS)
+    name: Build Android App (Expo EAS)
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: frontend
 
     steps:
-      - name: Checkout Repo
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Node
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -55,7 +54,7 @@ jobs:
         run: npm install -g eas-cli
 
       - name: Authenticate with Expo
-        run: eas whoami || eas login --token ${{ secrets.EXPO_TOKEN }}
+        run: eas login --token ${{ secrets.EXPO_TOKEN }}
 
       - name: Build Android App
         run: eas build --platform android --non-interactive
