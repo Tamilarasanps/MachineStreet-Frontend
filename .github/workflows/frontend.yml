@@ -1,38 +1,13 @@
-name: Expo Frontend CI/CD (Self-Hosted)
+name: Test Runner
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
 
 jobs:
-  build-web:
-    name: Build Expo Web App
+  test:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Install Expo CLI
-        run: npm install -g expo-cli
-
-      - name: Build Web
-        run: expo export:web --no-dev --minify
-
-      - name: List Build Output
-        run: ls -R dist
-
-      - name: Upload Web Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-build
-          path: dist/
+      - name: Say hello
+        run: echo "✅ Self-hosted runner is working!"
