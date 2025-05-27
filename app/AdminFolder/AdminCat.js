@@ -10,7 +10,7 @@ import {
 import Toast from "react-native-toast-message";
 import SubCategory from "../mechanicApp/SubCategory";
 import useSubCategoryHandlers from "../hooks/useSubCategoryHandlers";
-
+// pllll
 export default function AdminCat({
   industry,
   setIndustry,
