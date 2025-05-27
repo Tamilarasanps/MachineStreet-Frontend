@@ -1,4 +1,4 @@
-name: Expo Frontend CI/CD
+name: Expo Frontend CI/CD (Self-Hosted)
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
   build-web:
     name: Build Expo Web App
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout Code
@@ -26,28 +26,13 @@ jobs:
         run: npm install -g expo-cli
 
       - name: Build Web
-        run: expo export:web
+        run: expo export:web --no-dev --minify
 
-  build-android:
-    name: Build Android App (Expo EAS)
-    runs-on: ubuntu-latest
+      - name: List Build Output
+        run: ls -R dist
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Upload Web Build Artifact
+        uses: actions/upload-artifact@v4
         with:
-          node-version: 18
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Install EAS CLI
-        run: npm install -g eas-cli
-
-      - name: Build Android App
-        env:
-          EXPO_TOKEN: ${{ secrets.FRONTEND_TOKEN }}  # ✅ Use your custom-named secret
-        run: eas build --platform android --profile production --non-interactive
+          name: web-build
+          path: dist/
