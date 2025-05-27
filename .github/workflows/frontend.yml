@@ -1,4 +1,4 @@
-name: Expo Frontend CI/CD (Self-Hosted)
+name: Expo-Frontend CI/CD (Self-Hosted)
 
 on:
   push:
