@@ -2,7 +2,7 @@ import axios from "axios";
 import { useToast } from "react-native-toast-notifications";
 
 const useApi = () => {
-  const API_URL = "http://machinestreets.com:5000";
+  const API_URL = "https://machinestreets.com";
   const toast = useToast();
 
   const handleRequest = async (request, path, token) => {
@@ -66,16 +66,15 @@ const useApi = () => {
       token
     );
   const DELETEAPI = async (path, data, token) =>
-  await handleRequest(
-    () =>
-      axios.delete(`${API_URL}/${path}`, {
-        data,
-        headers: jsonHeader(token),
-      }),
-    path,
-    token
-  );
-
+    await handleRequest(
+      () =>
+        axios.delete(`${API_URL}/${path}`, {
+          data,
+          headers: jsonHeader(token),
+        }),
+      path,
+      token
+    );
 
   return {
     getJsonApi: (path, token) => GETAPI(path, token),
