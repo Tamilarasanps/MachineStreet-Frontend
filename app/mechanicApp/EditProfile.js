@@ -14,6 +14,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { useToast } from "react-native-toast-notifications";
 import IndustyLineup from "./IndustryLineUp";
 import SubCategory from "./SubCategory";
+// ok
 // import useApi from "./hooks/useApi";
 // import useSubCategoryHandlers from "./hooks/useSubCategoryHandlers";
 // import Mobile from "./Mobile";
