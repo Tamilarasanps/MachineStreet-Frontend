@@ -2,7 +2,7 @@ import axios from "axios";
 import { useToast } from "react-native-toast-notifications";
 
 const useApi = () => {
-  const API_URL = "https://machinestreets.com";
+  const API_URL = "https://api.machinestreets.com";
   const toast = useToast();
 
   const handleRequest = async (request, path, token) => {
