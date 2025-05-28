@@ -13,22 +13,21 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [authUser, setAuthUser] = useContext(AuthContext);
-  console.log("socket reached");
+console.log("socket reached")
   useEffect(() => {
-    if (authUser) {
-      // ✅ Checking if authUser is valid
+    if (authUser) {  // ✅ Checking if authUser is valid
       const newSocket = io("https://api.machinestreets.com", {
         transports: ["websocket", "polling"],
         query: {
-          token: authUser,
+          token : authUser,
         },
       });
 
       setSocket(newSocket);
 
       newSocket.on("getOnlineUsers", (users) => {
-        console.log("users :", users);
-        if (Array.isArray(users)) {
+        console.log('users :', users)
+        if (Array.isArray(users)) {   
           setOnlineUsers(users);
         }
       });
