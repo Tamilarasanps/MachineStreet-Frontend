@@ -67,7 +67,4 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: eas build --platform android --profile preview --non-interactive
 
-      - name: Show Android Build URL
-        run: |
-          BUILD_URL=$(eas build:list --platform android --limit 1 --json | jq -r '.[0].artifacts.buildUrl')
-          echo "APK download URL: $BUILD_URL"
+     
