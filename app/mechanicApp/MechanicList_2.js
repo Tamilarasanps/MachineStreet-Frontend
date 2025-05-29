@@ -46,7 +46,7 @@ const MechanicList_2 = () => {
     otherThanIndiaLocation,
     setTotalPages,
     qr,
-    setQr
+    setQr,
   } = GetMechanic();
   const isSmallScreen = width < 768;
   const isMediumScreen = width >= 768 && width < 1024;
@@ -243,13 +243,12 @@ const MechanicList_2 = () => {
 
       <ScrollView className="w-screen min-h-screen flex flex-rrow bg-gray-100 px-2 pb-6 ">
         {/* {qr && <QrModal visible={qr} onClose={() => setQr(true)} />} */}
-
         <View
           className={`flex flex-row rounded-sm mt-5 min-h-screen  gap-2 mb-48`}
           style={{ zIndex: -1 }}
         >
           {(width >= 1024 || isOpen) && (
-            <View className={`${width < 1024 ? "absolute z-50 w-[90%]" : ""}`}>
+            <View className={`${width < 1024 ? "absolute z-50 w-[50%]" : ""} `}>
               <FilterComponent
                 page="mech"
                 industries={industries}
