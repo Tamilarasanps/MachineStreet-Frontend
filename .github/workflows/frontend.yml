@@ -69,3 +69,5 @@ jobs:
         run: |
           echo "Android build completed."
           eas build:list --platform android --limit 1
+
+          
