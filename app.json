@@ -11,12 +11,14 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
+      "userInterfaceStyle": "light",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Your app needs access to your location to provide better services.",
         "NSLocationAlwaysUsageDescription": "Your app needs access to your location in the background."
       }
     },
     "android": {
+      "userInterfaceStyle": "light",
       "package": "com.tamilarasanps.frontend",
       "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
       "adaptiveIcon": {
