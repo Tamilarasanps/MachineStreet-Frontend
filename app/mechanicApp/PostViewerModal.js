@@ -98,7 +98,7 @@ const PostViewerModal = ({
       }
     };
     if (socket) {
-      console.log;
+      // console.log;
       socket.on("like-updated", handleLikeUpdate);
     }
 

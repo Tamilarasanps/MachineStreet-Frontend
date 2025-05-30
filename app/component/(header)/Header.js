@@ -59,7 +59,6 @@ export default function Header({
 
   useEffect(() => {
     if (searchBar?.length) {
-     
       fetchSearchResult();
     } else {
       setSearchResults([]);
@@ -120,15 +119,15 @@ export default function Header({
             </Pressable>
           </Link>
         </View>
-        {/* <Pressable
+        <Pressable
           onPress={() => {
-            if (Platform === "web") {
-              router.push("/screens/ProfilePage");
-            }
+            Platform.OS === "web"
+              ? router.push("/screens/ProfilePage")
+              : navigation.navigate("Profile");
           }}
         >
           <MaterialIcons name="account-circle" size={40} color="white" />
-        </Pressable> */}
+        </Pressable>
         {/* <Pressable
           onPress={() => {
             if (Platform.OS === "web") {

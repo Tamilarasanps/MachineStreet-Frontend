@@ -39,14 +39,14 @@ const LandingPage = () => {
             <Text style={styles.navLink} className="p-2">
               Contact
             </Text> */}
-            {/* <Image
+          {/* <Image
               source={{
                 uri: "https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg",
               }}
               style={{ width: 120, height: 40 }}
               resizeMode="contain"
             /> */}
-            {/* <Text className='p-2' style={styles.border}>Get PlayStore</Text> */}
+          {/* <Text className='p-2' style={styles.border}>Get PlayStore</Text> */}
           {/* </View> */}
         </View>
 
@@ -74,9 +74,16 @@ const LandingPage = () => {
               <View style={styles.heroButtons}>
                 <TouchableOpacity
                   style={styles.primaryBtn}
+                  // onPress={() => {
+
+                  //   // navigation.navigate('MechanicProfiles')
+                  //   router.push('/mechanicApp/MechanicList_2')
+                  // }}
+
                   onPress={() => {
-                    // navigation.navigate('MechanicProfiles')
-                    router.push('/mechanicApp/MechanicList_2')
+                    Platform.OS === "web"
+                      ? router.push("/mechanicApp/MechanicList_2")
+                      : navigation.navigate("MechanicProfiles");
                   }}
                 >
                   <Text style={styles.primaryBtnText}>Get Started</Text>

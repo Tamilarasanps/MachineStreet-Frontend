@@ -25,8 +25,8 @@ jobs:
       - name: Install Expo CLI
         run: npm install -g expo-cli
 
-      - name: Build Web
-        run: expo export:web --no-dev --minify
+      - name: Export Expo Web Build
+        run: npx expo export --platform web --no-dev --minify
 
       - name: List Build Output
         run: ls -R
@@ -66,5 +66,3 @@ jobs:
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: eas build --platform android --profile preview --non-interactive
-
-     

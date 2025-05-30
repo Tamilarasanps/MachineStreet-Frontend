@@ -34,6 +34,7 @@ const MechanicList_2 = () => {
   const { width } = useWindowDimensions();
 
   const {
+    loading,
     mechanics,
     setMechanics,
     industries,
@@ -57,7 +58,7 @@ const MechanicList_2 = () => {
   // const [showServiceModal, setShowServiceModal] = useState(false);
   // const [showServiceModalId, setShowServiceModalId] = useState(null);
   const [mechanicSearchResults, setMechanicSearchResults] = useState([]);
-  // console.log("mecha", mechanicSearchResults);
+  console.log("mecha", mechanicSearchResults);
   const [searchBar, setSearchBar] = useState("");
   const [authUser] = useContext(AuthContext);
   const [expandedMechanicId, setExpandedMechanicId] = useState(null);
@@ -220,7 +221,7 @@ const MechanicList_2 = () => {
     }
   };
 
-  console.log("qr", qr);
+  // console.log("qr", qr);
   return (
     <>
       <Header
@@ -248,7 +249,7 @@ const MechanicList_2 = () => {
           style={{ zIndex: -1 }}
         >
           {(width >= 1024 || isOpen) && (
-            <View className={`${width < 1024 ? "absolute z-50 w-[50%]" : ""} `}>
+            <View className={`${width < 1024 ? "absolute z-50 w-[80%]" : ""} `}>
               <FilterComponent
                 page="mech"
                 industries={industries}
@@ -353,116 +354,126 @@ const MechanicList_2 = () => {
               </BlurView>
             </Modal>
 
-            <Pressable
-              className={`${
-                isOpen ? "w-full" : "w-full"
-              } flex flex-wrap justify-between cursor-pointer ${
-                Platform.OS === "web" ? "mb-24" : "mb-48"
-              }`}
-              style={{
-                flexDirection:
-                  isSmallScreen || isMediumScreen ? "column" : "row",
-                flexWrap: "wrap",
-                gap: 4,
-              }}
-            >
-              {searchBar.length > 4 && mechanicSearchResults.length === 0 ? (
-                <View className="h-screen w-screen flex justify-center items-center">
-                  <Text className="text-bold color-grey-300">
-                    No results Found
-                  </Text>
-                </View>
+            <>
+              {loading ? (
+                <ActivityIndicator
+                  size="large"
+                  color="#0000ff"
+                  className="mt-40"
+                  
+                />
               ) : (
-                (mechanicSearchResults.length > 0 && searchBar.length > 0
-                  ? mechanicSearchResults
-                  : filteredMechanics
-                ).map((mechanic) => (
-                  <Pressable
-                    onPress={() => {
-                      handleProfileNavigation(mechanic._id);
-                    }}
-                    key={mechanic._id}
-                    className="items-center mb-6"
-                    style={{
-                      width: isSmallScreen
-                        ? "100%"
-                        : isMediumScreen
-                        ? "100%"
-                        : "49%",
-                      alignSelf: "center",
-                    }}
-                  >
-                    <View
-                      className="overflow-hidden rounded-xl bg-white shadow mb-10"
-                      style={{
-                        flexDirection: isSmallScreen ? "column" : "row",
-                        height: isSmallScreen ? undefined : 400,
-                        width: "100%",
-                      }}
-                    >
-                      {/* Left Side */}
-                      <LinearGradient
-                        colors={["#6B7280", "#FAFAFA"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
+                <Pressable
+                  className={`${
+                    isOpen ? "w-full" : "w-full"
+                  } flex flex-wrap justify-between cursor-pointer ${
+                    Platform.OS === "web" ? "mb-24" : "mb-48"
+                  }  `}
+                  style={{
+                    flexDirection:
+                      isSmallScreen || isMediumScreen ? "column" : "row",
+                    flexWrap: "wrap",
+                    gap: 4,
+                  }}
+                >
+                  {searchBar.length > 4 &&
+                  mechanicSearchResults.length === 0 ? (
+                    <View className="h-screen w-screen flex justify-center items-center">
+                      <Text className="text-bold color-grey-300">
+                        No results Found
+                      </Text>
+                    </View>
+                  ) : (
+                    (mechanicSearchResults.length > 0 && searchBar.length > 0
+                      ? mechanicSearchResults
+                      : filteredMechanics
+                    ).map((mechanic) => (
+                      <Pressable
+                        onPress={() => {
+                          handleProfileNavigation(mechanic._id);
+                        }}
+                        key={mechanic._id}
+                        className="items-center mb-6"
                         style={{
-                          width: isSmallScreen ? "100%" : "40%",
-                          height: isSmallScreen ? 220 : "100%",
-                          paddingTop: 16,
-                          paddingBottom: 16,
-                          borderTopLeftRadius: 16,
-                          borderBottomLeftRadius: isSmallScreen ? 0 : 16,
-                          borderTopRightRadius: isSmallScreen ? 16 : 0,
+                          width: isSmallScreen
+                            ? "100%"
+                            : isMediumScreen
+                            ? "100%"
+                            : "49%",
+                          alignSelf: "center",
                         }}
                       >
-                        <View className="h-full w-full items-center justify-center ">
-                          <View className="bg-gray-200 rounded-full overflow-hidden shadow-md z-10">
-                            <Image
-                              source={{
-                                uri: `data:image/jpeg;base64,${mechanic.profileImage}`,
-                              }}
-                              resizeMode="cover"
-                              style={{
-                                width: 150,
-                                height: 150,
-                                borderRadius: 75,
-                              }}
-                            />
-                          </View>
-                          <Text
-                            className="mt-2 text-lg font-extrabold"
-                            style={{ color: "#6B7280" }}
-                          >
-                            {mechanic.username}
-                          </Text>
-                        </View>
-                      </LinearGradient>
-
-                      {/* Right Side */}
-                      <View
-                        className="bg-white px-4 py-4 "
-                        style={{
-                          width: isSmallScreen ? "100%" : "60%",
-                          flex: 1,
-                        }}
-                      >
-                        <Text
-                          className="text-lg font-bold"
-                          style={{ flexShrink: 1 }}
+                        <View
+                          className="overflow-hidden rounded-xl bg-white shadow mb-10"
+                          style={{
+                            flexDirection: isSmallScreen ? "column" : "row",
+                            height: isSmallScreen ? undefined : 400,
+                            width: "100%",
+                          }}
                         >
-                          {mechanic.organization}
-                        </Text>
-                        <Text className="font-bold mt-4">
-                          {mechanic.industry?.charAt(0).toUpperCase() +
-                            mechanic.industry.slice(1)}
-                        </Text>
-                        <View className="bg-gray-100 p-2 mt-2">
-                          <View className=" flex flex-row">
-                            <View className="w-max">
-                              <Text>{mechanic.subcategory[0].name} :</Text>
+                          {/* Left Side */}
+                          <LinearGradient
+                            colors={["#6B7280", "#FAFAFA"]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={{
+                              width: isSmallScreen ? "100%" : "40%",
+                              height: isSmallScreen ? 220 : "100%",
+                              paddingTop: 16,
+                              paddingBottom: 16,
+                              borderTopLeftRadius: 16,
+                              borderBottomLeftRadius: isSmallScreen ? 0 : 16,
+                              borderTopRightRadius: isSmallScreen ? 16 : 0,
+                            }}
+                          >
+                            <View className="h-full w-full items-center justify-center ">
+                              <View className="bg-gray-200 rounded-full overflow-hidden shadow-md z-10">
+                                <Image
+                                  source={{
+                                    uri: `data:image/jpeg;base64,${mechanic.profileImage}`,
+                                  }}
+                                  resizeMode="cover"
+                                  style={{
+                                    width: 150,
+                                    height: 150,
+                                    borderRadius: 75,
+                                  }}
+                                />
+                              </View>
+                              <Text
+                                className="mt-2 text-lg font-extrabold"
+                                style={{ color: "#6B7280" }}
+                              >
+                                {mechanic.username}
+                              </Text>
                             </View>
+                          </LinearGradient>
 
-                            {/* {layout <= 100 ? (
+                          {/* Right Side */}
+                          <View
+                            className="bg-white px-4 py-4 "
+                            style={{
+                              width: isSmallScreen ? "100%" : "60%",
+                              flex: 1,
+                            }}
+                          >
+                            <Text
+                              className="text-lg font-bold"
+                              style={{ flexShrink: 1 }}
+                            >
+                              {mechanic.organization}
+                            </Text>
+                            <Text className="font-bold mt-4">
+                              {mechanic.industry?.charAt(0).toUpperCase() +
+                                mechanic.industry.slice(1)}
+                            </Text>
+                            <View className="bg-gray-100 p-2 mt-2">
+                              <View className=" flex flex-row">
+                                <View className="w-max">
+                                  <Text>{mechanic.subcategory[0].name} :</Text>
+                                </View>
+
+                                {/* {layout <= 100 ? (
                               <View
                                 className="flex flex-row"
                                 onLayout={(e) =>
@@ -477,162 +488,172 @@ const MechanicList_2 = () => {
                                   )
                                 )}
                               </View> */}
-                            {/* ) : ( */}
-                            <View className="flex flex-row">
-                              <Text className="ml-2">
-                                {mechanic.subcategory[0].services[0].slice(
-                                  0,
-                                  25
-                                )}{" "}
-                                ...
-                              </Text>
+                                {/* ) : ( */}
+                                <View className="flex flex-row">
+                                  <Text className="ml-2">
+                                    {mechanic.subcategory[0].services[0].slice(
+                                      0,
+                                      25
+                                    )}{" "}
+                                    ...
+                                  </Text>
+                                </View>
+
+                                {/* )} */}
+                              </View>
+
+                              {/* {layout > 180 && ( */}
+                              <TouchableWithoutFeedback
+                                onPress={() => {
+                                  setExpandedMechanicId(mechanic._id);
+                                  setViewMoreModalVisible(true);
+                                }}
+                                className="mt-2 bg-yellow-500 p-3 rounded-md"
+                              >
+                                <Text className="hover:underline font-semibold mt-2">
+                                  View more
+                                </Text>
+                              </TouchableWithoutFeedback>
                             </View>
-
-                            {/* )} */}
-                          </View>
-
-                          {/* {layout > 180 && ( */}
-                          <TouchableWithoutFeedback
-                            onPress={() => {
-                              setExpandedMechanicId(mechanic._id);
-                              setViewMoreModalVisible(true);
-                            }}
-                            className="mt-2 bg-yellow-500 p-3 rounded-md"
-                          >
-                            <Text className="hover:underline font-semibold mt-2">
-                              View more
+                            <Text className="font-bold mt-4">
+                              Specialization
                             </Text>
-                          </TouchableWithoutFeedback>
-                        </View>
-                        <Text className="font-bold mt-4">Specialization</Text>
-                        <View className="bg-gray-100 p-2 mt-2 ">
-                          <View>
-                            <Text>
-                              {mechanic?.services[0]?.length > 25
-                                ? `${mechanic.services[0].substring(0, 25)}...`
-                                : `${mechanic.services[0]} ...`}
-                            </Text>
-                          </View>
-                          <TouchableWithoutFeedback
-                            className=" hover:underline"
-                            onPress={() => {
-                              setExpandedMechanicId(mechanic._id);
-                              setViewMoreModalVisible(true);
-                            }}
-                          >
-                            <Text className="hover:underline font-semibold mt-2">
-                              View more
-                            </Text>
-                          </TouchableWithoutFeedback>
-                        </View>
-                        <View className="flex-row items-center mt-4">
-                          <FontAwesome
-                            name="map-marker"
-                            size={18}
-                            color="black"
-                          />
-                          <Text
-                            className="ml-2 font-semibold text-sm"
-                            style={{ flexShrink: 1 }}
-                          >
-                            {mechanic.district}
-                          </Text>
-                        </View>
-                        <View className="flex-row mt-2">
-                          {Platform.OS === "web" ? (
-                            <FontAwesome
-                              name="phone"
-                              size={20}
-                              color="#2095A2"
-                              style={{ marginTop: "8px", marginRight: 7 }}
-                            />
-                          ) : (
-                            ""
-                          )}
-
-                          {Platform.OS === "web" ? (
-                            <Text
-                              className="text-md font-semibold mt-2"
-                              style={{ flexShrink: 1 }}
-                            >
-                              Contact: {mechanic.contact?.countryCode}{" "}
-                              {mechanic.contact?.number}
-                            </Text>
-                          ) : (
-                            // filteredMechanics.map((mechanic) => (
-                            <View className="flex flex-row items-center gap-4">
+                            <View className="bg-gray-100 p-2 mt-2 ">
+                              <View>
+                                <Text>
+                                  {mechanic?.services[0]?.length > 25
+                                    ? `${mechanic.services[0].substring(
+                                        0,
+                                        25
+                                      )}...`
+                                    : `${mechanic.services[0]} ...`}
+                                </Text>
+                              </View>
+                              <TouchableWithoutFeedback
+                                className=" hover:underline"
+                                onPress={() => {
+                                  setExpandedMechanicId(mechanic._id);
+                                  setViewMoreModalVisible(true);
+                                }}
+                              >
+                                <Text className="hover:underline font-semibold mt-2">
+                                  View more
+                                </Text>
+                              </TouchableWithoutFeedback>
+                            </View>
+                            <View className="flex-row items-center mt-4">
+                              <FontAwesome
+                                name="map-marker"
+                                size={18}
+                                color="black"
+                              />
                               <Text
-                                className="text-md font-semibold mt-2"
+                                className="ml-2 font-semibold text-sm"
                                 style={{ flexShrink: 1 }}
                               >
-                                Contact: {mechanic.contact?.countryCode}{" "}
-                                {mechanic.contact?.number}
+                                {mechanic.district}
                               </Text>
-                              <Pressable
-                                className=" h-10  w-[100px] bg-TealGreen rounded-sm justify-center items-center mt-2"
-                                // onPress={openDailer}
-                                key={mechanic.id}
-                                onPress={() => openDialer(mechanic)}
-                              >
-                                <Text className="text-white text-lg">Call</Text>
-                              </Pressable>
                             </View>
-
-                            // ))
-                          )}
-                        </View>
-                        <View className="flex-row gap-4 items-center mt-4">
-                          {mechanic?.averageRating ? (
-                            <>
-                              <View className="bg-green-600 px-3 py-1 rounded-lg flex-row gap-2 items-center">
-                                <Text className="text-white font-bold text-base">
-                                  {mechanic.averageRating}
-                                </Text>
+                            <View className="flex-row mt-2">
+                              {Platform.OS === "web" ? (
                                 <FontAwesome
-                                  name="star"
-                                  size={16}
-                                  color="white"
+                                  name="phone"
+                                  size={20}
+                                  color="#2095A2"
+                                  style={{ marginTop: "8px", marginRight: 7 }}
                                 />
-                              </View>
-                              <Pressable
-                                onPress={() => {
-                                  setSelectedMech(mechanic._id);
-                                  setReviewModal(true);
-                                }}
-                              >
-                                <Text>See all reviews</Text>
-                              </Pressable>
-                            </>
-                          ) : (
-                            <View
-                              pointerEvents="box-none"
-                              className="flex flex-row gap-4"
-                            >
-                              <Text>No Reviews Yet</Text>
-                              <Pressable
-                                onPress={() => {
-                                  setSelectedMech(mechanic._id);
-                                  setReviewModal(true);
-                                }}
-                              >
+                              ) : (
+                                ""
+                              )}
+
+                              {Platform.OS === "web" ? (
                                 <Text
-                                  style={{
-                                    color: "#3B82F6",
-                                    textDecorationLine: "underline",
-                                  }}
+                                  className="text-md font-semibold mt-2"
+                                  style={{ flexShrink: 1 }}
                                 >
-                                  Add yours
+                                  Contact: {mechanic.contact?.countryCode}{" "}
+                                  {mechanic.contact?.number}
                                 </Text>
-                              </Pressable>
+                              ) : (
+                                // filteredMechanics.map((mechanic) => (
+                                <View className="flex flex-row items-center gap-4">
+                                  <Text
+                                    className="text-md font-semibold mt-2"
+                                    style={{ flexShrink: 1 }}
+                                  >
+                                    Contact: {mechanic.contact?.countryCode}{" "}
+                                    {mechanic.contact?.number}
+                                  </Text>
+                                  <Pressable
+                                    className=" h-10  w-[100px] bg-TealGreen rounded-sm justify-center items-center mt-2"
+                                    // onPress={openDailer}
+                                    key={mechanic.id}
+                                    onPress={() => openDialer(mechanic)}
+                                  >
+                                    <Text className="text-white text-lg">
+                                      Call
+                                    </Text>
+                                  </Pressable>
+                                </View>
+
+                                // ))
+                              )}
                             </View>
-                          )}
+                            <View className="flex-row gap-4 items-center mt-4">
+                              {mechanic?.averageRating ? (
+                                <>
+                                  <View className="bg-green-600 px-3 py-1 rounded-lg flex-row gap-2 items-center">
+                                    <Text className="text-white font-bold text-base">
+                                      {mechanic.averageRating}
+                                    </Text>
+                                    <FontAwesome
+                                      name="star"
+                                      size={16}
+                                      color="white"
+                                    />
+                                  </View>
+                                  <Pressable
+                                    onPress={() => {
+                                      setSelectedMech(mechanic._id);
+                                      setReviewModal(true);
+                                    }}
+                                  >
+                                    <Text>See all reviews</Text>
+                                  </Pressable>
+                                </>
+                              ) : (
+                                <View
+                                  pointerEvents="box-none"
+                                  className="flex flex-row gap-4"
+                                >
+                                  <Text>No Reviews Yet</Text>
+                                  <Pressable
+                                    onPress={() => {
+                                      setSelectedMech(mechanic._id);
+                                      setReviewModal(true);
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        color: "#3B82F6",
+                                        textDecorationLine: "underline",
+                                      }}
+                                    >
+                                      Add yours
+                                    </Text>
+                                  </Pressable>
+                                </View>
+                              )}
+                            </View>
+                          </View>
                         </View>
-                      </View>
-                    </View>
-                  </Pressable>
-                ))
+                      </Pressable>
+                    ))
+                  )}
+                </Pressable>
               )}
-            </Pressable>
+            </>
+
             <View className="flex flex-row justify-between px-2">
               <View>
                 <Text>
@@ -643,7 +664,7 @@ const MechanicList_2 = () => {
                 <Pressable
                   disabled={page === totalPages}
                   onPress={() => {
-                    console.log("triggered");
+                    // console.log("triggered");
                     setPage(page + 1);
                   }}
                 >

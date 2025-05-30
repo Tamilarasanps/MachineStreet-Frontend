@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const GetMechanic = () => {
   const { getJsonApi } = useApi();
   const [mechanics, setMechanics] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState({});
   const [industries, setIndustries] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -15,13 +16,14 @@ const GetMechanic = () => {
 
   useEffect(() => {
     async function fetchMechanics() {
+      setLoading(true);
       try {
         const token = await AsyncStorage.getItem("userToken");
         const data = await getJsonApi(
           `mechanicList/?page=${page}&limit=50`,
           token
         );
-        console.log("data", data);
+        console.log("data :", data);
 
         setMechanics(data?.data?.mechanics?.data);
         setTotalPages(data?.data?.mechanics?.totalPages);
@@ -32,6 +34,8 @@ const GetMechanic = () => {
         setQr(data?.data?.mechanics?.qr);
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoading(false); // ✅ stop loading after request
       }
     }
 
@@ -39,6 +43,7 @@ const GetMechanic = () => {
   }, [page]);
 
   return {
+    loading, // ✅ expose loading state
     mechanics,
     setMechanics,
     industries,
