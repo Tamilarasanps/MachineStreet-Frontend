@@ -16,7 +16,7 @@ import Mobile from "../(SignIn)/Mobile";
 import Email from "../(SignIn)/Email";
 import { useNavigation } from "@react-navigation/native";
 import useApi from "@/app/hooks/useApi";
-import { useToast } from "react-native-toast-notifications";
+import { Toast, useToast } from "react-native-toast-notifications";
 
 const Login = () => {
   const [mailOrphone, setMailOrphone] = useState("");
@@ -64,13 +64,13 @@ const Login = () => {
         mailOrphone,
         password,
       });
+      // console.log("response :", response);
       if (response && response.status === 200) {
         await AsyncStorage.setItem("userToken", response.data.token);
         await AsyncStorage.setItem("role", response.data.role);
         // await AsyncStorage.setItem("qr", response.data.qr);
 
         if (Platform.OS === "web") {
-          // navigation.navigate('MechanicProfiles')
           router.replace("/mechanicApp/MechanicList_2");
         } else {
           navigation.navigate("MechanicProfiles");
@@ -80,7 +80,7 @@ const Login = () => {
         setPassword("");
       }
     } catch (error) {
-      console.error("Error during form submission:", error);
+      console.error("Invaild Date:", error);
     }
   };
 
@@ -142,7 +142,19 @@ const Login = () => {
             <Text className="text-2xl font-bold mx-auto text-TealGreen mb-4">
               Log In to your account
             </Text>
-
+            {/* Email/Mobile Switch */}
+            <View
+              className={`${
+                Platform.OS === "web" ? "w-[75%]" : "w-[90%]"
+              } mx-auto align-items-right mt-2`}
+            >
+              <Text
+                className="text-blue-500 text-md font-semibold text-right underline"
+                onPress={() => setMobile(!mobile)}
+              >
+                {mobile ? "E-mail" : "Mobile Number"}
+              </Text>
+            </View>
             {/* Email or Mobile Input */}
             {mobile ? (
               <Mobile
@@ -214,19 +226,6 @@ const Login = () => {
               </Pressable>
             </View>
 
-            {/* Email/Mobile Switch */}
-            <View
-              className={`${
-                Platform.OS === "web" ? "w-[75%]" : "w-[90%]"
-              } mx-auto align-items-right mt-2`}
-            >
-              <Text
-                className="text-blue-500 text-md font-semibold text-right mt-2 underline"
-                onPress={() => setMobile(!mobile)}
-              >
-                {mobile ? "E-mail" : "Mobile Number"}
-              </Text>
-            </View>
             {/* className={Platform.OS === "web" ? "mt-16" : "mt:24"} */}
             <View className="mt-24">
               <Pressable
