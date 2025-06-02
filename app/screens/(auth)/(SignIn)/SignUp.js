@@ -61,8 +61,6 @@ const SignUp = () => {
 
   let api_Data;
 
-  console.log("step:", step);
-
   const toast = useToast();
 
   const getSignupUrl = (step) => {

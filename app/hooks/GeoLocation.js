@@ -78,7 +78,7 @@ const useGeoLocation = () => {
   const fetchAddress = async (latitude, longitude) => {
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          `http://192.168.1.9:4000/api/reverse-geocode?lat=${latitude}&lon=${longitude}`
       );
       console.log("response :", response);
 
@@ -89,7 +89,7 @@ const useGeoLocation = () => {
       if (data.address) {
         setAddress({
           district:
-            data.address.city ||
+            data.address.city || 
             data.address.town ||
             data.address.village ||
             "",

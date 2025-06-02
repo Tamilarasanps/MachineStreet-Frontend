@@ -43,7 +43,7 @@ const Mobile = ({
         </Pressable>
 
         <TextInput
-          className="flex-1 min-w-0 text-gray-700 text-md px-2 py-1"
+          className="flex-1 min-w-0 text-gray-700 text-md px-2 py-1 outline-none"
           placeholder="Enter phone number"
           keyboardType="phone-pad"
           value={phoneNumber}

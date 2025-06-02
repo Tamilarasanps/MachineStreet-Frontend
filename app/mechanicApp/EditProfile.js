@@ -21,6 +21,7 @@ import Mobile from "../screens/(auth)/(SignIn)/Mobile";
 import Location from "../screens/(Homepage)/Location";
 import { KeyboardAvoidingView } from "react-native";
 
+
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
@@ -115,6 +116,7 @@ const EditProfile = ({
       !mechanicDetails.organization ||
       !mechanicDetails.industry ||
       !subCategories ||
+      !mechanicDetails.services ||
       !phoneNumber?.trim() ||
       !String(location?.coords || "").trim() ||
       !String(location?.region || "").trim() ||
