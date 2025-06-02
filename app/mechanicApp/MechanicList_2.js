@@ -27,10 +27,9 @@ import Header from "../component/(header)/Header";
 import { Modal } from "react-native";
 import Octicons from "@expo/vector-icons/Octicons";
 import { BlurView } from "expo-blur";
-import index from "..";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import Footer from "../component/(footer)/Footer";
 
 const MechanicList_2 = () => {
   const { width } = useWindowDimensions();
@@ -378,7 +377,10 @@ const MechanicList_2 = () => {
                     <ScrollView horizontal>
                       {selectedRating ? (
                         <View className="flex-row border-2 p-2 rounded-md items-center mr-2">
-                          <Text className="text-lg">{selectedRating}</Text>
+                          <Text className="text-lg">
+                            {selectedRating}{" "}
+                            <Icon name="star-rate" size={18} color="#F59E0B" />
+                          </Text>
                           <MaterialIcons
                             name="cancel"
                             size={20}
