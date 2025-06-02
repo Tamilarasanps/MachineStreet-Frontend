@@ -12,15 +12,12 @@ const Footer = () => {
             Machine Street
           </Text>
           <Text className="font-semibold text-white">
-            Buy & Sell Used Machinery Easily{" "}
+            Machine Street connects you with verified mechanics for automotive,
+            industrial, marine, agricultural, and more.
           </Text>
-          <Text className="text-white mt-2">
-            Browse a wide range of pre-owned machines or list your equipment
-            with ease.
-          </Text>
-          <Text className="text-white mt-2">
-            Connect directly with buyers and sellers for secure and seamless
-            transactions.
+          <Text className="text-white mt-2 font-semibold">
+            Browse our directory, view profiles, and contact the right expert
+            for your needs-quickly and easily.
           </Text>
         </View>
 
@@ -63,11 +60,10 @@ const Footer = () => {
         </View>
       </View>
 
-      {/* Copyright Section */}
-      <View className="bg-gray-800 py-3 items-center ">
+      <View className="bg-gray-800 py-3 items-center">
         <Text className="text-white text-sm">
-          © 2025 Copyright:
-          <Text className="text-">DevTeam</Text>
+          © {new Date().getFullYear()} Copyright:{" "}
+          <Text className="font-semibold">DevTeam</Text>
         </Text>
       </View>
     </View>

@@ -12,6 +12,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useNavigation } from "expo-router";
+import Footer from "../component/(footer)/Footer";
 
 const { width } = Dimensions.get("window");
 
@@ -175,6 +176,7 @@ const LandingPage = () => {
           </View>
         </View> */}
         </View>
+        <Footer />
       </ScrollView>
     </SafeAreaView>
   );

@@ -51,7 +51,7 @@ const PostViewerModal = ({
   const [showDelete, setShowDelete] = useState("");
 
   const navigation = useNavigation();
-
+console.log("posts :",posts)
   async function deletePostLogic(postId) {
     const token = await AsyncStorage.getItem("userToken");
 

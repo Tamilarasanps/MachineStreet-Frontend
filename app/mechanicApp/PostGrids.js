@@ -1,9 +1,22 @@
 import React from "react";
-import { View, Image, FlatList, Pressable } from "react-native";
+import {
+  View,
+  Image,
+  FlatList,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 
-const PostGrid = ({ posts, onPostPress, width }) => {
+const PostGrid = ({ posts, onPostPress, width}) => {
   const columns = width >= 1024 ? 4 : 3;
+  if (!posts) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -36,7 +49,7 @@ const PostGrid = ({ posts, onPostPress, width }) => {
               <Image
                 source={{ uri: `data:image/jpeg;base64,${item.media}` }}
                 className="w-full h-full"
-                resizeMode="cover"
+                resizeMode="cove"
               />
             )}
           </Pressable>
@@ -48,7 +61,7 @@ const PostGrid = ({ posts, onPostPress, width }) => {
 
 const VideoGridItem = ({ videoId, onPostPress, index }) => {
   const player = useVideoPlayer(
-    `http://192.168.200.158:5000/video/${videoId}`,
+    `https://api.machinestreets.com/video/${videoId}`,
     (player) => {
       player.loop = true;
       player.play();

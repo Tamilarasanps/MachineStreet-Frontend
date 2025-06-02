@@ -24,7 +24,6 @@ import Footer from "@/app/component/(footer)/Footer";
 import useApi from "@/app/hooks/useApi";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import VideoComponent from "../(sellerForm)/Video";
 import { Ionicons } from "@expo/vector-icons";
 import VideoGridItem from "@/app/mechanicApp/VideoView";
 import Octicons from "@expo/vector-icons/Octicons";

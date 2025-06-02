@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useSocketContext } from "./SocketContext";
 import useConversation from "../stateManagement/useConversation";
-import { Audio } from "expo-av";
 
 
 const useGetSocketMessage = () => {

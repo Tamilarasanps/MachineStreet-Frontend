@@ -33,11 +33,12 @@ import { TextInput } from "react-native-paper";
 import Password from "../(auth)/(SignIn)/Password";
 import { BlurView } from "expo-blur";
 import { useNavigation } from "expo-router";
+import { LoadingContext } from "@/app/context/LoadingContext";
 // import { useSocketContext } from "./context/SocketContext";
 
 const { width } = Dimensions.get("window");
 
-const ProfilePage = ({  }) => {
+const ProfilePage = ({}) => {
   const [editModal, setEditModal] = useState(false);
   const { width } = useWindowDimensions();
   const { id, page } = useLocalSearchParams();
@@ -67,6 +68,9 @@ const ProfilePage = ({  }) => {
   const [confirmpass, setConfirmPass] = useState("");
 
   const cleanCountryName = (name) => name.replace(/\s*\(.*?\)/g, "").trim();
+
+  const { isLoading, startLoading, stopLoading } = useContext(LoadingContext);
+  console.log("isLoading:", isLoading);
 
   const filteredCountries = allCountries
     .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -118,38 +122,45 @@ const ProfilePage = ({  }) => {
     }
   };
 
-  const handleLogout = useCallback(() => {
-    Alert.alert(
-      "Logout",
-      "Are you sure want to Logout?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Logout",
-          onPress: async () => {
-            setUpdateModal(false);
-            try {
-              await AsyncStorage.removeItem("userToken");
-              await AsyncStorage.removeItem("role");
+  const handleLogout = useCallback(async () => {
+    const confirmLogout = async () => {
+      try {
+        await AsyncStorage.removeItem("userToken");
+        await AsyncStorage.removeItem("role");
 
-              // Navigation
-              if (Platform.OS === "web") {
-                router.push("/screens/LandingPage");
-              } else {
-                navigation.navigate("HomePage");
-              }
-            } catch (error) {
-              console.error("Error during logout:", error);
-            }
+        if (Platform.OS === "web") {
+          router.push("/screens/LandingPage");
+        } else {
+          navigation.navigate("HomePage");
+        }
+      } catch (error) {
+        console.error("Error during logout:", error);
+      }
+    };
+
+    if (Platform.OS === "web") {
+      const confirm = window.confirm("Are you sure you want to logout?");
+      if (confirm) {
+        confirmLogout();
+      }
+    } else {
+      Alert.alert(
+        "Logout",
+        "Are you sure you want to logout?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
           },
-        },
-      ],
-      { cancelable: false }
-    );
-  }, [navigation]);
+          {
+            text: "Logout",
+            onPress: confirmLogout,
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  }, [navigation, router]);
 
   async function fetchPosts(mechId) {
     try {
@@ -381,116 +392,116 @@ const ProfilePage = ({  }) => {
           </Pressable>
         </View>
         {/* Banner Section */}
-       
-            <View className="relative h-64 w-full bg-TealGreen ">
-              <View className="w-full h-full ">
-                {/* <Icon
+
+        <View className="relative h-64 w-full bg-TealGreen ">
+          <View className="w-full h-full ">
+            {/* <Icon
               name="arrow-left"
               size={24}
               color="#000"
               onPress={() => navigation.goBack()}
             /> */}
-                <Image
-                  source={{
-                    uri: `data:image/jpeg;base64,${userProfile?.banner}`,
-                  }}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    resizeMode: "cover",
-                  }}
-                />
-                {page !== "uservisit" && (
-                  <View
-                    className="bg-white items-center justify-center"
-                    style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 50,
-                      position: "absolute",
-                      bottom: 10,
-                      right: 10,
-                      elevation: 5, // Shadow effect for better visibility
-                    }}
-                  >
-                    <Pressable
-                      onPress={async () => {
-                        const result = await pickMedia("image", "banner");
-                        if (!result.canceled) {
-                          handleImageUpload(result, "banner");
-                        }
-                      }}
-                    >
-                      <MaterialIcons name="edit" size={24} color="teal" />
-                    </Pressable>
-                  </View>
-                )}
-              </View>
-              <Pressable
-                style={{ borderWidth: 2, borderColor: "#ffffff" }}
-                className={` ${
-                  width < 480
-                    ? "max-w-48 max-h-48 -bottom-24"
-                    : "max-h-64 max-w-64 -bottom-24"
-                } absolute  left-1/2 -translate-x-1/2 overflow-hidden rounded-full`}
+            <Image
+              source={{
+                uri: `data:image/jpeg;base64,${userProfile?.banner}`,
+              }}
+              style={{
+                width: "100%",
+                height: "100%",
+                resizeMode: "cover",
+              }}
+            />
+            {page !== "uservisit" && (
+              <View
+                className="bg-white items-center justify-center"
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 50,
+                  position: "absolute",
+                  bottom: 10,
+                  right: 10,
+                  elevation: 5, // Shadow effect for better visibility
+                }}
               >
-                {/* {userProfileImage ? ( */}
-                <View
-                  className="bg-TealGreen items-center justify-center"
-                  style={{
-                    width: 200,
-                    height: 200,
-                    borderRadius: 100,
-                    // overflow: "hidden", // Ensures circular shape
+                <Pressable
+                  onPress={async () => {
+                    const result = await pickMedia("image", "banner");
+                    if (!result.canceled) {
+                      handleImageUpload(result, "banner");
+                    }
                   }}
                 >
-                  <View
-                    className="justify-center items-center"
-                    style={{ width: "100%", height: "100%" }}
-                  >
-                    {userProfile?.profileImage ? (
-                      <Image
-                        source={{
-                          uri: `data:image/jpeg;base64,${userProfile?.profileImage}`,
-                        }}
-                        className="w-full h-full rounded-full"
-                      />
-                    ) : (
-                      <FontAwesome name="user" size={100} color="white" />
-                    )}
-                  </View>
-                </View>
-
-                {/* Edit Icon */}
-                {page !== "uservisit" && (
-                  <View
-                    className="bg-white items-center justify-center"
-                    style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 50,
-                      position: "absolute",
-                      bottom: 10,
-                      right: 10,
-                      elevation: 5, // Shadow effect for better visibility
+                  <MaterialIcons name="edit" size={24} color="teal" />
+                </Pressable>
+              </View>
+            )}
+          </View>
+          <Pressable
+            style={{ borderWidth: 2, borderColor: "#ffffff" }}
+            className={` ${
+              width < 480
+                ? "max-w-48 max-h-48 -bottom-24"
+                : "max-h-64 max-w-64 -bottom-24"
+            } absolute  left-1/2 -translate-x-1/2 overflow-hidden rounded-full`}
+          >
+            {/* {userProfileImage ? ( */}
+            <View
+              className="bg-TealGreen items-center justify-center"
+              style={{
+                width: 200,
+                height: 200,
+                borderRadius: 100,
+                // overflow: "hidden", // Ensures circular shape
+              }}
+            >
+              <View
+                className="justify-center items-center"
+                style={{ width: "100%", height: "100%" }}
+              >
+                {userProfile?.profileImage ? (
+                  <Image
+                    source={{
+                      uri: `data:image/jpeg;base64,${userProfile?.profileImage}`,
                     }}
-                  >
-                    <Pressable
-                      onPress={async () => {
-                        const result = await pickMedia("image", "profile");
-                        if (!result.canceled) {
-                          // const updateProfileImage = async () => {
-                          handleImageUpload(result, "profile");
-                          // };
-                        }
-                      }}
-                    >
-                      <MaterialIcons name="edit" size={24} color="teal" />
-                    </Pressable>
-                  </View>
+                    className="w-full h-full rounded-full"
+                  />
+                ) : (
+                  <FontAwesome name="user" size={100} color="white" />
                 )}
-              </Pressable>
+              </View>
             </View>
+
+            {/* Edit Icon */}
+            {page !== "uservisit" && (
+              <View
+                className="bg-white items-center justify-center"
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 50,
+                  position: "absolute",
+                  bottom: 10,
+                  right: 10,
+                  elevation: 5, // Shadow effect for better visibility
+                }}
+              >
+                <Pressable
+                  onPress={async () => {
+                    const result = await pickMedia("image", "profile");
+                    if (!result.canceled) {
+                      // const updateProfileImage = async () => {
+                      handleImageUpload(result, "profile");
+                      // };
+                    }
+                  }}
+                >
+                  <MaterialIcons name="edit" size={24} color="teal" />
+                </Pressable>
+              </View>
+            )}
+          </Pressable>
+        </View>
 
         {page !== "uservisit" && (
           <View className="relative w-full flex justify-end mt-4">
@@ -728,7 +739,10 @@ const ProfilePage = ({  }) => {
         {/* Profile Details */}
         <View className="w-full mt-24 flex items-center justify-center p-4 gap-2">
           {/* Name */}
-          <Text className="text-lg font-bold">{userProfile?.username}</Text>
+          <Text className="text-lg font-bold">
+            {userProfile?.username.charAt(0).toUpperCase() +
+              userProfile?.username.slice(1)}
+          </Text>
 
           {/* Bio */}
           {(userProfile?.role === "mechanic" || page === "uservist") && (
@@ -801,6 +815,7 @@ const ProfilePage = ({  }) => {
 
         {/* Posts Grid */}
         {/* <View className="mt-4 flex-1"> */}
+
         <PostGrid
           posts={posts}
           onPostPress={(index) => {
@@ -808,6 +823,7 @@ const ProfilePage = ({  }) => {
             console.log("index :", index);
           }}
           width={width}
+          loading={isLoading}
         />
         {/* </View> */}
         {activePostIndex !== null && (

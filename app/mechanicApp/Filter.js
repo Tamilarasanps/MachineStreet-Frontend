@@ -11,7 +11,7 @@ import { Checkbox, Divider } from "react-native-paper"; // Assuming you're using
 import { useWindowDimensions } from "react-native"; // To detect screen width dynamically
 import Icon from "react-native-vector-icons/MaterialIcons";
 import RadioGroup from "react-native-radio-buttons-group";
-
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 export default function FilterComponent({
   setIsOpen,
   industries,
@@ -67,6 +67,7 @@ export default function FilterComponent({
       setSelectedDistricts([]); // Reset districts when state is deselected
     } else {
       setSelectedState(state);
+      setSelectedDistrict("");
       setSelectedDistricts(
         otherThanIndia
           ? otherThanIndiaLocation[state] || []
@@ -80,6 +81,7 @@ export default function FilterComponent({
     if (selectedDistrict === district) {
       setSelectedDistrict("");
     } else {
+      setSelectedDistrict("");
       setSelectedDistrict(district);
     }
   };
@@ -101,16 +103,18 @@ export default function FilterComponent({
 
   console.log("dataToMap :", dataToMap);
   console.log("selectedState :", selectedState);
-  console.log("selectedD :", selectedDistrict);
+  console.log("selectedDistrict :", selectedDistrict);
 
   return (
     <View
-      className={`bg-white p-4 rounded-md shadow-md flex ${
-        width < 1024
-          ? "absolute z-50 h-screen w-full flex-col pb-20"
-          : "flex-row"
-      }`}
+      className={`bg-gray-400  h-full p-4 
+         shadow-md flex ${
+           width < 1024
+             ? "absolute z-50 h-screen w-full flex-col pb-20"
+             : "flex-row"
+         }`}
     >
+      
       {/* Left Tabs */}
       <View
         className={`mb-4 ${
@@ -152,7 +156,7 @@ export default function FilterComponent({
                     : "flex-row items-center justify-between mt-2"
                 }`}
               >
-                <Text className="font-semibold text-base mb-2 text-red-500">
+                <Text className="font-semibold text-lg mb-2 text-gray-900">
                   Select State
                 </Text>
 
@@ -179,7 +183,7 @@ export default function FilterComponent({
                       className="p-2 rounded-sm mb-1 bg-gray-300"
                     >
                       <Text className="text-base">{selectedState}</Text>
-                      <Text className="text-xs text-red-500 underline">
+                      <Text className="text-md font-semibold text-red-500 underline">
                         ← Change State
                       </Text>
                     </Pressable>
@@ -204,7 +208,7 @@ export default function FilterComponent({
                 {selectedDistricts?.length > 0 && (
                   <>
                     <Divider className="my-3" />
-                    <Text className="font-semibold text-lg text-red-500">
+                    <Text className="font-semibold text-lg text-gray-800">
                       Districts in {selectedState}
                     </Text>
                     <ScrollView className="min-h-[250px] mt-2 ">
@@ -266,7 +270,7 @@ export default function FilterComponent({
 
           {activeFilter === "Ratings" && (
             <View>
-              <Text className="font-semibold text-lg text-red-500 mb-2">
+              <Text className="font-semibold text-lg text-gray-800 mb-2">
                 Select Rating
               </Text>
               <View className="flex-row flex-wrap gap-2 mt-2">
@@ -275,7 +279,7 @@ export default function FilterComponent({
                     key={rating}
                     onPress={() => handleRatingClick(rating)}
                     className={`flex-row items-center ${
-                      selectedRating === rating ? "bg-gray-400" : "bg-gray-200"
+                      selectedRating === rating ? "bg-gray-500" : "bg-gray-200"
                     } px-3 py-1 rounded-md`}
                   >
                     <Icon name="star-rate" size={18} color="#F59E0B" />
@@ -343,7 +347,7 @@ export default function FilterComponent({
 
           {activeFilter === "Industry" && (
             <View className="h-96">
-              <Text className="font-semibold text-base text-red-500 mb-2">
+              <Text className="font-semibold text-lg text-gray-800 mb-2">
                 Select Industry
               </Text>
 
@@ -354,7 +358,9 @@ export default function FilterComponent({
                     onPress={() => setSelectedIndustry(ind)}
                     className="p-2 mb-2 rounded-sm bg-gray-100"
                   >
-                    <Text className="text-base">{ind}</Text>
+                    <Text className="text-base">
+                      {ind.charAt(0).toUpperCase() + ind.slice(1)}
+                    </Text>
                   </Pressable>
                 ))}
 
@@ -368,12 +374,14 @@ export default function FilterComponent({
                     }}
                     className="mb-2"
                   >
-                    <Text className="text-red-400 text-sm underline">
+                    <Text className=" text-sm underline">
                       ← Back to Industries
                     </Text>
                   </Pressable>
-                  <Text className="font-semibold text-base text-red-500 mb-2">
-                    Categories in {selectedIndustry}
+                  <Text className="font-semibold text-lg text-gray-800 mb-2">
+                    Categories in{" "}
+                    {selectedIndustry.charAt(0).toUpperCase() +
+                      selectedIndustry.slice(1)}
                   </Text>
                   {industries[selectedIndustry]?.map((cat) => (
                     <Pressable
@@ -396,11 +404,11 @@ export default function FilterComponent({
                     }}
                     className="mb-2"
                   >
-                    <Text className="text-red-400 text-sm underline">
+                    <Text className=" text-sm underline">
                       ← Back to Categories
                     </Text>
                   </Pressable>
-                  <Text className="font-semibold text-base text-red-500 mb-2">
+                  <Text className="font-semibold text-md text-gray-800 mb-2">
                     Subcategories in {selectedCategory}
                   </Text>
                   {categories[selectedCategory]?.map((sub) => (
@@ -429,9 +437,9 @@ export default function FilterComponent({
                       setSelectedDistricts([]);
                       setSelectedRating("");
                     }}
-                    className="mt-2"
+                    className="mt-2 "
                   >
-                    <Text className="text-red-600 underline text-sm">
+                    <Text className="text-gray-900  font-semibold underline text-sm">
                       Deselect All
                     </Text>
                   </Pressable>
@@ -442,7 +450,7 @@ export default function FilterComponent({
         </ScrollView>
 
         {/* Bottom buttons – common for all filters */}
-        <View className=" bottom-0 left-0 right-0 bg-white flex-row justify-between border-t border-gray-200 px-4 py-3">
+        <View className=" bg-white flex-row justify-between border-t border-gray-200 px-4 py-3 rounded-sm absolute right-2 bottom-0">
           <Pressable
             onPress={() => {
               console.log("popopop");
@@ -461,13 +469,13 @@ export default function FilterComponent({
               }
               setSelectedState("");
               setSelectedDistricts([]);
-              setSelectedDistrict([])
+              setSelectedDistrict([]);
               setOtherThanIndia(false);
               dataToMap = location;
               console.log(dataToMap);
             }}
           >
-            <Text className="text-red-500 font-semibold">Deselect All</Text>
+            <Text className="text-red-500 text-md font-bold">Deselect All</Text>
           </Pressable>
           {width < 1024 && (
             <Pressable onPress={() => setIsOpen(false)}>

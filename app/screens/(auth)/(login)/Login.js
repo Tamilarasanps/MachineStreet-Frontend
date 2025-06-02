@@ -48,7 +48,7 @@ const Login = () => {
       iso2: c.iso2,
     }));
 
-  const Login = async () => {
+  const Login = async (e) => {
     if (!mailOrphone || !password) {
       toast.show("Please fill all fields", {
         type: "danger", // or "error" if you've custom defined it
@@ -81,6 +81,12 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Invaild Date:", error);
+    }
+  };
+
+  const keyPres = (e) => {
+    if (Platform.OS === "web" && e.nativeEvent.key === "Enter") {
+      Login();
     }
   };
 
@@ -187,6 +193,7 @@ const Login = () => {
               <FloatingLabelInput
                 label="Password"
                 value={password}
+                onKeyPress={keyPres}
                 staticLabel
                 hintTextColor={"#aaa"}
                 containerStyles={{

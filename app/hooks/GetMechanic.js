@@ -35,7 +35,7 @@ const GetMechanic = () => {
       } catch (err) {
         console.log(err);
       } finally {
-        setLoading(false); // ✅ stop loading after request
+        setLoading(false);
       }
     }
 
@@ -43,7 +43,7 @@ const GetMechanic = () => {
   }, [page]);
 
   return {
-    loading, // ✅ expose loading state
+    loading, 
     mechanics,
     setMechanics,
     industries,
