@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
   Pressable,
   Platform,
   useWindowDimensions,
+  ActivityIndicator,
 } from "react-native";
 import { TextInput } from "react-native-paper";
 import Mobile from "./Mobile";
 import Email from "./Email";
 import { router } from "expo-router";
 import { useNavigation } from "expo-router";
+import { LoadingContext } from "@/app/context/LoadingContext";
+import Loading from "@/app/component/Loading";
 
 const UsernameScreen = ({
   username,
@@ -34,8 +37,21 @@ const UsernameScreen = ({
   const isScreen = width > 768;
   const navigation = useNavigation();
 
+  const { isLoading, startLoading, stopLoading } = useContext(LoadingContext);
+
+  const handleNextPress = async () => {
+    startLoading();
+    try {
+      await formSubmit({ username, mailOrphone });
+    } catch (error) {
+      console.error(error);
+    }
+    stopLoading();
+  };
+
   return (
     <View
+      style={{ flex: 1 }}
       className={`${
         Platform.OS === "web" ? "w-full sm:w-full h-[415px]" : "w-full mx-auto"
       } p-5 py-8`}
@@ -45,8 +61,7 @@ const UsernameScreen = ({
       </Text>
 
       {/* Username Input */}
-
-      <View style={{ width: "100%", marginTop: 16 }}>
+      <View style={{ width: "100%", marginTop: 16 }} className="mb-4">
         <TextInput
           label={"UserName"}
           value={username}
@@ -69,7 +84,7 @@ const UsernameScreen = ({
       </View>
 
       {/* Email or Mobile Input */}
-      {mobile ? (
+      {/* {mobile ? (
         <Mobile
           dropdownVisible={dropdownVisible}
           setDropdownVisible={setDropdownVisible}
@@ -85,9 +100,9 @@ const UsernameScreen = ({
           formSubmit={formSubmit}
           username={username}
         />
-      ) : (
-        <Email mailOrphone={mailOrphone} setMailOrphone={setMailOrphone} />
-      )}
+      ) : ( */}
+      <Email mailOrphone={mailOrphone} setMailOrphone={setMailOrphone} />
+      {/* )} */}
 
       {/* Toggle Email/Mobile */}
       <View
@@ -98,13 +113,12 @@ const UsernameScreen = ({
         <Text
           className="text-blue-500 text-md font-semibold text-right mt-2 underline"
           onPress={() => setMobile(!mobile)}
-        >
-          {mobile ? "Use Email instead" : "Use Mobile Number instead"}
-        </Text>
+        ></Text>
       </View>
 
       {/* Navigation and CTA */}
-      <View className="mt-20">
+
+      <View className="mt-20  mb-4">
         <Pressable
           onPress={() => {
             if (Platform.OS === "web") {
@@ -118,19 +132,28 @@ const UsernameScreen = ({
             marginBottom: 24,
           }}
         >
-          <Text style={{ color: "black", fontWeight: "600" }}>
-            Already have an account?{" "}
-            <Text style={{ textDecorationLine: "underline" }}>Login</Text>
-          </Text>
+          {((Platform.OS === "web" && width < 1024) ||
+            Platform.OS !== "web") && (
+            <Text style={{ color: "black", fontWeight: "600" }}>
+              Already have an account?{" "}
+              <Text style={{ textDecorationLine: "underline" }}>Login</Text>
+            </Text>
+          )}
         </Pressable>
 
         <Pressable
-          onPress={() => formSubmit({ username, mailOrphone })}
-          className="bg-TealGreen py-4 px-4 w-24 mx-auto rounded-md"
+          disabled={isLoading}
+          onPress={handleNextPress}
+          className={`bg-TealGreen py-4 px-4 w-24 mx-auto rounded-md ${
+            isLoading ? "opacity-50" : ""
+          }`}
         >
           <Text className="text-white text-center font-semibold">Next</Text>
         </Pressable>
       </View>
+
+      {/* Loading Overlay */}
+      {isLoading && <Loading />}
     </View>
   );
 };

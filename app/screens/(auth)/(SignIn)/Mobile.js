@@ -3,8 +3,15 @@ import { View, Platform, Pressable, TextInput, Text } from "react-native";
 import { FlatList } from "react-native";
 import { allCountries } from "country-telephone-data";
 
-const Mobile = ({ phoneNumber, setPhoneNumber, formSubmit, username,selectedCode, setSelectedCode }) => {
-  // const [selectedCode, setSelectedCode] = useState("+91"); 
+const Mobile = ({
+  phoneNumber,
+  setPhoneNumber,
+  formSubmit,
+  username,
+  selectedCode,
+  setSelectedCode,
+}) => {
+  // const [selectedCode, setSelectedCode] = useState("+91");
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -20,25 +27,28 @@ const Mobile = ({ phoneNumber, setPhoneNumber, formSubmit, username,selectedCode
   return (
     <View
       className={`border-2 border-TealGreen ${
-        Platform.OS === "web" ? "w-[75%]" : "w-[90%]"
-      } rounded-md mx-auto mt-6 z-50`}
+        Platform.OS === "web" ? "w-full" : "w-[90%]"
+      } rounded-md mx-auto mt-4 z-50`}
     >
-      <View className="flex-row items-center h-[50] bg-white justify-center align-items-center rounded-md px-3 py-2">
+      <View className="flex-row items-center bg-white rounded-md px-3 py-2 space-x-2">
         <Pressable
-          className="p-2 min-h-[40px] my-auto mt-1"
+          className="p-2"
           onPress={() => {
-            setDropdownVisible(!dropdownVisible)
+            setDropdownVisible(!dropdownVisible);
           }}
         >
-          <Text className="font-bold text-gray-500">{selectedCode} ▼</Text>
+          <Text className="font-bold text-gray-500 whitespace-nowrap">
+            {selectedCode} ▼
+          </Text>
         </Pressable>
+
         <TextInput
-          className="bg-white flex-1 text-gray-700 text-md px-3 py-2 outline-none"
+          className="flex-1 min-w-0 text-gray-700 text-md px-2 py-1"
           placeholder="Enter phone number"
           keyboardType="phone-pad"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
-           returnKeyType="done"
+          returnKeyType="done"
           onSubmitEditing={() => formSubmit({ username })}
         />
       </View>

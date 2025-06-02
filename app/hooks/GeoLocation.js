@@ -20,58 +20,71 @@ const useGeoLocation = () => {
   }, [location]);
 
   const getLocation = async () => {
-    if (Platform.OS === "web") {
-      if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const { latitude, longitude } = position.coords;
-            setLocation({
-              latitude: latitude,
-              longitude: longitude,
-            });
+    try {
+      if (Platform.OS === "web") {
+        if ("permissions" in navigator && "geolocation" in navigator) {
+          const permission = await navigator.permissions.query({
+            name: "geolocation",
+          });
 
-            // Call fetchAddress with the obtained coordinates
-            await fetchAddress(latitude, longitude);
-          },
-          (error) => {
-            console.error("Geolocation Error:", error);
-          },
-          { enableHighAccuracy: true } // Requests the most precise location
-        );
+          if (permission.state === "denied") {
+            setErrorMsg(
+              "Location permission denied. Please enable it in your browser settings."
+            );
+            return;
+          }
+
+          // Explicitly request location access if not denied
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const { latitude, longitude } = position.coords;
+              setLocation({ latitude, longitude });
+              await fetchAddress(latitude, longitude);
+            },
+            (error) => {
+              console.error("Geolocation Error:", error);
+              setErrorMsg("Location access blocked. Please allow it.");
+            },
+            { enableHighAccuracy: true }
+          );
+        } else {
+          setErrorMsg("Geolocation not supported by your browser.");
+        }
       } else {
-        setErrorMsg("Geolocation is not supported by this browser");
-      }
-    } else {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission denied");
-        return;
-      }
+        const { status } = await Location.requestForegroundPermissionsAsync();
 
-      const locationResult = await Location.getCurrentPositionAsync({});
-      setLocation({
-        latitude: locationResult.coords.latitude,
-        longitude: locationResult.coords.longitude,
-      });
+        if (status !== "granted") {
+          setErrorMsg(
+            "Location permission denied. Please enable it in your device settings."
+          );
+          return;
+        }
 
-      // Optionally fetch address here as well
-      await fetchAddress(
-        locationResult.coords.latitude,
-        locationResult.coords.longitude
-      );
+        // Request location after permission is granted
+        const locationResult = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+
+        const { latitude, longitude } = locationResult.coords;
+        setLocation({ latitude, longitude });
+        await fetchAddress(latitude, longitude);
+      }
+    } catch (err) {
+      console.error("Location error:", err);
+      setErrorMsg("Unable to retrieve location. Please check your settings.");
     }
   };
+
   const fetchAddress = async (latitude, longitude) => {
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
       );
-      console.log('response :', response);
+      console.log("response :", response);
 
       const data = await response.json();
 
-      console.log('location :', data);
-
+      console.log("location :", data);
 
       if (data.address) {
         setAddress({
@@ -88,7 +101,7 @@ const useGeoLocation = () => {
       console.error("Geocoding error:", error);
     }
   };
-  console.log('location in geo :', location)
+  console.log("location in geo :", location);
   return {
     geoCoords: location || {},
     errorMsg,

@@ -9,7 +9,7 @@ const Email = ({ setMailOrphone, mobile, mailOrphone }) => {
   return (
     <View style={{ width: "100%", marginTop: 16 }}>
       <TextInput
-        label={mobile ? "Mobile" : "Email"}
+        label={"Email / Mobile"}
         value={mailOrphone}
         onChangeText={setMailOrphone}
         mode="outlined"

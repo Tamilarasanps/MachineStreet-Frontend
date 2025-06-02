@@ -180,15 +180,15 @@ const LandingPage = () => {
   );
 };
 
-const WhyCard = ({ icon, title, description }) => (
-  <View style={styles.whyCard}>
-    <View style={styles.whyIconBox}>
-      <Text style={styles.whyIcon}>{icon}</Text>
-    </View>
-    <Text style={styles.whyCardTitle}>{title}</Text>
-    <Text style={styles.whyCardDesc}>{description}</Text>
-  </View>
-);
+// const WhyCard = ({ icon, title, description }) => (
+//   <View style={styles.whyCard}>
+//     <View style={styles.whyIconBox}>
+//       <Text style={styles.whyIcon}>{icon}</Text>
+//     </View>
+//     <Text style={styles.whyCardTitle}>{title}</Text>
+//     <Text style={styles.whyCardDesc}>{description}</Text>
+//   </View>
+// );
 
 const StatBox = ({ value, label }) => (
   <View style={styles.statBox}>

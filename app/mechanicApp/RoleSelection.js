@@ -46,6 +46,8 @@ function RoleSelection({
     setRole(roleId);
     if (roleId === "mechanic") {
       setModalVisible(true);
+    } else {
+      handleCreateAccount();
     }
   };
 
@@ -91,15 +93,6 @@ function RoleSelection({
           </TouchableOpacity>
         ))}
       </View>
-
-      <TouchableOpacity
-        onPress={handleCreateAccount}
-        activeOpacity={0.8}
-        style={[styles.createButton, { opacity: role ? 1 : 0.5 }]}
-        disabled={!role}
-      >
-        <Text style={styles.createButtonText}>Create Account</Text>
-      </TouchableOpacity>
 
       {/* Modal for Mechanic */}
       <UserDetails

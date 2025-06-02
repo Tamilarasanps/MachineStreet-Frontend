@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import useApi from "./useApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LoadingContext } from "../context/LoadingContext";
 
 const GetMechanic = () => {
   const { getJsonApi } = useApi();

@@ -37,7 +37,7 @@ const Location = ({ location, setLocation }) => {
       const data = await getJsonApi(`CategoryPage`);
       const fetchedRegions = data?.data?.states[0]?.states || [];
       const fetchedDistricts = data?.data?.states[1]?.districts || [];
-console.log('states :', fetchedDistricts)
+
       setRegions(fetchedRegions);
       setDistrictsWithStates(fetchedDistricts);
 
@@ -75,12 +75,10 @@ console.log('states :', fetchedDistricts)
   };
 
   useEffect(() => {
-    if (address?.country && geoCoords) {
-      fetchIndustries();
-    }
-  }, [address, geoCoords]);
-
-  console.log(location);
+    // if (address?.country && geoCoords) {
+    fetchIndustries();
+  }, []);
+  // }, [address, geoCoords]);
 
   useEffect(() => {
     if (location.region && districtsWithStates.length > 0) {
@@ -134,7 +132,7 @@ console.log('states :', fetchedDistricts)
         <>
           {/* State Dropdown */}
           <View style={{ zIndex: openState ? 2000 : 1000, marginBottom: 20 }}>
-            <Text className="text-lg font-semibold text-teal-600">State</Text>
+            <Text className="text-lg font-semibold text-teal-600 mb-4">State</Text>
             <DropDownPicker
               open={openState}
               value={selectedRegion}
@@ -178,7 +176,7 @@ console.log('states :', fetchedDistricts)
 
           {/* District Dropdown */}
           <View style={{ zIndex: openDistrict ? 2000 : 1000 }}>
-            <Text className="text-lg font-semibold text-teal-600">
+            <Text className="text-lg font-semibold text-teal-600 mb-4">
               District
             </Text>
             <DropDownPicker
@@ -223,7 +221,7 @@ console.log('states :', fetchedDistricts)
           </View>
 
           {/* Country (Fixed as India) */}
-          <Text className="text-lg font-semibold text-teal-600 mt-6">
+          <Text className="text-lg font-semibold text-teal-600 mt-6 mb-4">
             Country:
           </Text>
           <View style={{ zIndex: openCountry ? 3000 : 1000, marginBottom: 20 }}>

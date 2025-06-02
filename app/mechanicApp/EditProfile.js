@@ -14,11 +14,6 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { useToast } from "react-native-toast-notifications";
 import IndustyLineup from "./IndustryLineUp";
 import SubCategory from "./SubCategory";
-// ok
-// import useApi from "./hooks/useApi";
-// import useSubCategoryHandlers from "./hooks/useSubCategoryHandlers";
-// import Mobile from "./Mobile";
-// import Location from "./(Screens)/(sell)/Location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useApi from "../hooks/useApi";
 import useSubCategoryHandlers from "../hooks/useSubCategoryHandlers";
@@ -51,9 +46,6 @@ const EditProfile = ({
     mechanicDetails?.contact?.countryCode
   );
 
-  // console.log(industrySuggetion, "industyr");
-  // console.log("category", categorySuggetion);
-  // console.log("sub", subcategorySuggetion);
   const [location, setLocation] = useState({
     coords: "",
     country: "",
@@ -61,7 +53,6 @@ const EditProfile = ({
     district: "",
   });
 
-  // const [services, setServices] = useState([]); // New
   const [serviceInput, setServiceInput] = useState(""); // New
 
   const {
@@ -72,8 +63,6 @@ const EditProfile = ({
     handleSubCategoryChange,
     handleBrandChange,
   } = useSubCategoryHandlers(subCategories, setSubCategories);
-
-  // console.log("mechanicDetails:", mechanicDetails);
 
   useEffect(() => {
     fetchIndustries();
@@ -105,12 +94,11 @@ const EditProfile = ({
 
   const getSubCategory = async (index) => {
     try {
-      // console.log("name", mechanicDetails.subcategory[index].name);
       if (mechanicDetails.subcategory[index]?.name.length > 0) {
         const data = await getJsonApi(
           `CategoryPage/subCategoryPage/${mechanicDetails.subcategory[index].name}/sell`
         );
-        // console.log("data :", data);
+
         setSubCategorySuggestion(data.data);
       }
     } catch (err) {
@@ -121,7 +109,7 @@ const EditProfile = ({
   const handleChange = (key, value) => {
     setMechanicDetails((prev) => ({ ...prev, [key]: value }));
   };
-  // console.log(mechanicDetails);
+
   const handleSubmit = async () => {
     if (
       !mechanicDetails.organization ||
@@ -194,13 +182,12 @@ const EditProfile = ({
   };
 
   const handleRemoveService = (serviceToRemove) => {
-  setMechanicDetails((prev) => ({
-    ...prev,
-    services: prev.services.filter((s) => s !== serviceToRemove),
-  }));
-};
+    setMechanicDetails((prev) => ({
+      ...prev,
+      services: prev.services.filter((s) => s !== serviceToRemove),
+    }));
+  };
 
-console.log(mechanicDetails)
   return (
     <Modal
       animationType="slide"
@@ -248,9 +235,11 @@ console.log(mechanicDetails)
               Professional Information
             </Text>
 
-            <Text style={styles.label}>Organization Name</Text>
+            <Text className="text-lg font-semibold text-teal-600 mt-6">
+              Organization Name
+            </Text>
             <TextInput
-              className="w-full h-12 border border-gray-300 rounded-md px-3 mb-4"
+              className="w-full mt-4 h-12 border border-gray-300 rounded-md px-3 "
               placeholder="Enter organization name"
               value={mechanicDetails.organization}
               onChangeText={(value) => handleChange("organization", value)}
@@ -266,7 +255,7 @@ console.log(mechanicDetails)
               />
             </View>
 
-            <View className="z-10">
+            <View className="z-10 mt-2 ">
               <SubCategory
                 labels={["category", "services"]}
                 subCategories={subCategories}
@@ -285,10 +274,18 @@ console.log(mechanicDetails)
             </View>
 
             {/* Services Section */}
-            <Text style={styles.label}>Services / Machines</Text>
-            <View style={{ flexDirection: "row", marginBottom: 8 }}>
+            <Text className="text-lg font-semibold text-teal-600 mt-6">
+              Specialization / Services
+            </Text>
+            <View
+              style={{ flexDirection: "row", marginBottom: 8 }}
+              className="mt-4 w-full flex items-center justify-center mx-auto h-12"
+            >
               <TextInput
-                style={[styles.input, { flex: 1, marginRight: 8 }]}
+                style={[
+                  styles.input,
+                  { flex: 1, marginRight: 8, height: "100%" },
+                ]}
                 placeholder="Enter service"
                 value={serviceInput}
                 onChangeText={setServiceInput}
@@ -298,13 +295,15 @@ console.log(mechanicDetails)
                   backgroundColor: "#111827",
                   padding: 10,
                   borderRadius: 8,
+                  height: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
                 onPress={handleAddService}
               >
                 <Text style={{ color: "#fff" }}>Add</Text>
               </TouchableOpacity>
             </View>
-
             {mechanicDetails.services.length > 0 && (
               <View style={{ marginBottom: 12 }}>
                 {mechanicDetails.services.map((service, index) => (
@@ -331,14 +330,19 @@ console.log(mechanicDetails)
               </View>
             )}
 
-            <Mobile
-              phoneNumber={phoneNumber}
-              setPhoneNumber={setPhoneNumber}
-              selectedCode={selectedCode}
-              setSelectedCode={setSelectedCode}
-            />
+            <View className="z-50 w-full ">
+              <Text className="text-lg font-semibold text-teal-600 mt-6">
+                Contact
+              </Text>
+              <Mobile
+                phoneNumber={phoneNumber}
+                setPhoneNumber={setPhoneNumber}
+                selectedCode={selectedCode}
+                setSelectedCode={setSelectedCode}
+              />
+            </View>
             {
-              <View className="z-50">
+              <View className="z-40">
                 <Location location={location} setLocation={setLocation} />
               </View>
             }

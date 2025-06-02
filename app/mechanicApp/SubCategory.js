@@ -7,6 +7,7 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function SubCategory({
   subCategories,
@@ -54,11 +55,19 @@ export default function SubCategory({
       {subCategories?.map((sub, subIndex) => (
         <View
           key={subIndex}
-          className="p-4 border border-gray-200 rounded-lg z-999"
+          className="p-4 border border-gray-200  rounded-lg z-999"
           style={{ marginBottom: 50 }}
         >
+          <View className="w-full flex justify-end items-end ">
+            <MaterialIcons
+              name="delete"
+              size={24}
+              color="#EF4444"
+              onPress={() => handleDeleteSubCategory(subIndex)}
+            />
+          </View>
           {/* Category Input */}
-          <View className="z-50">
+          <View className="z-50 mt-2">
             <TextInput
               value={sub.name}
               onChangeText={(text) => {
@@ -209,14 +218,14 @@ export default function SubCategory({
             </TouchableOpacity>
 
             {/* Delete Subcategory Button */}
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => handleDeleteSubCategory(subIndex)}
               className="bg-red-600 rounded-lg p-2 mt-4 z-10"
             >
               <Text className="text-white text-center">
                 🗑 Delete {labels[0]}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       ))}
