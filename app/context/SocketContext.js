@@ -26,7 +26,6 @@ export const SocketProvider = ({ children }) => {
       setSocket(newSocket);
 
       newSocket.on("getOnlineUsers", (users) => {
-        console.log("users :", users);
         if (Array.isArray(users)) {
           setOnlineUsers(users);
         }
