@@ -17,7 +17,7 @@ const CategoryManager = () => {
     { name: "", services: [""] },
   ]);
 
-  console.log('subCategories :', subCategories)
+  // console.log('subCategories :', subCategories)
 
   const [selected, setSelected] = useState("add");
   const [categoryList, setCategoryList] = useState([]);

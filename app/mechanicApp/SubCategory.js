@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -35,7 +35,9 @@ export default function SubCategory({
   const [subcategoryInput, setSubcategoryInput] = useState(""); // For filtering subcategory
   const [isFocused, setIsFocused] = useState(false);
 
-  // Filter categories based on user input
+  const [selectIndex, setSelectIndex] = useState(-1);
+  const flatListRef = useRef(null);
+
   const filteredCategorySuggestions = categorySuggetion?.filter((item) =>
     item.toLowerCase().includes(categoryInput.toLowerCase())
   );
@@ -44,6 +46,38 @@ export default function SubCategory({
   const filteredSubcategorySuggestions = subcategorySuggetion?.filter((item) =>
     item.toLowerCase().includes(subcategoryInput.toLowerCase())
   );
+
+  const handleKeyPress = ({ nativeEvent }) => {
+    if (nativeEvent.key === "ArrowDown") {
+      setSelectIndex((prev) =>
+        prev < filteredCategorySuggestions.length - 1 ? prev + 1 : prev
+      );
+    } else if (nativeEvent.key === "ArrowUp") {
+      setSelectIndex((prev) => (prev > 0 ? prev - 1 : prev));
+    } else if (nativeEvent.key === "Enter") {
+      if (selectIndex >= 0 && filteredCategorySuggestions[selectIndex]) {
+        const selectedItem = filteredCategorySuggestions[selectIndex];
+        // Apply selection
+        const newSubs = [...subCategories];
+        newSubs[activeSubIndex].name = selectedItem;
+        setSubCategories(newSubs);
+        setCategoryInput("");
+        setShowCategoryDropdown(false);
+        setSelectIndex(-1);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (flatListRef.current && selectIndex >= 0) {
+      flatListRef.current.scrollToIndex({
+        index: selectIndex,
+        animated: true,
+      });
+    }
+  }, [selectIndex]);
+
+  // Filter categories based on user input
 
   return (
     <>
@@ -65,6 +99,7 @@ export default function SubCategory({
                 handleSubCategoryChange(subIndex, text); // update actual state
                 setCategoryInput(text); // still update filter input for suggestions
               }}
+              onKeyPress={handleKeyPress}
               onFocus={() => {
                 if (getCategory) getCategory();
                 setActiveSubIndex(subIndex);
@@ -164,6 +199,10 @@ export default function SubCategory({
                   showSubcategoryDropdown && (
                     <View className="absolute left-0 right-0 w-[90%] mx-auto mt-12 border border-teal-500 bg-white rounded-md max-h-[250px] overflow-hidden shadow-lg z-50">
                       <FlatList
+                        style={{
+                          backgroundColor:
+                            index === selectIndex ? "#ccfbf1" : "#fff",
+                        }}
                         data={filteredSubcategorySuggestions}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) => (

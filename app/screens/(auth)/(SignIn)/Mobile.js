@@ -38,7 +38,6 @@ const Mobile = ({ phoneNumber, setPhoneNumber, formSubmit, username,selectedCode
           keyboardType="phone-pad"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
-           returnKeyType="done"
           onSubmitEditing={() => formSubmit({ username })}
         />
       </View>

@@ -30,6 +30,7 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const EditProfile = ({
+  
   modalVisible,
   setModalVisible,
   mechanicDetails,
@@ -50,6 +51,7 @@ const EditProfile = ({
   const [selectedCode, setSelectedCode] = useState(
     mechanicDetails?.contact?.countryCode
   );
+
 
   // console.log(industrySuggetion, "industyr");
   // console.log("category", categorySuggetion);
@@ -194,13 +196,13 @@ const EditProfile = ({
   };
 
   const handleRemoveService = (serviceToRemove) => {
-  setMechanicDetails((prev) => ({
-    ...prev,
-    services: prev.services.filter((s) => s !== serviceToRemove),
-  }));
-};
+    setMechanicDetails((prev) => ({
+      ...prev,
+      services: prev.services.filter((s) => s !== serviceToRemove),
+    }));
+  };
 
-console.log(mechanicDetails)
+  console.log(mechanicDetails);
   return (
     <Modal
       animationType="slide"

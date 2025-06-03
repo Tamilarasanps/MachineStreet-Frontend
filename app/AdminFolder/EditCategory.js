@@ -29,7 +29,7 @@ const EditCategory = ({ categoryList, showToast, setCategoryList, setTempText,se
       {categoryList?.length > 0 ? categoryList.map((category) => (
         <Pressable
         onPress={()=>{
-          console.log(cat)
+          // console.log(cat)
             setCat(()=>{
               const updated = [...cat]
               updated[0] = category.industry
