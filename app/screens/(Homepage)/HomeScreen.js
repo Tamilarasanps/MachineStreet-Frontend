@@ -22,7 +22,6 @@ export default function HomeScreen() {
 
   const { isLoading, startLoading, stopLoading } = useContext(LoadingContext);
   const { getJsonApi } = useApi();
-  console.log("location in hoepage :", geoCoords);
 
   useEffect(() => {
     const isValidNumber = (val) => typeof val === "number" && !isNaN(val);
@@ -52,7 +51,7 @@ export default function HomeScreen() {
       stopLoading();
     }
   };
-  console.log(img);
+
   if (isLoading || pageDetails === null) {
     return <Loading />;
   }

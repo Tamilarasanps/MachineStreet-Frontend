@@ -84,9 +84,10 @@ const Login = () => {
     }
   };
 
-  const keyPres = (e) => {
+  const handleKeyPress = (e, nextref) => {
     if (Platform.OS === "web" && e.nativeEvent.key === "Enter") {
       Login();
+      // nextref?.current?.focus();
     }
   };
 
@@ -99,7 +100,7 @@ const Login = () => {
               ? " flex flex-row"
               : "w-[90%] flex flex-col gap-6"
           } mx-auto shadow-[5] rounded-md`}
-          style={[isScreenSmall ? { width: 360 } : {}]}
+          style={[isScreenSmall ? { width: "90%" } : {}]}
         >
           {/* Web-specific Welcome Card */}
           {Platform.OS === "web" && !isScreenSmall && (
@@ -127,13 +128,31 @@ const Login = () => {
                 className="w-[90%] flex justify-center items-center p-2"
                 style={{ position: "absolute", bottom: 16 }}
               >
-                <Text className="text-white font-semibold">
+                <Text className="text-white font-semibold mb-2">
                   New to Machine Market?
-                  <Text className="underline rounded-md text-white">
-                    {" "}
-                    SignUp
-                  </Text>
                 </Text>
+
+                <Pressable
+                  onPress={() => router.push("/screens/(auth)/(SignIn)/SignUp")}
+                  style={{
+                    marginRight: 2,
+                    backgroundColor: "#f2f2f2",
+                    paddingVertical: 10,
+                    paddingHorizontal: 24,
+                    borderRadius: 8,
+                    marginTop: 8,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "teal", // use lowercase color names for consistency
+                      fontWeight: "bold",
+                      fontSize: 16,
+                    }}
+                  >
+                    Sign Up
+                  </Text>
+                </Pressable>
               </Pressable>
             </View>
           )}
@@ -142,27 +161,31 @@ const Login = () => {
           <View
             className={`${
               Platform.OS === "web" ? "w-[60%] h-[415px]" : "w-full mx-auto"
-            } p-5 py-8`}
+            } p-5 py-8 `}
             style={[isScreenSmall ? { width: "100%" } : {}]}
           >
-            <Text className="text-2xl font-bold mx-auto text-TealGreen mb-4">
+            <Text
+              className={` font-bold mx-auto text-TealGreen mb-6 ${
+                isScreenSmall ? "text-xl" : "text-2xl"
+              }`}
+            >
               Log In to your account
             </Text>
             {/* Email/Mobile Switch */}
-            <View
-              className={`${
-                Platform.OS === "web" ? "w-[75%]" : "w-[90%]"
-              } mx-auto align-items-right mt-2`}
-            >
-              <Text
-                className="text-blue-500 text-md font-semibold text-right underline"
-                onPress={() => setMobile(!mobile)}
+            {/* <View
+                className={`${
+                  Platform.OS === "web" ? "w-[75%]" : "w-[90%]"
+                } mx-auto align-items-right mt-2`}
               >
-                {mobile ? "E-mail" : "Mobile Number"}
-              </Text>
-            </View>
+                <Text
+                  className="text-blue-500 text-md font-semibold text-right underline"
+                  onPress={() => setMobile(!mobile)}
+                >
+                  {mobile ? "E-mail" : "Mobile Number"}
+                </Text>
+              </View> */}
             {/* Email or Mobile Input */}
-            {mobile ? (
+            {/* {mobile ? (
               <Mobile
                 dropdownVisible={dropdownVisible}
                 setDropdownVisible={setDropdownVisible}
@@ -176,24 +199,21 @@ const Login = () => {
                 mailOrphone={mailOrphone}
                 setMailOrphone={setMailOrphone}
               />
-            ) : (
-              <Email
-                mailOrphone={mailOrphone}
-                setMailOrphone={setMailOrphone}
-              />
-            )}
+            ) : ( */}
+            <Email mailOrphone={mailOrphone} setMailOrphone={setMailOrphone} />
+            {/* )} */}
 
             {/* Password Input */}
             <View
-              className={`bg-white h-[50] ${
+              className={`bg-white h-[50]  ${
                 Platform.OS === "web" ? "w-[75%]" : "w-[90%]"
-              } mx-auto mt-6`}
+              } mx-auto mt-8`}
               style={[isScreenSmall ? { width: "100%" } : {}]}
             >
               <FloatingLabelInput
                 label="Password"
                 value={password}
-                onKeyPress={keyPres}
+                onKeyPress={handleKeyPress}
                 staticLabel
                 hintTextColor={"#aaa"}
                 containerStyles={{
@@ -232,38 +252,43 @@ const Login = () => {
                 />
               </Pressable>
             </View>
-
-            {/* className={Platform.OS === "web" ? "mt-16" : "mt:24"} */}
-            <View className="mt-24">
-              <Pressable
-                onPress={() => {
-                  if (Platform.OS === "web") {
-                    // router.push("/screens/(auth)/(SignIn)/SignUp");
-                    router.push("/screens/SignUp");
-                  } else {
-                    // navigation.navigate("SignUp");
-                    navigation.replace("SignUp");
-                  }
-                }}
-                className="w-[90%] flex justify-center items-center p-2"
-                style={{ position: "absolute", bottom: 16 }}
-              >
-                <Text className=" font-semibold">
-                  New to Machine Market?
-                  <Text className="underline rounded-md text-TealGreen">
-                    {" "}
-                    SignUp
+            {((Platform.OS === "web" && width < 1024) ||
+              Platform.OS !== "web") && (
+              <View className="mt-24 ">
+                <Pressable
+                  onPress={() => {
+                    if (Platform.OS === "web") {
+                      // router.push("/screens/(auth)/(SignIn)/SignUp");
+                      router.push("/screens/SignUp");
+                    } else {
+                      // navigation.navigate("SignUp");
+                      navigation.replace("SignUp");
+                    }
+                  }}
+                  className="w-full flex justify-center items-center p-2"
+                  style={{ position: "absolute", bottom: 16 }}
+                >
+                  <Text className=" font-semibold">
+                    New to Machine Market?
+                    <Text className="underline rounded-md text-TealGreen">
+                      {" "}
+                      SignUp
+                    </Text>
                   </Text>
-                </Text>
-              </Pressable>
-            </View>
+                </Pressable>
+              </View>
+            )}
 
             {/* Login Button */}
             <Pressable
               onPress={() => Login()}
-              className="bg-TealGreen mb-4 py-4 px-4 h-max  w-24 mx-auto rounded-md"
+              className={`bg-TealGreen mb-4 py-4  px-4 h-max  w-24 mx-auto rounded-md ${
+                (Platform.OS === "web" && width < 1024) || Platform.OS !== "web"
+                  ? "mt-2"
+                  : "mt-16"
+              }`}
             >
-              <Text className="text-white m-auto">Log In</Text>
+              <Text className="text-white m-auto font-bold">Log In</Text>
             </Pressable>
           </View>
         </View>

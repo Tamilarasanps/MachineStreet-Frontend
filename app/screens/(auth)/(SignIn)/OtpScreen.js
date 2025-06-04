@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from "react";
-import { useSearchParams } from "expo-router/build/hooks";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -10,32 +9,49 @@ import {
 } from "react-native";
 
 const OtpScreen = ({ mailOrphone, otp, setOtp, formSubmit, setStep }) => {
-  console.log(otp, "otp");
-
   const inputs = useRef([]);
+  const [counter, setCounter] = useState(30); // countdown state
+  const [isResendDisabled, setIsResendDisabled] = useState(true);
+
+  // Countdown effect
+  useEffect(() => {
+    let timer;
+    if (isResendDisabled && counter > 0) {
+      timer = setInterval(() => {
+        setCounter((prev) => prev - 1);
+      }, 1000);
+    } else if (counter === 0) {
+      setIsResendDisabled(false);
+      clearInterval(timer);
+    }
+    return () => clearInterval(timer);
+  }, [counter, isResendDisabled]);
 
   const handleChange = (text, index) => {
     let newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
-
-    console.log("new", newOtp);
-
-    // Move to next input automatically
-    if (text && index < 3) {
-      inputs.current[index + 1].focus();
-    }
+    if (text && index < 3) inputs.current[index + 1].focus();
   };
 
   const handleBackspace = (text, index) => {
     if (!text && index > 0) {
-      // Clear the value in the current field
       let newOtp = [...otp];
       newOtp[index] = "";
       setOtp(newOtp);
-
-      // Move focus to the previous input
       inputs.current[index - 1].focus();
+    }
+  };
+
+  const handleResend = () => {
+    setStep(4); // Resend OTP logic
+    setIsResendDisabled(true);
+    setCounter(30); // reset timer
+  };
+
+  const handleKeyPress = (e) => {
+    if (Platform.OS === "web" && e.key === "Enter") {
+      formSubmit();
     }
   };
 
@@ -45,9 +61,10 @@ const OtpScreen = ({ mailOrphone, otp, setOtp, formSubmit, setStep }) => {
         Platform.OS === "web" ? "w-[60%] h-[415px]" : "w-full"
       } flex flex-col gap-8 p- items-center bg-white rounded-md m-auto p-5 py-8`}
     >
-      <Text className="text-2xl font-bold mx-auto text-TealGreen ">
+      <Text className="text-2xl font-bold mx-auto text-TealGreen">
         Enter Your OTP
       </Text>
+
       <View className="flex-row gap-4 mt-10 mx-auto">
         {otp.map((digit, index) => (
           <TextInput
@@ -58,16 +75,17 @@ const OtpScreen = ({ mailOrphone, otp, setOtp, formSubmit, setStep }) => {
             maxLength={1}
             value={digit}
             onChangeText={(text) => handleChange(text, index)}
-            onKeyPress={({ nativeEvent }) =>
-              nativeEvent.key === "Backspace"
-                ? handleBackspace("", index)
-                : null
-            }
+            onKeyPress={(e) => {
+              if (e.nativeEvent.key === "Backspace") {
+                handleBackspace("", index);
+              }
+              handleKeyPress(e); // ✅ now e is defined
+            }}
           />
         ))}
       </View>
 
-      {/* Verify OTP Button */}
+      {/* Verify Button */}
       <TouchableOpacity className="bg-TealGreen rounded-sm mt-4 w-24 py-2 mx-auto">
         <Text
           className="text-white text-center"
@@ -77,14 +95,19 @@ const OtpScreen = ({ mailOrphone, otp, setOtp, formSubmit, setStep }) => {
         </Text>
       </TouchableOpacity>
 
-      {/* Resend OTP */}
+      {/* Resend OTP Timer */}
       <Pressable
         className="mt-4 mx-auto"
-        onPress={() => {
-          setStep(4);
-        }}
+        onPress={handleResend}
+        disabled={isResendDisabled}
       >
-        <Text className="text-blue-500 mx-auto underline">Resend OTP</Text>
+        <Text
+          className={`mx-auto underline ${
+            isResendDisabled ? "text-gray-400" : "text-blue-500"
+          }`}
+        >
+          {isResendDisabled ? `Resend OTP in ${counter}s` : "Resend OTP"}
+        </Text>
       </Pressable>
     </View>
   );

@@ -1,8 +1,10 @@
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, Pressable, Platform } from "react-native";
 import { FloatingLabelInput } from "react-native-floating-label-input";
 import Icon from "react-native-vector-icons/FontAwesome"; // Assuming you're using react-native-vector-icons
+import { LoadingContext } from "@/app/context/LoadingContext";
+import Loading from "@/app/component/Loading";
 
 const Password = ({
   formSubmit,
@@ -15,6 +17,13 @@ const Password = ({
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
+  const { isLoading, startLoading, stopLoading } = useContext(LoadingContext);
+
+  const handleKeyPress = (e) => {
+    if ((Platform.OS = "web" && e.nativeEvent.key === "Enter")) {
+      formSubmit();
+    }
+  };
 
   return (
     <View
@@ -84,6 +93,7 @@ const Password = ({
         <FloatingLabelInput
           label="Confirm Password"
           value={confirmpass}
+          onKeyPress={handleKeyPress}
           staticLabel
           hintTextColor={"#aaa"}
           containerStyles={{
@@ -128,7 +138,9 @@ const Password = ({
       <Pressable
         disabled={password !== confirmpass}
         onPress={() => {
+          startLoading();
           formSubmit({ password, confirmpass }, router.push("/"));
+          stopLoading();
         }}
         className={`bg-TealGreen mb-8 py-4 px-4 h-max mt-10 w-24 mx-auto rounded-md ${
           password === confirmpass
@@ -138,6 +150,7 @@ const Password = ({
       >
         <Text className="text-white m-auto">{buttonLabel}</Text>
       </Pressable>
+      {isLoading && <Loading />}
     </View>
   );
 };

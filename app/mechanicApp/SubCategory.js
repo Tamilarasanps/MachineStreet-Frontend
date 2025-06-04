@@ -7,6 +7,7 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function SubCategory({
   subCategories,
@@ -23,6 +24,7 @@ export default function SubCategory({
   handleSubCategoryChange,
   handleBrandChange,
 }) {
+  console.log("subCategories", subCategories);
   const [activeSubIndex, setActiveSubIndex] = useState(null);
   const [activeBrandIndex, setActiveBrandIndex] = useState(null);
   const [highlightedCategoryIndex, setHighlightedCategoryIndex] =
@@ -77,8 +79,6 @@ export default function SubCategory({
     }
   }, [selectIndex]);
 
-  // Filter categories based on user input
-
   return (
     <>
       <Text className="text-lg font-semibold mb-2 text-teal-700">
@@ -88,16 +88,25 @@ export default function SubCategory({
       {subCategories?.map((sub, subIndex) => (
         <View
           key={subIndex}
-          className="p-4 border border-gray-200 rounded-lg z-999"
+          className="p-4 border border-gray-200  rounded-lg z-999"
           style={{ marginBottom: 50 }}
         >
+          <View className="w-full flex justify-end items-end ">
+            <MaterialIcons
+              name="delete"
+              size={24}
+              color="#EF4444"
+              onPress={() => handleDeleteSubCategory(subIndex)}
+            />
+          </View>
           {/* Category Input */}
-          <View className="z-50">
+          <View className="z-50 mt-2">
             <TextInput
               value={sub.name}
               onChangeText={(text) => {
                 handleSubCategoryChange(subIndex, text); // update actual state
                 setCategoryInput(text); // still update filter input for suggestions
+                setSelectIndex(-1);
               }}
               onKeyPress={handleKeyPress}
               onFocus={() => {
@@ -124,6 +133,7 @@ export default function SubCategory({
               showCategoryDropdown && (
                 <View className="border border-teal-500 bg-white mt-12 rounded-md max-h-[250px] absolute overflow-hidden shadow-lg w-[90%] mx-auto left-0 right-0 z-50">
                   <FlatList
+                    ref={flatListRef}
                     data={filteredCategorySuggestions}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => (
@@ -134,6 +144,7 @@ export default function SubCategory({
                           setSubCategories(newSubs);
                           setCategoryInput(""); // Reset input filter
                           setShowCategoryDropdown(false);
+                          setSelectIndex(-1);
                         }}
                         onHoverIn={() => setHighlightedCategoryIndex(index)}
                         onHoverOut={() => setHighlightedCategoryIndex(null)}
@@ -199,10 +210,6 @@ export default function SubCategory({
                   showSubcategoryDropdown && (
                     <View className="absolute left-0 right-0 w-[90%] mx-auto mt-12 border border-teal-500 bg-white rounded-md max-h-[250px] overflow-hidden shadow-lg z-50">
                       <FlatList
-                        style={{
-                          backgroundColor:
-                            index === selectIndex ? "#ccfbf1" : "#fff",
-                        }}
                         data={filteredSubcategorySuggestions}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) => (
@@ -245,16 +252,6 @@ export default function SubCategory({
               className="bg-teal-600 rounded-lg p-2 mt-2 ml-2 "
             >
               <Text className="text-white text-center">+ Add {labels[1]}</Text>
-            </TouchableOpacity>
-
-            {/* Delete Subcategory Button */}
-            <TouchableOpacity
-              onPress={() => handleDeleteSubCategory(subIndex)}
-              className="bg-red-600 rounded-lg p-2 mt-4 z-10"
-            >
-              <Text className="text-white text-center">
-                🗑 Delete {labels[0]}
-              </Text>
             </TouchableOpacity>
           </View>
         </View>

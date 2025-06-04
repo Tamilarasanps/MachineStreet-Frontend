@@ -53,6 +53,7 @@ function IndustyLineup({
         setSelectedIndex(-1);
       }
     }
+    console.log("indutryarrow", nativeEvent.key);
   };
 
   useEffect(() => {
@@ -127,7 +128,6 @@ function IndustyLineup({
           )}
         </View>
       </View>
-      {/* <EditProfile isFocused={isFocused} setIsFocused={setIsFocused} /> */}
     </KeyboardAvoidingView>
   );
 }

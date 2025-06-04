@@ -58,7 +58,7 @@ const MechanicList_2 = () => {
   // const [showServiceModal, setShowServiceModal] = useState(false);
   // const [showServiceModalId, setShowServiceModalId] = useState(null);
   const [mechanicSearchResults, setMechanicSearchResults] = useState([]);
-  console.log("mecha", mechanicSearchResults);
+
   const [searchBar, setSearchBar] = useState("");
   const [authUser] = useContext(AuthContext);
   const [expandedMechanicId, setExpandedMechanicId] = useState(null);

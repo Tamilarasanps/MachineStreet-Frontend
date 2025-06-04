@@ -33,7 +33,6 @@ import { TextInput } from "react-native-paper";
 import Password from "../(auth)/(SignIn)/Password";
 import { BlurView } from "expo-blur";
 import { useNavigation } from "expo-router";
-import { LoadingContext } from "@/app/context/LoadingContext";
 // import { useSocketContext } from "./context/SocketContext";
 
 const { width } = Dimensions.get("window");
@@ -55,8 +54,6 @@ const ProfilePage = ({}) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
-  // const [username, setUsername] = useState("");
-  // const [email, setEmail] = useState("");
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectedCode, setSelectedCode] = useState("+91");
@@ -69,8 +66,8 @@ const ProfilePage = ({}) => {
 
   const cleanCountryName = (name) => name.replace(/\s*\(.*?\)/g, "").trim();
 
-  const { isLoading, startLoading, stopLoading } = useContext(LoadingContext);
-  console.log("isLoading:", isLoading);
+  // const { isLoading } = useContext(LoadingContext);
+  // console.log("isLoading:", isLoading);
 
   const filteredCountries = allCountries
     .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -79,12 +76,11 @@ const ProfilePage = ({}) => {
       dialCode: c.dialCode,
       iso2: c.iso2,
     }));
-  // console.log(userProfile);
+
   const update = async () => {
     try {
       const token = await AsyncStorage.getItem("userToken");
       const role = await AsyncStorage.getItem("role");
-      // console.log(userProfile);
       const response = await postJsonApi(
         `profile/update`,
         {
@@ -116,18 +112,19 @@ const ProfilePage = ({}) => {
         { password: password },
         token
       );
-      // console.log(response);
     } catch (error) {
       console.error(error.message, "error");
     }
   };
 
-  const handleLogout = useCallback(async () => {
-    const confirmLogout = async () => {
+  const handleLogout = useCallback(() => {
+    const logout = async () => {
+      setUpdateModal(false);
       try {
         await AsyncStorage.removeItem("userToken");
         await AsyncStorage.removeItem("role");
 
+        // Navigation
         if (Platform.OS === "web") {
           router.push("/screens/LandingPage");
         } else {
@@ -139,14 +136,14 @@ const ProfilePage = ({}) => {
     };
 
     if (Platform.OS === "web") {
-      const confirm = window.confirm("Are you sure you want to logout?");
-      if (confirm) {
-        confirmLogout();
+      const confirmed = window.confirm("Are you sure you want to logout?");
+      if (confirmed) {
+        logout();
       }
     } else {
       Alert.alert(
         "Logout",
-        "Are you sure you want to logout?",
+        "Are you sure want to Logout?",
         [
           {
             text: "Cancel",
@@ -154,13 +151,13 @@ const ProfilePage = ({}) => {
           },
           {
             text: "Logout",
-            onPress: confirmLogout,
+            onPress: logout,
           },
         ],
         { cancelable: false }
       );
     }
-  }, [navigation, router]);
+  }, [navigation]);
 
   async function fetchPosts(mechId) {
     try {
@@ -287,35 +284,6 @@ const ProfilePage = ({}) => {
     checkProfile();
   }, [id, mechanics]);
 
-  // socket.on("like-updated", ({ postId, userId, action }) => {
-  //   setPosts((prevPosts) =>
-  //     prevPosts.map((post) => {
-  //       if (post._id === postId) {
-  //         let updatedLikes = [...post.likes];
-  //         if (action === "like") updatedLikes.push(userId);
-  //         else updatedLikes = updatedLikes.filter((id) => id !== userId);
-
-  //         return {
-  //           ...post,
-  //           likes: updatedLikes,
-  //           like: updatedLikes.includes(currentUserId), // 👈 update boolean
-  //         };
-  //       }
-  //       return post;
-  //     })
-  //   );
-  // });
-
-  // const [mechanicDetails, setMechanicDetails] = useState({
-  //   username: "",
-  //   bio: "",
-  //   organization: "",
-  //   industry: "",
-  //   category: "",
-  //   subCategory: "",
-  //   services: [],
-  // });
-
   async function handleImages() {}
   async function handleVideo() {}
 
@@ -331,7 +299,6 @@ const ProfilePage = ({}) => {
   }
   async function handleImageUpload(result, imagetype) {
     try {
-      // const response = await axios.get("http://192.168.1.6:5000/signup");
       const token = await AsyncStorage.getItem("userToken");
       const formdata = new FormData();
       if (Platform.OS === "web") {
@@ -366,8 +333,6 @@ const ProfilePage = ({}) => {
           }));
         }
       }
-      // setUserProfileImage(result.assets[0].uri);
-      // setUserProfile(response.data);
     } catch (error) {
       console.error(error.message, "error");
     }
@@ -823,7 +788,7 @@ const ProfilePage = ({}) => {
             console.log("index :", index);
           }}
           width={width}
-          loading={isLoading}
+          // loading={isLoading}
         />
         {/* </View> */}
         {activePostIndex !== null && (

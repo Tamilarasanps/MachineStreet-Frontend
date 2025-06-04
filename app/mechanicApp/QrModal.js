@@ -13,7 +13,6 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { FileUpload } from "../context/FileUpload";
 import QrWeb from "./QrWeb";
 import { useWindowDimensions } from "react-native";
-import QrPage from "./QrPage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useApi from "../hooks/useApi";
 

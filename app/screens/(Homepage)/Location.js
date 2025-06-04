@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { View, Text, TextInput } from "react-native";
 import useGeoLocation from "@/app/hooks/GeoLocation";
 import Checkbox from "expo-checkbox";
@@ -11,8 +11,9 @@ const Location = ({ location, setLocation }) => {
   const [districts, setDistricts] = useState([]);
   const [countries] = useState(["India"]);
   const [districtsWithStates, setDistrictsWithStates] = useState([]);
-  const { geoCoords, address } = useGeoLocation();
+
   const { getJsonApi } = useApi();
+  const { geoCoords, address } = useGeoLocation();
 
   const [openState, setOpenState] = useState(false);
   const [openDistrict, setOpenDistrict] = useState(false);
@@ -32,55 +33,58 @@ const Location = ({ location, setLocation }) => {
     { key: "region", label: "Region" },
   ];
 
-  const fetchIndustries = async () => {
+  const fetchIndustries = useCallback(async () => {
     try {
-      const data = await getJsonApi(`CategoryPage`);
+      const data = await getJsonApi("CategoryPage");
       const fetchedRegions = data?.data?.states[0]?.states || [];
       const fetchedDistricts = data?.data?.states[1]?.districts || [];
-console.log('states :', fetchedDistricts)
+
       setRegions(fetchedRegions);
       setDistrictsWithStates(fetchedDistricts);
 
-      if (address?.state) {
-        const matchedRegion = fetchedRegions.find(
-          (r) => r.toLowerCase().trim() === address.state.toLowerCase().trim()
-        );
+      if (!address?.state || !address?.country) return;
 
-        const matchedDistricts = fetchedDistricts
-          .filter(
-            (state) =>
-              Object.keys(state)[0].toLowerCase().trim() ===
-              address.state.toLowerCase().trim()
-          )
-          .flatMap((state) => Object.values(state)[0]);
+      const matchedRegion = fetchedRegions.find(
+        (r) => r.toLowerCase().trim() === address.state.toLowerCase().trim()
+      );
 
-        const matchedDistrict = matchedDistricts?.includes(address.district)
-          ? address.district
-          : "";
+      const matchedDistricts = fetchedDistricts
+        .filter(
+          (state) =>
+            Object.keys(state)[0].toLowerCase().trim() ===
+            address.state.toLowerCase().trim()
+        )
+        .flatMap((state) => Object.values(state)[0]);
 
-        if (matchedRegion) {
-          setLocation({
-            coords: geoCoords || "",
-            country: address.country || "",
-            region: matchedRegion,
-            district: matchedDistrict || "",
-          });
+      const matchedDistrict = matchedDistricts?.includes(address.district)
+        ? address.district
+        : "";
 
-          setDistricts(matchedDistricts || []);
-        }
+      if (matchedRegion) {
+        setLocation({
+          coords: geoCoords || "",
+          country: address.country || "",
+          region: matchedRegion,
+          district: matchedDistrict || "",
+        });
+
+        setDistricts(matchedDistricts || []);
       }
     } catch (error) {
       console.error("Error fetching industries:", error);
     }
-  };
+  }, [address, geoCoords]); // memoized on deps
 
   useEffect(() => {
-    if (address?.country && geoCoords) {
+    const hasLocationPermission =
+      Object.keys(geoCoords || {}).length > 0 &&
+      address?.state &&
+      address?.country;
+
+    if (hasLocationPermission) {
       fetchIndustries();
     }
-  }, [address, geoCoords]);
-
-  console.log(location);
+  }, [geoCoords, address]);
 
   useEffect(() => {
     if (location.region && districtsWithStates.length > 0) {
@@ -95,13 +99,14 @@ console.log('states :', fetchedDistricts)
 
       setDistricts(matchedDistricts);
     }
-  }, [location.region]);
-
-  useEffect(() => {
     if (location.region) {
       setSelectedRegion(location.region);
     }
   }, [location.region]);
+
+  useEffect(() => {
+    fetchIndustries();
+  }, []);
 
   return (
     <View className="relative mt-10">
@@ -134,7 +139,9 @@ console.log('states :', fetchedDistricts)
         <>
           {/* State Dropdown */}
           <View style={{ zIndex: openState ? 2000 : 1000, marginBottom: 20 }}>
-            <Text className="text-lg font-semibold text-teal-600">State</Text>
+            <Text className="text-lg font-semibold text-teal-600 mb-4">
+              State
+            </Text>
             <DropDownPicker
               open={openState}
               value={selectedRegion}
@@ -178,7 +185,7 @@ console.log('states :', fetchedDistricts)
 
           {/* District Dropdown */}
           <View style={{ zIndex: openDistrict ? 2000 : 1000 }}>
-            <Text className="text-lg font-semibold text-teal-600">
+            <Text className="text-lg font-semibold text-teal-600 mb-4">
               District
             </Text>
             <DropDownPicker
@@ -223,7 +230,7 @@ console.log('states :', fetchedDistricts)
           </View>
 
           {/* Country (Fixed as India) */}
-          <Text className="text-lg font-semibold text-teal-600 mt-6">
+          <Text className="text-lg font-semibold text-teal-600 mt-6 mb-4">
             Country:
           </Text>
           <View style={{ zIndex: openCountry ? 3000 : 1000, marginBottom: 20 }}>

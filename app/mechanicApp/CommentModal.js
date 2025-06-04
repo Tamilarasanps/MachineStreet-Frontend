@@ -32,10 +32,12 @@ export default function CommentModal({
 
   useEffect(() => {
     const handleCommentsUpdate = (data) => {
+      console.log('@data :', data)
       setComments((prev) => [...prev, data.comment]);
     };
 
     if (socket) {
+      console.log('@socke ')
       socket.on("comments-updated", handleCommentsUpdate);
     }
 
@@ -47,14 +49,14 @@ export default function CommentModal({
   }, [socket]);
 
   useEffect(() => {
-    if (socket && selectedPost) {
+    if (socket && socket.connected && selectedPost) {
+      console.log('@triggered :', selectedPost)
       socket.emit("join-post-room", selectedPost);
-
       return () => {
         socket.emit("leave-post-room", selectedPost);
       };
     }
-  }, [socket, selectedPost]);
+  }, [socket?.connected, selectedPost]);
 
   // useEffect(()=>{
   //   if(postId) fectchComments(postId)
