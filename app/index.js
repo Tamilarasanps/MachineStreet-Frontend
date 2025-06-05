@@ -20,7 +20,10 @@ export default function Index() {
     };
     getRole();
   }, []);
-  if (role === null) return <LandingPage />; // or a loading spinner
+  console.log()
+  if (role === null) {
+    return Platform.OS === "web" ? <LandingPage /> : <BottomNavBar />;
+  }
 
   if (Platform.OS === "web" && role !== "admin") {
     if (Platform.OS === "web") {

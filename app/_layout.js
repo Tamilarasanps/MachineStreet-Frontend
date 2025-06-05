@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, SafeAreaView } from "react-native";
+import {  SafeAreaView } from "react-native";
 import "../global.css";
 import { Stack } from "expo-router";
 import { LoadingProvider } from "./context/LoadingContext";

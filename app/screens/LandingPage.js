@@ -47,7 +47,7 @@ const LandingPage = () => {
 
   const getCounts = useCallback(async () => {
     try {
-      const response = await getJsonApi("landingPage");
+      const response = await getJsonApi("landingPage/");
       if (response.status === 200) {
         const mech = response?.data?.data?.mechanicCount || 0;
         const mach = response?.data?.data?.machineCount || 0;
