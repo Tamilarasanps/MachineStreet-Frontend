@@ -30,6 +30,7 @@ import { BlurView } from "expo-blur";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import QrModal from "./QrModal";
 
 const MechanicList_2 = () => {
   const { width } = useWindowDimensions();
@@ -47,6 +48,8 @@ const MechanicList_2 = () => {
     setOtherThanIndiaLocation,
     otherThanIndiaLocation,
     setTotalPages,
+    qr,
+    setQr
   } = GetMechanic();
 
   const isSmallScreen = width < 768;
@@ -186,7 +189,6 @@ const MechanicList_2 = () => {
             otherThanIndia ? mechanic.region : mechanic.district
           )
         : true;
-    console.log(" selectedDistrict :", selectedDistrict);
 
     const matchesRating = selectedRating
       ? mechanic.averageRating >= selectedRating
@@ -292,6 +294,7 @@ const MechanicList_2 = () => {
         )}
         {/* Scrollable blue content */}
         <ScrollView>
+          {!qr&&<QrModal visible={!qr} onClose={()=>setQr(true)}/>}
           <View className=" min-h-screen flex flex-rrow  px-2 pb-6 mt-5 ">
             <View
               className={`flex flex-row rounded-sm mt-5 min-h-screen  gap-2 mb-48`}
