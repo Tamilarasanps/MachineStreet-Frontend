@@ -229,7 +229,8 @@ const LandingPage = () => {
             </View>
           </View>
         </View>
-        <Footer />
+        {Platform.OS==='web'&& <Footer/>}
+        
       </ScrollView>
     </SafeAreaView>
   );
