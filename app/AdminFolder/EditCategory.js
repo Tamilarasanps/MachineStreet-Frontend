@@ -10,7 +10,7 @@ const EditCategory = ({ categoryList, showToast, setCategoryList, setTempText,se
 
     try {
       const response = await axios.delete(
-        `http://192.168.1.6:5000/adminCategories/${id}`,
+        `https://machinestreets.com/adminCategories/${id}`,
         { headers: { "content-Type": "application/json" } }
       );
       if (response.status === 200) {

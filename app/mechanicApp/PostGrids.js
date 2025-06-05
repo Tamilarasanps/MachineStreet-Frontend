@@ -1,9 +1,24 @@
 import React from "react";
-import { View, Image, FlatList, Pressable, Text } from "react-native";
+import {
+  View,
+  Image,
+  FlatList,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 
-const PostGrid = ({ posts, onPostPress, width}) => {
+const PostGrid = ({ posts, onPostPress, width }) => {
   const columns = width >= 1024 ? 4 : 3;
+
+  if (!posts) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1 }}>
       {posts?.length > 0 ? (
@@ -37,7 +52,7 @@ const PostGrid = ({ posts, onPostPress, width}) => {
                 ) : (
                   <Image
                     source={{ uri: `data:image/jpeg;base64,${item.media}` }}
-                    style={{ width: "100%", height: "100%" }}
+                    className="w-full h-full"
                     resizeMode="cover"
                   />
                 )}
@@ -45,11 +60,7 @@ const PostGrid = ({ posts, onPostPress, width}) => {
             );
           }}
         />
-      ) : (
-        <View style={{ alignItems: "center", marginTop: 20 }}>
-          <Text style={{ marginTop: 10, fontSize: 16 }}>😅 No posts yet!</Text>
-        </View>
-      )}
+      ) : null}
     </View>
   );
 };

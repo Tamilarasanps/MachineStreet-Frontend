@@ -134,7 +134,7 @@ export default function SelectProduct() {
       return;
     }
 
-    const productUrl = `http://localhost:8081/product/${
+    const productUrl = `https://machinestreets.com//product/${
       product.MachineName || product._id
     }`;
     const message = `🛒 Check out this product: ${

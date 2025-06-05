@@ -46,7 +46,7 @@ export default function FilterComponent({
   dataToMap,
   price,
 }) {
-  console.log("otherThanIndiaLocation :", otherThanIndiaLocation);
+
   const { width } = useWindowDimensions(); // Dynamically get the screen width
 
   const [activeFilter, setActiveFilter] = useState("Location");
@@ -101,17 +101,15 @@ export default function FilterComponent({
   //   );
   // };
 
-  console.log("dataToMap :", dataToMap);
-  console.log("selectedState :", selectedState);
-  console.log("selectedDistrict :", selectedDistrict);
+
 
   return (
     <View
-      className={`bg-gray-400  h-full p-4 
+      className={`bg-white ml-2 rounded-md   p-4 
          shadow-md flex ${
            width < 1024
-             ? "absolute z-50 h-screen w-full flex-col pb-20"
-             : "flex-row"
+             ? "absolute z-50 h-screen w-[100%] flex-col pb-20"
+             : "flex-row h-[95%] my-auto"
          }`}
     >
       
@@ -346,7 +344,7 @@ export default function FilterComponent({
           )}
 
           {activeFilter === "Industry" && (
-            <View className="h-96">
+            <ScrollView className="h-96">
               <Text className="font-semibold text-lg text-gray-800 mb-2">
                 Select Industry
               </Text>
@@ -445,7 +443,7 @@ export default function FilterComponent({
                   </Pressable>
                 </>
               )}
-            </View>
+            </ScrollView>
           )}
         </ScrollView>
 

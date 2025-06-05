@@ -26,7 +26,7 @@ const ProductApprovalModal = ({
 }) => {
     const { width } = useWindowDimensions();
     const isScreen = width > 786;
-  console.log("product :", product);
+
   return (
     <Modal visible={isVisible} animationType="slide">
       <ScrollView>

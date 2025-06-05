@@ -8,9 +8,9 @@ const QrPage = () => {
   const [qr, setQr] = useState([]);
 
   useEffect(() => {
-    console.log("jfnevnjc");
+
     const fetchQr = async () => {
-      console.log("uiuiu");
+
       try {
         const token = await AsyncStorage.getItem("userToken");
         const response = await getJsonApi("adminApproval/adminQr", token);

@@ -12,14 +12,16 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useNavigation } from "expo-router";
+import Footer from "../component/(footer)/Footer";
 import useApi from "../hooks/useApi";
 
 const { width } = Dimensions.get("window");
 
 const LandingPage = () => {
-  const [windowWidth, setWindowWidth] = useState(
-    Dimensions.get("window").width
-  );
+  // const [windowWidth, setWindowWidth] = useState(
+  //   Dimensions.get("window").width
+  // );
+    const [windowWidth, setWindowWidth] = useState(Dimensions.get("window").width);
   const isMobile = windowWidth < 600;
 
   // Actual counts fetched from API
@@ -30,11 +32,21 @@ const LandingPage = () => {
   const [mechanicCount, setMechanicCount] = useState(0);
   const [machineCount, setMachineCount] = useState(0);
 
+  // useEffect(() => {
+  //   const onChange = ({ window }) => setWindowWidth(window.width);
+  //   Dimensions.addEventListener("change", onChange);
+  //   return () => Dimensions.removeEventListener("change", onChange);
+  // }, []);
   useEffect(() => {
-    const onChange = ({ window }) => setWindowWidth(window.width);
-    Dimensions.addEventListener("change", onChange);
-    return () => Dimensions.removeEventListener("change", onChange);
+    const subscription = Dimensions.addEventListener("change", ({ window }) => {
+      setWindowWidth(window.width);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
   }, []);
+
 
   const navigation = useNavigation();
 

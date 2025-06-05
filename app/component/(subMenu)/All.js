@@ -52,71 +52,13 @@ export default function All() {
     }
   };
 
-  // const getCategory = async () => {
-  //   if (!industry) return;
-  //   try {
-  //     const categoryData = await getJsonApi(
-  //       `CategoryPage/${industry}/categoryPage`
-  //     );
-  //     // Do something with categoryData if needed
-  //   } catch (error) {
-  //     console.log(error, "what error");
-  //   }
-  // };
-
-  // Helper to get subcategories for the hovered industry
-  // const getSubcategoriesForIndustry = (index) => {
-  //   if (!subCategories || !industries || !industries[index]) return null;
-  //   // Try both array and object structures for robustness
-  //   if (Array.isArray(subCategories)) {
-  //     // Array of objects: [{Industry1: [...]}, ...]
-  //     const matched = subCategories[index];
-  //     if (!matched) return null;
-  //     const subCate = Object.keys(matched)[0];
-  //     return { name: subCate, items: matched[subCate] };
-  //   } else if (typeof subCategories === "object") {
-  //     // Object: { Industry1: [...] }
-  //     const industryName = industries[index];
-  //     return { name: industryName, items: subCategories[industryName] || [] };
-  //   }
-  //   return null;
-  // };
-
-  // --- Dropdown Hover Delay Logic ---
-  // const handleMouseLeave = () => {
-  //   closeTimeout.current = setTimeout(() => {
-  //     setShow(false);
-  //     setHoverClr(null);
-  //     setSubCategoryShow(false);
-  //   }, 120); // 120ms delay
-  // };
-
-  // const handleMouseEnter = () => {
-  //   if (closeTimeout.current) {
-  //     clearTimeout(closeTimeout.current);
-  //     closeTimeout.current = null;
-  //   }
-  //   setShow(true);
-  // };
-
   // Clean up timeout on unmount
   useEffect(() => {
     return () => {
       if (closeTimeout.current) clearTimeout(closeTimeout.current);
     };
   }, []);
-  //  href={`/screens/CategoryList/?industry=${encodeURIComponent(
-  //                             industry
-  // )}`}
-
-  // const handleProductPress = (category) => {
-  //   console.log(category, "category");
-  //   if (Platform.OS === "web") {
-  //     router.push(`/screens/(productPage)/ProductList?searchTerms=${category.name}`);
-  //   } else {
-  //     navigation.navigate("ProductList", { searchTerms: category });
-  //   }
-  // };
+  
   return (
     <View>
       {/* Web-only navigation menu */}

@@ -1,14 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext} from "react";
 import {
   View,
   Text,
   Pressable,
   Platform,
   useWindowDimensions,
-  ActivityIndicator,
 } from "react-native";
 import { TextInput } from "react-native-paper";
-import Mobile from "./Mobile";
 import Email from "./Email";
 import { router } from "expo-router";
 import { useNavigation } from "expo-router";
@@ -41,11 +39,6 @@ const UsernameScreen = ({
     stopLoading();
   };
 
-  // const handleKeyPress = (e) => {
-  //   if (Platform.OS === "web" && e.nativeEvent.key === "Enter") {
-  //     formSubmit();
-  //   }
-  // };
   const handleKeyPress = (e) => {
     if (Platform.OS === "web" && e.key === "Enter") {
       handleNextPress();
@@ -86,32 +79,13 @@ const UsernameScreen = ({
         />
       </View>
 
-      {/* Email or Mobile Input */}
-      {/* {mobile ? (
-        <Mobile
-          dropdownVisible={dropdownVisible}
-          setDropdownVisible={setDropdownVisible}
-          selectedCode={selectedCode}
-          setSelectedCode={setSelectedCode}
-          phoneNumber={phoneNumber}
-          setPhoneNumber={setPhoneNumber}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          filteredCountries={filteredCountries}
-          mailOrphone={mailOrphone}
-          setMailOrphone={setMailOrphone}
-          formSubmit={formSubmit}
-          username={username}
-        />
-      ) : ( */}
+      
       <Email
         mailOrphone={mailOrphone}
         setMailOrphone={setMailOrphone}
         Enterkey={handleKeyPress}
       />
-      {/* )} */}
 
-      {/* Toggle Email/Mobile */}
       <View
         className={`mx-auto mt-2 ${
           Platform.OS === "web" ? "w-[75%]" : "w-[90%]"
@@ -126,28 +100,7 @@ const UsernameScreen = ({
       {/* Navigation and CTA */}
 
       <View className="mt-20  mb-4">
-        {/* <Pressable
-          onPress={() => {
-            if (Platform.OS === "web") {
-              router.push("/screens/Login");
-            } else {
-              navigation.replace("LoginPage");
-            }
-          }}
-          style={{
-            alignItems: "center",
-            marginBottom: 24,
-          }}
-        >
-          {((Platform.OS === "web" && width < 1024) ||
-            Platform.OS !== "web") && (
-            <Text style={{ color: "black", fontWeight: "600" }}>
-              Already have an account?{" "}
-              <Text style={{ textDecorationLine: "underline" }}>Login</Text>
-            </Text>
-          )}
-        </Pressable> */}
-
+        
         <Pressable
           disabled={isLoading}
           onPress={handleNextPress}

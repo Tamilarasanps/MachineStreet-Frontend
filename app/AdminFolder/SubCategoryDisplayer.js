@@ -7,8 +7,6 @@ import {
   Pressable,
 } from "react-native";
 import { TextInput } from "react-native-paper";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import SubCategoryList from "./SubCategoryList";
 import { ScrollView } from "react-native-gesture-handler";
 
 const SubCategoryDisplayer = ({

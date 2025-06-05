@@ -84,6 +84,13 @@ const Login = () => {
     }
   };
 
+  const handleKeyPress = (e, nextref) => {
+    if (Platform.OS === "web" && e.nativeEvent.key === "Enter") {
+      Login();
+      // nextref?.current?.focus();
+    }
+  };
+
   return (
     <SafeAreaView>
       <View className="h-screen w-screen  align-items-center bg-gray-200 ">
@@ -249,8 +256,6 @@ const Login = () => {
             {/* Login Button */}
             <Pressable
               onPress={() => Login()}
-
-
               className={`bg-TealGreen mb-4 py-4  px-4 h-max mx-auto rounded-md ${
                 isScreenSmall ? "w-[90%]" : "w-[75%]"
               } ${
@@ -258,7 +263,6 @@ const Login = () => {
                   ? "mt-8"
                   : "mt-8"
               } `}
-
             >
               <Text className="text-white m-auto font-bold">Log In</Text>
             </Pressable>

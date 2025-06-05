@@ -214,15 +214,6 @@ const SignUp = () => {
                 </Text>
               </Text>
             </View>
-            {/* <Pressable
-              onPress={() => router.push("/screens/Login")}
-              className="mt-10 "
-              style={{ position: "absolute", bottom: 16 }}
-            >
-              <Text className="text-white font-semibold underline text-center">
-                Already have an account? Login
-              </Text>
-            </Pressable> */}
           </View>
         )}
 

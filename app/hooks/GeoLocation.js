@@ -78,13 +78,11 @@ const useGeoLocation = () => {
   const fetchAddress = async (latitude, longitude) => {
     try {
       const response = await fetch(
-          `http://192.168.1.9:4000/api/reverse-geocode?lat=${latitude}&lon=${longitude}`
+          `https://machinestreets.com/api/reverse-geocode?lat=${latitude}&lon=${longitude}`
       );
-      console.log("response :", response);
 
       const data = await response.json();
 
-      console.log("location :", data);
 
       if (data.address) {
         setAddress({
@@ -101,7 +99,6 @@ const useGeoLocation = () => {
       console.error("Geocoding error:", error);
     }
   };
-  console.log("location in geo :", location);
   return {
     geoCoords: location || {},
     errorMsg,

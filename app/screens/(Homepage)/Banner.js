@@ -3,11 +3,6 @@ import React, { useState, useEffect } from "react";
 
 export default function Banner({img}) {
   const [image, setImage] = useState(0);
-  // const img = [
-  //   require("../../assests/machine/cone.jpg"),
-  //   require("../../assests/machine/machine.jpg"),
-  //   require("../../assests/machine/printing.jpg"),
-  // ];
 
   useEffect(() => {
     const intervel = setInterval(() => {

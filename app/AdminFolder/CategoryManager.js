@@ -17,8 +17,6 @@ const CategoryManager = () => {
     { name: "", services: [""] },
   ]);
 
-  // console.log('subCategories :', subCategories)
-
   const [selected, setSelected] = useState("add");
   const [categoryList, setCategoryList] = useState([]);
   const [indutryList, setIndustryList] = useState([]);
@@ -30,9 +28,9 @@ const CategoryManager = () => {
     try {
       let uri;
       if (!fetchdata && !industryId) {
-        uri = `http://192.168.1.9:4000/adminCategories/getCategory`;
+        uri = `https://machinestreets.com/adminCategories/getCategory`;
       } else {
-        uri = `http://192.168.1.9:4000/adminCategories/getCategory/${industryId}/${fetchdata}`;
+        uri = `https://machinestreets.com/adminCategories/getCategory/${industryId}/${fetchdata}`;
       }
 
       const response = await axios.get(uri, {
@@ -119,8 +117,8 @@ const CategoryManager = () => {
 
     let uri =
       selectedCategory && selected === "edit"
-        ? "http://192.168.174.158:5000/adminCategories/editCategory"
-        : "http://192.168.174.158:5000/adminCategories/";
+        ? "https://machinestreets.com/adminCategories/editCategory"
+        : "https://machinestreets.com/adminCategories/";
 
     if (selectedCategory && selected === "edit") {
       finalData = {
