@@ -18,10 +18,9 @@ import useApi from "../hooks/useApi";
 const { width } = Dimensions.get("window");
 
 const LandingPage = () => {
-  // const [windowWidth, setWindowWidth] = useState(
-  //   Dimensions.get("window").width
-  // );
-    const [windowWidth, setWindowWidth] = useState(Dimensions.get("window").width);
+  const [windowWidth, setWindowWidth] = useState(
+    Dimensions.get("window").width
+  );
   const isMobile = windowWidth < 600;
 
   // Actual counts fetched from API
@@ -32,11 +31,6 @@ const LandingPage = () => {
   const [mechanicCount, setMechanicCount] = useState(0);
   const [machineCount, setMachineCount] = useState(0);
 
-  // useEffect(() => {
-  //   const onChange = ({ window }) => setWindowWidth(window.width);
-  //   Dimensions.addEventListener("change", onChange);
-  //   return () => Dimensions.removeEventListener("change", onChange);
-  // }, []);
   useEffect(() => {
     const subscription = Dimensions.addEventListener("change", ({ window }) => {
       setWindowWidth(window.width);
@@ -47,14 +41,13 @@ const LandingPage = () => {
     };
   }, []);
 
-
   const navigation = useNavigation();
 
   const { getJsonApi } = useApi();
 
   const getCounts = useCallback(async () => {
     try {
-      const response = await getJsonApi("landingPage/getCounts");
+      const response = await getJsonApi("landingPage");
       if (response.status === 200) {
         const mech = response?.data?.data?.mechanicCount || 0;
         const mach = response?.data?.data?.machineCount || 0;
@@ -229,8 +222,7 @@ const LandingPage = () => {
             </View>
           </View>
         </View>
-        {Platform.OS==='web'&& <Footer/>}
-        
+        {Platform.OS === "web" && <Footer />}
       </ScrollView>
     </SafeAreaView>
   );
