@@ -22,9 +22,14 @@ export default function Index() {
   }, []);
   if (role === null) return <LandingPage />; // or a loading spinner
 
-  if (Platform.OS === "web" && role !== "admin") return <LandingPage />;
+  if (Platform.OS === "web" && role !== "admin") {
+    if (Platform.OS === "web") {
+      <LandingPage />;
+    } else {
+      <BottomNavBar />;
+    }
+  }
   if (Platform.OS === "web" && role === "admin") return <AdminHomePage />;
 
   return role === "admin" ? <AdminHomePage /> : <BottomNavBar />;
-
 }

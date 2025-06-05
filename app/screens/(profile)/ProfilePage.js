@@ -117,6 +117,21 @@ const ProfilePage = ({}) => {
     }
   };
 
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem("userToken");
+      await AsyncStorage.removeItem("role");
+      // Navigation
+      if (Platform.OS === "web") {
+        router.push("/");
+      } else {
+        navigation.navigate("HomePage");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
   const handleLogout = useCallback(() => {
     if (Platform.OS === "web") {
       const confirmed = window.confirm("Are you sure you want to logout?");
