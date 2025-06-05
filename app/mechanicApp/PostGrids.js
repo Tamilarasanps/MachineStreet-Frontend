@@ -1,61 +1,56 @@
 import React from "react";
-import {
-  View,
-  Image,
-  FlatList,
-  Pressable,
-  ActivityIndicator,
-} from "react-native";
+import { View, Image, FlatList, Pressable, Text } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 
 const PostGrid = ({ posts, onPostPress, width}) => {
   const columns = width >= 1024 ? 4 : 3;
-  if (!posts) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="blue" />
-      </View>
-    );
-  }
-
   return (
-    <FlatList
-      data={posts}
-      key={`cols-${columns}`} // 👈 key changes when column count changes
-      keyExtractor={(item) => item._id}
-      className={`p-4 ${width >= 1024 ? "px-8" : ""}`}
-      numColumns={columns}
-      renderItem={({ item, index }) => {
-        const isVideo = item.media.length === 24; // assume 24-character ID = video
+    <View style={{ flex: 1 }}>
+      {posts?.length > 0 ? (
+        <FlatList
+          data={posts}
+          key={`cols-${columns}`}
+          keyExtractor={(item) => item._id}
+          contentContainerStyle={{
+            padding: 16,
+            paddingHorizontal: width >= 1024 ? 32 : 16,
+          }}
+          numColumns={columns}
+          renderItem={({ item, index }) => {
+            const isVideo = item.media.length === 24;
 
-        return (
-          <Pressable
-            onPress={() => {
-              onPostPress(index);
-            }}
-            style={{
-              width: width >= 1024 ? "25%" : "33.33%",
-              aspectRatio: 1,
-              padding: 1,
-            }}
-          >
-            {isVideo ? (
-              <VideoGridItem
-                videoId={item.media}
-                onPostPress={onPostPress}
-                index={index}
-              />
-            ) : (
-              <Image
-                source={{ uri: `data:image/jpeg;base64,${item.media}` }}
-                className="w-full h-full"
-                resizeMode="cove"
-              />
-            )}
-          </Pressable>
-        );
-      }}
-    />
+            return (
+              <Pressable
+                onPress={() => onPostPress(index)}
+                style={{
+                  width: width >= 1024 ? "25%" : "33.33%",
+                  aspectRatio: 1,
+                  padding: 1,
+                }}
+              >
+                {isVideo ? (
+                  <VideoGridItem
+                    videoId={item.media}
+                    onPostPress={onPostPress}
+                    index={index}
+                  />
+                ) : (
+                  <Image
+                    source={{ uri: `data:image/jpeg;base64,${item.media}` }}
+                    style={{ width: "100%", height: "100%" }}
+                    resizeMode="cover"
+                  />
+                )}
+              </Pressable>
+            );
+          }}
+        />
+      ) : (
+        <View style={{ alignItems: "center", marginTop: 20 }}>
+          <Text style={{ marginTop: 10, fontSize: 16 }}>😅 No posts yet!</Text>
+        </View>
+      )}
+    </View>
   );
 };
 

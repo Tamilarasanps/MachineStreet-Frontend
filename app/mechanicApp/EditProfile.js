@@ -48,7 +48,7 @@ const EditProfile = ({
 
   const [location, setLocation] = useState({
     coords: "",
-    country: "",
+    country: "India",
     region: "",
     district: "",
   });
@@ -109,15 +109,18 @@ const EditProfile = ({
   const handleChange = (key, value) => {
     setMechanicDetails((prev) => ({ ...prev, [key]: value }));
   };
-
+console.log('mechanicDetails :', mechanicDetails)
+console.log('location :', location)
+console.log('phoneNumber :', phoneNumber)
+console.log('count :', selectedCode)
   const handleSubmit = async () => {
     if (
       !mechanicDetails.organization ||
       !mechanicDetails.industry ||
       !subCategories ||
-      !mechanicDetails.services ||
+      mechanicDetails.services.length===0 ||
       !phoneNumber?.trim() ||
-      !String(location?.coords || "").trim() ||
+      // !String(location?.coords || "").trim() ||
       !String(location?.region || "").trim() ||
       !String(location?.country || "").trim()
     ) {

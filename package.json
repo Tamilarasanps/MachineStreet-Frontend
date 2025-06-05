@@ -26,6 +26,7 @@
     "@rneui/themed": "^4.0.0-rc.8",
     "axios": "^0.21.1",
     "country-telephone-data": "^0.6.3",
+    "crypto-js": "^4.2.0",
     "easyqrcode-react-native": "^4.0.11",
     "easyqrcodejs": "^4.6.2",
     "expo": "53.0.9",
@@ -51,6 +52,7 @@
     "js-cookie": "^3.0.5",
     "nativewind": "^4.1.23",
     "react": "^19.0.0",
+    "react-dom": "19.0.0",
     "react-native": "^0.79.2",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-floating-label-input": "^1.4.3",
@@ -68,8 +70,7 @@
     "react-native-webview": "13.13.5",
     "socket.io-client": "^4.8.1",
     "tailwindcss": "^3.4.17",
-    "zustand": "^5.0.3",
-    "react-dom": "19.0.0"
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

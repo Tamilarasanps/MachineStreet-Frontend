@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Text,
   View,
@@ -12,7 +12,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useNavigation } from "expo-router";
-import Footer from "../component/(footer)/Footer";
+import useApi from "../hooks/useApi";
 
 const { width } = Dimensions.get("window");
 
@@ -22,6 +22,14 @@ const LandingPage = () => {
   );
   const isMobile = windowWidth < 600;
 
+  // Actual counts fetched from API
+  const [mechanicLimit, setMechanicLimit] = useState(0);
+  const [machineLimit, setMachineLimit] = useState(0);
+
+  // Running counts displayed on screen
+  const [mechanicCount, setMechanicCount] = useState(0);
+  const [machineCount, setMachineCount] = useState(0);
+
   useEffect(() => {
     const onChange = ({ window }) => setWindowWidth(window.width);
     Dimensions.addEventListener("change", onChange);
@@ -30,25 +38,78 @@ const LandingPage = () => {
 
   const navigation = useNavigation();
 
+  const { getJsonApi } = useApi();
+
+  const getCounts = useCallback(async () => {
+    try {
+      const response = await getJsonApi("landingPage/getCounts");
+      if (response.status === 200) {
+        const mech = response?.data?.data?.mechanicCount || 0;
+        const mach = response?.data?.data?.machineCount || 0;
+        setMechanicLimit(mech);
+        setMachineLimit(mach);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [getJsonApi]);
+
+  useEffect(() => {
+    getCounts();
+  }, []);
+
+  // Effect to animate mechanicCount from 0 to mechanicLimit
+  useEffect(() => {
+    if (mechanicCount < mechanicLimit) {
+      const timer = setTimeout(() => {
+        setMechanicCount((prev) =>
+          prev + 1 > mechanicLimit ? mechanicLimit : prev + 1
+        );
+      }, 30); // Adjust speed here (lower is faster)
+      return () => clearTimeout(timer);
+    }
+  }, [mechanicCount, mechanicLimit]);
+
+  // Effect to animate machineCount from 0 to machineLimit
+  useEffect(() => {
+    if (machineCount < machineLimit) {
+      const timer = setTimeout(() => {
+        setMachineCount((prev) =>
+          prev + 1 > machineLimit ? machineLimit : prev + 1
+        );
+      }, 30);
+      return () => clearTimeout(timer);
+    }
+  }, [machineCount, machineLimit]);
+
+  const StepWithArrow = ({
+    icon,
+    title,
+    description,
+    isLast,
+    isHorizontal,
+  }) => (
+    <View
+      style={{
+        flexDirection: isHorizontal ? "row" : "column",
+        alignItems: "center",
+        width: "450px",
+      }}
+    >
+      <Step icon={icon} title={title} description={description} />
+      {!isLast && (
+        <Text style={{ fontSize: 24, marginHorizontal: 12, marginVertical: 8 }}>
+          {isHorizontal ? "➡️" : "⬇️"}
+        </Text>
+      )}
+    </View>
+  );
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
       <ScrollView style={{ backgroundColor: "#f8fafc" }}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.brand}>Machine Street</Text>
-          {/* <View style={styles.navLinks}>
-            <Text style={styles.navLink} className="p-2">
-              Contact
-            </Text> */}
-          {/* <Image
-              source={{
-                uri: "https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg",
-              }}
-              style={{ width: 120, height: 40 }}
-              resizeMode="contain"
-            /> */}
-          {/* <Text className='p-2' style={styles.border}>Get PlayStore</Text> */}
-          {/* </View> */}
         </View>
 
         {/* Hero Section */}
@@ -75,12 +136,6 @@ const LandingPage = () => {
               <View style={styles.heroButtons}>
                 <TouchableOpacity
                   style={styles.primaryBtn}
-                  // onPress={() => {
-
-                  //   // navigation.navigate('MechanicProfiles')
-                  //   router.push('/mechanicApp/MechanicList_2')
-                  // }}
-
                   onPress={() => {
                     Platform.OS === "web"
                       ? router.push("/mechanicApp/MechanicList_2")
@@ -109,88 +164,64 @@ const LandingPage = () => {
 
           {/* Stats */}
           <View style={styles.statsRow}>
-            <StatBox value="500+" label="Mechanics Listed" />
-            <StatBox value="20+" label="Industries Covered" />
+            <StatBox
+              value={`${mechanicCount > 0 ? mechanicCount + "+" : "-"}`}
+              label="Mechanics Listed"
+            />
+            <StatBox
+              value={`${machineCount > 0 ? machineCount + "+" : "-"}`}
+              label="Industries Covered"
+            />
             <StatBox value="24/7" label="Support" />
           </View>
 
           {/* How It Works */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>How It Works</Text>
-            <View style={styles.stepsRow}>
-              <Step
+            <View
+              style={[
+                styles.stepsRow,
+                {
+                  flexDirection:
+                    Platform.OS === "web"
+                      ? windowWidth >= 1024
+                        ? "row"
+                        : "column"
+                      : "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                },
+              ]}
+            >
+              <StepWithArrow
                 icon="🔍"
                 title="Search"
                 description="Find mechanics by industry, location, or specialty."
+                isLast={false}
+                isHorizontal={windowWidth >= 1024}
               />
-              <Step
+              <StepWithArrow
                 icon="📄"
                 title="View Profiles"
                 description="Check detailed profiles, ratings, and skills."
+                isLast={false}
+                isHorizontal={windowWidth >= 1024}
               />
-              <Step
+              <StepWithArrow
                 icon="🤝"
                 title="Connect"
                 description="Contact mechanics directly and get your job Done."
+                isLast={true}
+                isHorizontal={windowWidth >= 1024}
               />
             </View>
           </View>
-
-          {/* Why Machine Street */}
-          {/* <View style={styles.sectionAlt}>
-          <Text style={styles.sectionTitle}>Why Machine Street?</Text>
-          <View style={[styles.whyRow, isMobile && { flexDirection: 'column' }]}>
-            <View style={styles.whyFeatures}>
-              <WhyCard
-                icon="✅"
-                title="Verified Experts"
-                description="Every mechanic is vetted for skills and reliability."
-              />
-              <WhyCard
-                icon="⚡"
-                title="Fast & Easy"
-                description="Quickly find and connect with the right professional."
-              />
-              <WhyCard
-                icon="💬"
-                title="Direct Contact"
-                description="No middlemen-talk to mechanics directly."
-              />
-            </View>
-            <Image
-              source={require('../assets/machine/mechimg.jpg')}
-              style={{
-                flex: 1,
-                width: isMobile ? width * 0.9 : width * 0.32,
-                height: isMobile ? width * 0.5 : width * 0.22,
-                borderRadius: 16,
-                marginTop: isMobile ? 18 : 0,
-                marginLeft: isMobile ? 0 : 18,
-                shadowColor: '#000',
-                shadowOpacity: 0.10,
-                shadowRadius: 8,
-                shadowOffset: { width: 0, height: 4 },
-              }}
-              resizeMode="cover"
-            />
-          </View>
-        </View> */}
         </View>
         <Footer />
       </ScrollView>
     </SafeAreaView>
   );
 };
-
-// const WhyCard = ({ icon, title, description }) => (
-//   <View style={styles.whyCard}>
-//     <View style={styles.whyIconBox}>
-//       <Text style={styles.whyIcon}>{icon}</Text>
-//     </View>
-//     <Text style={styles.whyCardTitle}>{title}</Text>
-//     <Text style={styles.whyCardDesc}>{description}</Text>
-//   </View>
-// );
 
 const StatBox = ({ value, label }) => (
   <View style={styles.statBox}>
@@ -337,19 +368,15 @@ const styles = StyleSheet.create({
     borderColor: "#e5e7eb",
   },
   statValue: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#",
-    marginBottom: 2,
+    color: "#2095A2",
+    letterSpacing: 0.8,
   },
   statLabel: {
-    fontSize: 13,
-    color: "#2095A2",
-    marginTop: 2,
-    fontWeight: "500",
-    textAlign: "center",
-    textTransform: "uppercase",
-    letterSpacing: 1,
+    fontSize: 14,
+    color: "#475569",
+    marginTop: 4,
   },
   section: {
     marginTop: 32,
@@ -363,6 +390,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.07,
     shadowRadius: 7,
     shadowOffset: { width: 0, height: 3 },
+    alignItems: "center",
   },
   sectionAlt: {
     marginTop: 30,
@@ -396,6 +424,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 16,
     margin: 6,
+    width: "300px",
+
     // minWidth: width * 0.24,
     // maxWidth: width * 0.32,
     elevation: 1,
@@ -473,5 +503,4 @@ const styles = StyleSheet.create({
     opacity: 0.92,
   },
 });
-
 export default LandingPage;

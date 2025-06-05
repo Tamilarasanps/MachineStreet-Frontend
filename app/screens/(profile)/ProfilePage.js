@@ -118,23 +118,6 @@ const ProfilePage = ({}) => {
   };
 
   const handleLogout = useCallback(() => {
-    const logout = async () => {
-      setUpdateModal(false);
-      try {
-        await AsyncStorage.removeItem("userToken");
-        await AsyncStorage.removeItem("role");
-
-        // Navigation
-        if (Platform.OS === "web") {
-          router.push("/screens/LandingPage");
-        } else {
-          navigation.navigate("HomePage");
-        }
-      } catch (error) {
-        console.error("Error during logout:", error);
-      }
-    };
-
     if (Platform.OS === "web") {
       const confirmed = window.confirm("Are you sure you want to logout?");
       if (confirmed) {
@@ -284,19 +267,19 @@ const ProfilePage = ({}) => {
     checkProfile();
   }, [id, mechanics]);
 
-  async function handleImages() {}
-  async function handleVideo() {}
+  // async function handleImages() {}
+  // async function handleVideo() {}
 
-  async function handleUpload() {
-    const result = await pickMedia();
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      const type = result.assets[0].mimeType.split("/")[0];
+  // async function handleUpload() {
+  //   const result = await pickMedia();
+  //   if (!result.canceled && result.assets && result.assets.length > 0) {
+  //     const type = result.assets[0].mimeType.split("/")[0];
 
-      type === "image"
-        ? handleImages(result.assets)
-        : handleVideo(result.assets[0]);
-    }
-  }
+  //     type === "image"
+  //       ? handleImages(result.assets)
+  //       : handleVideo(result.assets[0]);
+  //   }
+  // }
   async function handleImageUpload(result, imagetype) {
     try {
       const token = await AsyncStorage.getItem("userToken");

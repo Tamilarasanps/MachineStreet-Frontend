@@ -22,15 +22,7 @@ const UsernameScreen = ({
   setMailOrphone,
   mobile,
   setMobile,
-  selectedCode,
-  setSelectedCode,
-  phoneNumber,
-  setPhoneNumber,
-  dropdownVisible,
-  setDropdownVisible,
-  filteredCountries,
-  searchQuery,
-  setSearchQuery,
+
   formSubmit,
 }) => {
   const { width } = useWindowDimensions();
@@ -134,7 +126,7 @@ const UsernameScreen = ({
       {/* Navigation and CTA */}
 
       <View className="mt-20  mb-4">
-        <Pressable
+        {/* <Pressable
           onPress={() => {
             if (Platform.OS === "web") {
               router.push("/screens/Login");
@@ -154,18 +146,37 @@ const UsernameScreen = ({
               <Text style={{ textDecorationLine: "underline" }}>Login</Text>
             </Text>
           )}
-        </Pressable>
+        </Pressable> */}
 
         <Pressable
           disabled={isLoading}
           onPress={handleNextPress}
-          className={`bg-TealGreen py-4 px-4 w-24 mx-auto rounded-md ${
-            isLoading ? "opacity-50" : ""
-          }`}
+          className={`bg-TealGreen py-4 px-4 w-[75%] mx-auto rounded-md ${
+            isScreen ? "w-[75%]" : "w-full"
+          } ${isLoading ? "opacity-50" : ""}`}
         >
           <Text className="text-white text-center font-semibold">Next</Text>
         </Pressable>
       </View>
+      <Text className="text-center font-semibold mt-4 text-gray-600">
+        Already have an account?{" "}
+      </Text>
+      <Pressable
+        disabled={isLoading}
+        
+        onPress={() => {
+          if (Platform.OS === "web") {
+            router.push("/screens/Login");
+          } else {
+            navigation.replace("LoginPage");
+          }
+        }}
+        className={`bg-TealGreen py-4 px-4 w-[75%] mt-4 mb-8 mx-auto rounded-md ${
+          isScreen ? "w-[75%]" : "w-full"
+        } ${isLoading ? "opacity-50" : ""}`}
+      >
+        <Text className="text-white text-center font-bold ">Log In</Text>
+      </Pressable>
 
       {/* Loading Overlay */}
       {isLoading && <Loading />}

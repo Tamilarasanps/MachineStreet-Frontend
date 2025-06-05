@@ -84,13 +84,6 @@ const Login = () => {
     }
   };
 
-  const handleKeyPress = (e, nextref) => {
-    if (Platform.OS === "web" && e.nativeEvent.key === "Enter") {
-      Login();
-      // nextref?.current?.focus();
-    }
-  };
-
   return (
     <SafeAreaView>
       <View className="h-screen w-screen  align-items-center bg-gray-200 ">
@@ -104,7 +97,7 @@ const Login = () => {
         >
           {/* Web-specific Welcome Card */}
           {Platform.OS === "web" && !isScreenSmall && (
-            <View className="bg-teal-600 w-[40%] h-[415px] p-5 rounded-tl-md rounded-bl-md text-white">
+            <View className="bg-teal-600 w-[40%] h-[450px] p-5 rounded-tl-md rounded-bl-md text-white">
               <View className="shadow-md p-5">
                 <Text className="text-2xl font-bold mt-5 ml-3 text-white">
                   Log In
@@ -123,7 +116,7 @@ const Login = () => {
                   </Text>
                 </Text>
               </View>
-              <Pressable
+              {/* <Pressable
                 onPress={() => router.push("/screens/(auth)/(SignIn)/SignUp")}
                 className="w-[90%] flex justify-center items-center p-2"
                 style={{ position: "absolute", bottom: 16 }}
@@ -153,14 +146,14 @@ const Login = () => {
                     Sign Up
                   </Text>
                 </Pressable>
-              </Pressable>
+              </Pressable> */}
             </View>
           )}
 
           {/* Login Form */}
           <View
             className={`${
-              Platform.OS === "web" ? "w-[60%] h-[415px]" : "w-full mx-auto"
+              Platform.OS === "web" ? "w-[60%] h-[450px]" : "w-full mx-auto"
             } p-5 py-8 `}
             style={[isScreenSmall ? { width: "100%" } : {}]}
           >
@@ -205,7 +198,7 @@ const Login = () => {
 
             {/* Password Input */}
             <View
-              className={`bg-white h-[50]  ${
+              className={` h-[50]  ${
                 Platform.OS === "web" ? "w-[75%]" : "w-[90%]"
               } mx-auto mt-8`}
               style={[isScreenSmall ? { width: "100%" } : {}]}
@@ -252,43 +245,46 @@ const Login = () => {
                 />
               </Pressable>
             </View>
-            {((Platform.OS === "web" && width < 1024) ||
-              Platform.OS !== "web") && (
-              <View className="mt-24 ">
-                <Pressable
-                  onPress={() => {
-                    if (Platform.OS === "web") {
-                      // router.push("/screens/(auth)/(SignIn)/SignUp");
-                      router.push("/screens/SignUp");
-                    } else {
-                      // navigation.navigate("SignUp");
-                      navigation.replace("SignUp");
-                    }
-                  }}
-                  className="w-full flex justify-center items-center p-2"
-                  style={{ position: "absolute", bottom: 16 }}
-                >
-                  <Text className=" font-semibold">
-                    New to Machine Market?
-                    <Text className="underline rounded-md text-TealGreen">
-                      {" "}
-                      SignUp
-                    </Text>
-                  </Text>
-                </Pressable>
-              </View>
-            )}
 
             {/* Login Button */}
             <Pressable
               onPress={() => Login()}
-              className={`bg-TealGreen mb-4 py-4  px-4 h-max  w-24 mx-auto rounded-md ${
+
+
+              className={`bg-TealGreen mb-4 py-4  px-4 h-max mx-auto rounded-md ${
+                isScreenSmall ? "w-[90%]" : "w-[75%]"
+              } ${
                 (Platform.OS === "web" && width < 1024) || Platform.OS !== "web"
-                  ? "mt-2"
-                  : "mt-16"
-              }`}
+                  ? "mt-8"
+                  : "mt-8"
+              } `}
+
             >
               <Text className="text-white m-auto font-bold">Log In</Text>
+            </Pressable>
+
+            <Text className=" font-semibold text-center mt-2">
+              New to Machine Streets?
+            </Text>
+            <Pressable
+              onPress={() => {
+                if (Platform.OS === "web") {
+                  // router.push("/screens/(auth)/(SignIn)/SignUp");
+                  router.push("/screens/SignUp");
+                } else {
+                  // navigation.navigate("SignUp");
+                  navigation.replace("SignUp");
+                }
+              }}
+              className={`bg-TealGreen mb-4 py-4  px-4 h-max   ${
+                isScreenSmall ? "w-[90%]" : "w-[75%]"
+              } mt-4 mx-auto rounded-md ${
+                (Platform.OS === "web" && width < 1024) || Platform.OS !== "web"
+                  ? "mt-2"
+                  : "mt-2"
+              }`}
+            >
+              <Text className="text-white m-auto font-bold">Sign Up</Text>
             </Pressable>
           </View>
         </View>

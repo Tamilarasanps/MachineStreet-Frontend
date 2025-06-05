@@ -88,7 +88,7 @@ export default function SubCategory({
       {subCategories?.map((sub, subIndex) => (
         <View
           key={subIndex}
-          className="p-4 border border-gray-200  rounded-lg z-999"
+          className="p-4 border border-gray-200  rounded-lg z-50"
           style={{ marginBottom: 50 }}
         >
           <View className="w-full flex justify-end items-end ">
@@ -260,7 +260,7 @@ export default function SubCategory({
       {/* Add Another Subcategory */}
       <TouchableOpacity
         onPress={handleAddSubCategory}
-        className="bg-teal-700 rounded-lg p-3 mb-6"
+        className="bg-teal-700 rounded-lg p-3 mb-6 z-10"
       >
         <Text className="text-white text-center font-semibold">
           + Add Another {labels[0]}
