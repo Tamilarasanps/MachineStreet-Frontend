@@ -20,11 +20,15 @@ export default function Index() {
     };
     getRole();
   }, []);
-  if (role === null) return <LandingPage />; // or a loading spinner
+  console.log()
+  if (role === null) {
+    return Platform.OS === "web" ? <LandingPage /> : <BottomNavBar />;
+  }
 
-  if (Platform.OS === "web" && role !== "admin") return <LandingPage />;
-  if (Platform.OS === "web" && role === "admin") return <AdminHomePage />;
+  if (role === "admin") return <AdminHomePage />;
 
-  return role === "admin" ? <AdminHomePage /> : <BottomNavBar />;
+  if (role === "mechanic") {
+    return Platform.OS === "web" ? <LandingPage /> : <BottomNavBar />;
+  }
 
 }

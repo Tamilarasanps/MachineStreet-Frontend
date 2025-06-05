@@ -103,19 +103,39 @@ const ProfilePage = ({}) => {
     }
   };
 
-  const passwordReset = async () => {
-    if (password !== confirmpass) alert("password should not match");
+  const logout = async () => {
     try {
-      const token = await AsyncStorage.getItem("userToken");
-      const response = await postJsonApi(
-        `profile/passwordReset`,
-        { password: password },
-        token
-      );
+      await AsyncStorage.removeItem("userToken");
+      await AsyncStorage.removeItem("role");
+      // Navigation
+      if (Platform.OS === "web") {
+        router.push("/");
+      } else {
+        navigation.navigate("HomePage");
+      }
     } catch (error) {
-      console.error(error.message, "error");
+      console.error("Error during logout:", error);
     }
   };
+
+  const passwordReset = useCallback(async () => {
+  if (password !== confirmpass) {
+    alert("password should not match");
+    return;
+  }
+
+  try {
+    const token = await AsyncStorage.getItem("userToken");
+    const response = await postJsonApi(
+      "profile/passwordReset",
+      { password },
+      token
+    );
+    // handle response if needed
+  } catch (error) {
+    console.error(error.message, "error");
+  }
+}, [password, confirmpass]);
 
   const handleLogout = useCallback(() => {
     if (Platform.OS === "web") {
@@ -169,20 +189,21 @@ const ProfilePage = ({}) => {
 
   // post likes
 
-  async function handleLike(post) {
-    const token = await AsyncStorage.getItem("userToken");
+  
+const handleLike = useCallback(async (post) => {
+  const token = await AsyncStorage.getItem("userToken");
 
-    try {
-      const result = await postJsonApi(
-        "mechanicList/postLikes",
-        { post: post },
-        token
-      );
-      setComments(result.data);
-    } catch (err) {
-      console.log(err);
-    }
+  try {
+    const result = await postJsonApi(
+      "mechanicList/postLikes",
+      { post },
+      token
+    );
+    setComments(result.data);
+  } catch (err) {
+    console.log(err);
   }
+}, []);
 
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState("");
