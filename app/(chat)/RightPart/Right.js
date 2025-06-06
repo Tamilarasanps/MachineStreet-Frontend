@@ -7,7 +7,7 @@ import useGetMessages from "@/app/context/useGetMessages";
 const Right = ({ setUserClick }) => {
   const { width } = useWindowDimensions();
     const { userNotFound } = useGetMessages(); // Get messages from API
-console.log("rigth reacvhed")
+// console.log("rigth reacvhed")
     
 
   if (userNotFound) {

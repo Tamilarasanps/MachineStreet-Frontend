@@ -42,18 +42,18 @@ export default function Header({
       const data = await getJsonApi(
         `searchResult/search?searchTerms=${searchBar}&page=${page}`
       );
-      console.log(data);
+      // console.log(data);
 
       if (page === "mechanic" && data.status === 200) {
-        console.log("reached mmm");
-        console.log("reached mmm :", data.data.structuredResult);
+        // console.log("reached mmm");
+        // console.log("reached mmm :", data.data.structuredResult);
         setMechanicSearchResults(data.data.users);
       } else {
-        console.log("datb :", data);
+        // console.log("datb :", data);
         setSearchResults(data.data.users || []);
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 

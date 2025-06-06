@@ -22,6 +22,8 @@ import { useSocketContext } from "../context/SocketContext";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useCallback } from "react";
 import { useNavigation } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PostViewerModal = ({
@@ -49,9 +51,26 @@ const PostViewerModal = ({
   const [selectedPost, setSelectedPost] = useState(null);
   const { socket } = useSocketContext();
   const [showDelete, setShowDelete] = useState("");
+  const [heartAnimations, setHeartAnimations] = useState({});
+
+  useEffect(() => {
+    const newAnimations = {};
+    posts.forEach((post) => {
+      newAnimations[post._id] = {
+        scale: new Animated.Value(0),
+        opacity: new Animated.Value(0),
+      };
+    });
+    setHeartAnimations(newAnimations);
+  }, [posts]);
 
   const navigation = useNavigation();
-console.log("posts :",posts)
+  console.log("posts :", posts);
+  posts.forEach((post) => {
+    console.log("post.userId :", post.userId);
+  });
+  console.log("handleLike :", handleLike);
+
   async function deletePostLogic(postId) {
     const token = await AsyncStorage.getItem("userToken");
 
@@ -110,7 +129,6 @@ console.log("posts :",posts)
   }, [socket]);
 
   useEffect(() => {
-    // console.log("jjjkkkkkkk");
     if (scrollRef.current && isLayoutDone && activeIndex !== null) {
       const targetY = postOffsets.current[activeIndex] || 0;
       // Delay scroll to allow for layout update
@@ -121,32 +139,59 @@ console.log("posts :",posts)
   }, [activeIndex, isLayoutDone]);
 
   const lastTap = useRef(null);
-  const scale = useRef(new Animated.Value(0)).current;
 
-  const handleDoubleTap = () => {
+  const scale = useRef(new Animated.Value(0)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  const handleDoubleTap = (post) => {
     const now = Date.now();
+    if (!post || !Array.isArray(post.likes)) return;
+
+    const currentUser = post.userId;
+
     if (lastTap.current && now - lastTap.current < 300) {
-      // Double tap detected
-      // onLike(post._id);
-      animateHeart();
+      const userAlreadyLiked = post.likes.includes(currentUser);
+      if (!userAlreadyLiked) {
+        handleLike(post._id);
+      }
+      animateHeart(post._id);
     } else {
       lastTap.current = now;
     }
   };
 
-  const animateHeart = () => {
-    Animated.sequence([
-      Animated.timing(scale, {
+  const animateHeart = (postId) => {
+    const { scale, opacity } = heartAnimations[postId];
+
+    scale.setValue(0);
+    opacity.setValue(1);
+
+    Animated.parallel([
+      Animated.spring(scale, {
+        toValue: 1.5,
+        friction: 3,
+        tension: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacity, {
         toValue: 1,
-        duration: 800,
+        duration: 100,
         useNativeDriver: true,
       }),
-      Animated.timing(scale, {
-        toValue: 0,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    ]).start(() => {
+      Animated.parallel([
+        Animated.timing(scale, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
   };
 
   // Move all hook declarations before any conditional returns
@@ -248,12 +293,12 @@ console.log("posts :",posts)
               width: "100%",
               alignItems: "center",
               justifyContent: "center",
-              position: "relative"
+              position: "relative",
             }}
           >
             {/* Media Container */}
             <Pressable
-              onPress={handleDoubleTap}
+              onPress={() => handleDoubleTap(post)}
               style={{
                 width: "100%",
                 aspectRatio: 1,
@@ -273,7 +318,7 @@ console.log("posts :",posts)
                 //   }
                 // }}
                 >
-                  <VideoGridItem videoId={post.media}  />
+                  <VideoGridItem videoId={post.media} />
                 </TouchableOpacity>
               ) : (
                 <Image
@@ -293,14 +338,19 @@ console.log("posts :",posts)
                   position: "absolute",
                   top: "40%",
                   left: "40%",
-                  transform: [{ scale }],
-                  opacity: scale,
+                  transform: [
+                    {
+                      scale:
+                        heartAnimations[post._id]?.scale ||
+                        new Animated.Value(0),
+                    },
+                  ],
+                  opacity:
+                    heartAnimations[post._id]?.opacity || new Animated.Value(0),
+                  zIndex: 1,
                 }}
               >
-                <Image
-                  source={require("../assests/machine/heart.png")} // ❤️ icon
-                  style={{ width: 60, height: 60 }}
-                />
+                <Ionicons name="heart" size={100} color="red" />
               </Animated.View>
             </Pressable>
 

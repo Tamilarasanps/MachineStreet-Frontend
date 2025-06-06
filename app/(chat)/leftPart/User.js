@@ -5,7 +5,7 @@ import useConversation from "@/app/stateManagement/useConversation";
 
 const User = ({ allUser, setUserClick, setSearchKey, searchKey }) => {
   const { selectedConversation, setSelectedConversation } = useConversation();
-console.log('allUser :', allUser)
+// console.log('allUser :', allUser)
   // Filter users based on searchKey
   const filteredUsers = allUser.filter(
     (user) =>

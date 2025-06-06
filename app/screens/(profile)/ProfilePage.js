@@ -103,8 +103,6 @@ const ProfilePage = ({}) => {
     }
   };
 
-
-
   const logout = async () => {
     try {
       await AsyncStorage.removeItem("userToken");
@@ -121,24 +119,23 @@ const ProfilePage = ({}) => {
   };
 
   const passwordReset = useCallback(async () => {
-  if (password !== confirmpass) {
-    alert("password should not match");
-    return;
-  }
+    if (password !== confirmpass) {
+      alert("password should not match");
+      return;
+    }
 
-  try {
-    const token = await AsyncStorage.getItem("userToken");
-    const response = await postJsonApi(
-      "profile/passwordReset",
-      { password },
-      token
-    );
-    // handle response if needed
-  } catch (error) {
-    console.error(error.message, "error");
-  }
-}, [password, confirmpass]);
-
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+      const response = await postJsonApi(
+        "profile/passwordReset",
+        { password },
+        token
+      );
+      // handle response if needed
+    } catch (error) {
+      console.error(error.message, "error");
+    }
+  }, [password, confirmpass]);
 
   const handleLogout = useCallback(() => {
     if (Platform.OS === "web") {
@@ -192,21 +189,21 @@ const ProfilePage = ({}) => {
 
   // post likes
 
-  
-const handleLike = useCallback(async (post) => {
-  const token = await AsyncStorage.getItem("userToken");
+  const handleLike = useCallback(async (post) => {
+    const token = await AsyncStorage.getItem("userToken");
 
-  try {
-    const result = await postJsonApi(
-      "mechanicList/postLikes",
-      { post },
-      token
-    );
-    setComments(result.data);
-  } catch (err) {
-    console.log(err);
-  }
-}, []);
+    try {
+      const result = await postJsonApi(
+        "mechanicList/postLikes",
+        { post },
+        token
+      );
+      console.log(result)
+      setComments(result.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState("");
@@ -409,39 +406,44 @@ const handleLike = useCallback(async (post) => {
               </View>
             )}
           </View>
+          {/* <View className="relative w-full h-64"> */}
+
+          {/* Parent container */}
           <Pressable
-            style={{ borderWidth: 2, borderColor: "#ffffff" }}
-            className={` ${
-              width < 480
-                ? "max-w-48 max-h-48 -bottom-24"
-                : "max-h-64 max-w-64 -bottom-24"
-            } absolute  left-1/2 -translate-x-1/2 overflow-hidden rounded-full`}
+            style={{ borderWidth: 2, borderColor: "white" }}
+            className={`absolute left-1/2 -translate-x-1/2 -bottom-24 overflow-hidden rounded-full ${
+              width < 480 ? "max-w-48 max-h-48" : "max-w-64 max-h-64"
+            }`}
           >
-            {/* {userProfileImage ? ( */}
             <View
               className="bg-TealGreen items-center justify-center"
               style={{
                 width: 200,
                 height: 200,
                 borderRadius: 100,
-                // overflow: "hidden", // Ensures circular shape
+                overflow: "hidden",
+
+                ...(Platform.OS !== "web" && { marginTop: -20 }),
               }}
             >
-              <View
-                className="justify-center items-center"
-                style={{ width: "100%", height: "100%" }}
-              >
-                {userProfile?.profileImage ? (
-                  <Image
-                    source={{
-                      uri: `data:image/jpeg;base64,${userProfile?.profileImage}`,
-                    }}
-                    className="w-full h-full rounded-full"
+              {userProfile?.profileImage ? (
+                <Image
+                  source={{
+                    uri: `data:image/jpeg;base64,${userProfile?.profileImage}`,
+                  }}
+                  className="w-full h-full"
+                  resizeMode="cover"
+                />
+              ) : (
+                <View className="w-full h-full items-center justify-center">
+                  <FontAwesome
+                    name="user"
+                    size={100}
+                    color="white"
+                    style={{ marginRight: "30" }}
                   />
-                ) : (
-                  <FontAwesome name="user" size={100} color="white" />
-                )}
-              </View>
+                </View>
+              )}
             </View>
 
             {/* Edit Icon */}
@@ -455,16 +457,14 @@ const handleLike = useCallback(async (post) => {
                   position: "absolute",
                   bottom: 10,
                   right: 10,
-                  elevation: 5, // Shadow effect for better visibility
+                  elevation: 5,
                 }}
               >
                 <Pressable
                   onPress={async () => {
                     const result = await pickMedia("image", "profile");
                     if (!result.canceled) {
-                      // const updateProfileImage = async () => {
                       handleImageUpload(result, "profile");
-                      // };
                     }
                   }}
                 >
@@ -473,6 +473,7 @@ const handleLike = useCallback(async (post) => {
               </View>
             )}
           </Pressable>
+          {/* </View> */}
         </View>
 
         {page !== "uservisit" && (
@@ -792,7 +793,7 @@ const handleLike = useCallback(async (post) => {
           posts={posts}
           onPostPress={(index) => {
             setActivePostIndex(index);
-            console.log("index :", index);
+            // console.log("index :", index);
           }}
           width={width}
           // loading={isLoading}

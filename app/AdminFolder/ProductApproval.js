@@ -19,7 +19,7 @@ const ProductApproval = () => {
         const data = await getJsonApi(
           `adminApproval/getPendingProducts/${status}`
         );
-        console.log(data);
+        // console.log(data);
         setProducts(data.data);
       } catch (error) {
         console.error(error);

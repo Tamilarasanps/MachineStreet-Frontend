@@ -33,7 +33,7 @@ export const FileUploadProvider = ({ children }) => {
     } else {
       mediaTypes = ImagePicker.MediaTypeOptions.All; // Both image and video
     }
-console.log(page === "banner")
+// console.log(page === "banner")
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes,
       quality: 0.8,
@@ -98,7 +98,7 @@ console.log(page === "banner")
       const type = result.assets[0].mimeType.split("/")[0];
 
       if (type === "image") {
-        console.log("type image")
+        // console.log("type image")
         handleImages(result.assets);
       } else {
         handleVideo(result.assets[0]);

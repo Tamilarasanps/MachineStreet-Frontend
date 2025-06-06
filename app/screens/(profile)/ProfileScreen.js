@@ -74,7 +74,7 @@ const ProfileScreen = ({ navigation }) => {
       try {
         const token = await AsyncStorage.getItem("userToken");
         const formdata = new FormData();
-        console.log(result);
+        // console.log(result);
         result.assets.forEach((asset) => {
           formdata.append("images", asset.file);
         });
@@ -157,7 +157,7 @@ const ProfileScreen = ({ navigation }) => {
   const handleLogout = useCallback(async () => {
     Alert.alert("Logout", "Are you sure you want to logout?");
 
-    console.log("Logout initiated");
+    // console.log("Logout initiated");
 
     try {
       await AsyncStorage.removeItem("userToken");

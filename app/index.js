@@ -20,7 +20,7 @@ export default function Index() {
     };
     getRole();
   }, []);
-  console.log();
+  // console.log();
   //   if (role === null) {
   //     return Platform.OS === "web" ? <LandingPage /> : <BottomNavBar />;
   //   }

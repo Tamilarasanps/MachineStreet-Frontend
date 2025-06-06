@@ -15,8 +15,8 @@ const ChatUser = ({ setUserClick, width }) => {
   const { selectedConversation } = useConversation();
   const receiver = allUsers.find((user) => user._id === selectedConversation);
   const { onlineUsers } = useSocketContext();
-console.log("chats reacvhed")
-  console.log('onlineUsers :', onlineUsers)
+// console.log("chats reacvhed")
+//   console.log('onlineUsers :', onlineUsers)
 
   return (
     <SafeAreaView

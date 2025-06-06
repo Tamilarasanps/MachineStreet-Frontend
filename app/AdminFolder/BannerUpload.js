@@ -67,7 +67,7 @@ export default function BannerUpload() {
     try {
       const token = await AsyncStorage.getItem("userToken");
       const result = await getJsonApi("adminApproval/getbanners", token);
-console.log('@result :', result)
+// console.log('@result :', result)
       if (result.status === 200) {
         const bannerList = result.data.result || [];
         setBanner(bannerList);
@@ -88,7 +88,7 @@ console.log('@result :', result)
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
-      console.log(selectedImage);
+      // console.log(selectedImage);
       if (Platform.OS === "web") {
         selectedImage.forEach((image) => {
           formData.append("images", image.file);
@@ -230,7 +230,7 @@ console.log('@result :', result)
           setCurrentIndex={setCurrentIndex}
           onChange={(index) => {
             // Optional change button logic
-            console.log("Change image at index:", index);
+            // console.log("Change image at index:", index);
           }}
           
         />

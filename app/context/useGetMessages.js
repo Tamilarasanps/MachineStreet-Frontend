@@ -8,7 +8,7 @@ const useGetMessages = () => {
   const { messages, setMessage, selectedConversation } = useConversation();
   const { getJsonApi } = useApi();
   const [userNotFound,setUserNotFound] = useState(false)
-  console.log(selectedConversation, setMessage)
+  // console.log(selectedConversation, setMessage)
 
   useEffect(() => {
     const getMessages = async () => {
@@ -19,8 +19,8 @@ const useGetMessages = () => {
             `message/get/${selectedConversation}`,
             token
           );
-          console.log("response:", res)
-          console.log("response status :", res.status)
+          // console.log("response:", res)
+          // console.log("response status :", res.status)
           if(res.status===404){
             setUserNotFound(true)
           }
