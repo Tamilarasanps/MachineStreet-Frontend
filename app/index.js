@@ -20,19 +20,35 @@ export default function Index() {
     };
     getRole();
   }, []);
-  console.log()
+  console.log();
+  //   if (role === null) {
+  //     return Platform.OS === "web" ? <LandingPage /> : <BottomNavBar />;
+  //   }
+
+  //   if (Platform.OS === "web" && role !== "admin") {
+  //     if (Platform.OS === "web") {
+  //       <LandingPage />;
+  //     } else {
+  //       <BottomNavBar />;
+  //     }
+  //   }
+  //   if (Platform.OS === "web" && role === "admin") return <AdminHomePage />;
+
+  //   return role === "admin" ? <AdminHomePage /> : <BottomNavBar />;
+  // }
+
   if (role === null) {
     return Platform.OS === "web" ? <LandingPage /> : <BottomNavBar />;
   }
 
-  if (Platform.OS === "web" && role !== "admin") {
-    if (Platform.OS === "web") {
-      <LandingPage />;
+  if (Platform.OS === "web") {
+    if (role === "admin") {
+      return <AdminHomePage />;
     } else {
-      <BottomNavBar />;
+      return <LandingPage />;
     }
   }
-  if (Platform.OS === "web" && role === "admin") return <AdminHomePage />;
 
+  // For mobile (non-web)
   return role === "admin" ? <AdminHomePage /> : <BottomNavBar />;
 }

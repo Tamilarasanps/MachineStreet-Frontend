@@ -1,5 +1,3 @@
-
-
 {
   "build": {
     "preview": {
@@ -7,6 +5,13 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      }
+    },
+    "production": {
+      "developmentClient": false,
+      "distribution": "store",
+      "android": {
+        "buildType": "app-bundle"
       }
     }
   }
