@@ -29,6 +29,7 @@ export default function CommentModal({
   const { width, height } = Dimensions.get("window");
   const { socket } = useSocketContext();
   const { formatTime } = useContext(FormatTime); // ✅ correct way to use
+  console.log("comment :", comment);
 
   useEffect(() => {
     const handleCommentsUpdate = (data) => {
@@ -143,7 +144,7 @@ export default function CommentModal({
               placeholder="Write a comment..."
               placeholderTextColor="#888"
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              onChangeText={(text) => setComment(text)}
               style={{
                 flex: 1,
                 height: 45,

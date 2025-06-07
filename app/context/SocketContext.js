@@ -1,5 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { AuthContext } from "@/app/context/AuthProvider";
 import io from "socket.io-client";
 
 const socketContext = createContext();
@@ -12,34 +12,54 @@ export const useSocketContext = () => {
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [authUser, setAuthUser] = useContext(AuthContext);
 
   useEffect(() => {
-    if (authUser) {
-      // ✅ Checking if authUser is valid
-      const newSocket = io("https://api.machinestreets.com", {
-      // const newSocket = io("http://192.168.1.5:5000", {
-        transports: ["websocket", "polling"],
-        query: { token: authUser },
-        withCredentials: true, // 👈 Optional but helps in cross-domain auth
-      });
+    let newSocket;
 
-      setSocket(newSocket);
+    const initSocket = async () => {
+      const token = await AsyncStorage.getItem("userToken");
 
-      newSocket.on("getOnlineUsers", (users) => {
-        if (Array.isArray(users)) {
-          setOnlineUsers(users);
+      if (token) {
+        newSocket = io("http://192.168.1.5:5000", {
+          // const newSocket = io("https://api.machinestreets.com", {
+          transports: ["websocket", "polling"],
+          query: { token }, // use the retrieved token here
+          withCredentials: true,
+        });
+
+        console.log("socket reached");
+        setSocket(newSocket);
+
+        newSocket.on("getOnlineUsers", (users) => {
+          if (Array.isArray(users)) {
+            setOnlineUsers(users);
+          }
+        });
+
+        newSocket.on("connect_error", (err) => {
+          console.log("Socket connect_error:", err.message);
+        });
+
+        newSocket.on("error", (err) => {
+          console.log("Socket error:", err);
+        });
+      } else {
+        if (socket) {
+          socket.disconnect();
+          setSocket(null);
+          console.log("disconnected :");
         }
-      });
-
-      return () => newSocket.disconnect();
-    } else {
-      if (socket) {
-        socket.disconnect();
-        setSocket(null);
       }
-    }
-  }, [authUser]);
+    };
+
+    initSocket();
+
+    return () => {
+      if (newSocket) {
+        newSocket.disconnect();
+      }
+    };
+  }, []);
 
   return (
     <socketContext.Provider value={{ socket, onlineUsers }}>
