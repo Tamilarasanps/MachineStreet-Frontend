@@ -51,7 +51,7 @@ const PostViewerModal = ({
   const [showDelete, setShowDelete] = useState("");
 
   const navigation = useNavigation();
-console.log("posts :",posts)
+
   async function deletePostLogic(postId) {
     const token = await AsyncStorage.getItem("userToken");
 
@@ -163,7 +163,7 @@ console.log("posts :",posts)
       // const { isPlaying } = useEvent(player, "playingChange", {
       //   isPlaying: player.playing,
       // });
-
+console
       return (
         <View
           key={post._id}

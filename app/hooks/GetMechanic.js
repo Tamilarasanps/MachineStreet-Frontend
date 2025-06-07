@@ -24,7 +24,6 @@ const GetMechanic = () => {
           `mechanicList/?page=${page}&limit=50`,
           token
         );
-        console.log("data :", data);
 
         setMechanics(data?.data?.mechanics?.data);
         setTotalPages(data?.data?.mechanics?.totalPages);
@@ -44,7 +43,7 @@ const GetMechanic = () => {
   }, [page]);
 
   return {
-    loading, 
+    loading,
     mechanics,
     setMechanics,
     industries,

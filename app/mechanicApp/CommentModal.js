@@ -32,12 +32,10 @@ export default function CommentModal({
 
   useEffect(() => {
     const handleCommentsUpdate = (data) => {
-      console.log('@data :', data)
       setComments((prev) => [...prev, data.comment]);
     };
 
     if (socket) {
-      console.log('@socke ')
       socket.on("comments-updated", handleCommentsUpdate);
     }
 
@@ -50,7 +48,6 @@ export default function CommentModal({
 
   useEffect(() => {
     if (socket && socket.connected && selectedPost) {
-      console.log('@triggered :', selectedPost)
       socket.emit("join-post-room", selectedPost);
       return () => {
         socket.emit("leave-post-room", selectedPost);
@@ -61,7 +58,7 @@ export default function CommentModal({
   // useEffect(()=>{
   //   if(postId) fectchComments(postId)
   // },[postId])
-
+  console.log("comment :", comment);
   return (
     <Modal animationType="slide" transparent={true}>
       <BlurView intensity={50} tint="light" style={styles.blurContainer}>
@@ -143,7 +140,7 @@ export default function CommentModal({
               placeholder="Write a comment..."
               placeholderTextColor="#888"
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              onChangeText={(text) => setComment(text)}
               style={{
                 flex: 1,
                 height: 45,

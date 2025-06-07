@@ -15,7 +15,7 @@ import { FileUpload } from "../context/FileUpload";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useApi from "../hooks/useApi";
 import qrImage from "../../assets/images/qr.png";
-// import { AuthContext } from "../context/AuthProvider";
+// import  {AuthContext}  from "../context/AuthProvider";
 import CryptoJS from "crypto-js";
 
 const QrModal = ({ visible, onClose }) => {

@@ -62,30 +62,30 @@ const ModalScreen = () => {
     }
   };
 
-  const handleLogout = useCallback(async () => {
-    Alert.alert("Logout", "Are you sure you want to logout?");
+  // const handleLogout = useCallback(async () => {
+  //   Alert.alert("Logout", "Are you sure you want to logout?");
 
-    console.log("Logout initiated");
+  //   console.log("Logout initiated");
 
-    try {
-      await AsyncStorage.removeItem("userToken");
-      await AsyncStorage.removeItem("username");
-      await AsyncStorage.removeItem("email");
+  //   try {
+  //     await AsyncStorage.removeItem("userToken");
+  //     await AsyncStorage.removeItem("username");
+  //     await AsyncStorage.removeItem("email");
 
-      setUsername("");
-      setEmail("");
-      setUserProfile(null);
+  //     setUsername("");
+  //     setEmail("");
+  //     setUserProfile(null);
 
-      // Navigation
-      if (Platform.OS === "web") {
-        router.push("/"); // For web
-      } else {
-        navigation.navigate("HomePage"); // For mobile
-      }
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  }, [navigation]);
+  //     // Navigation
+  //     if (Platform.OS === "web") {
+  //       router.push("/"); // For web
+  //     } else {
+  //       navigation.navigate("HomePage"); // For mobile
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during logout:", error);
+  //   }
+  // }, [navigation]);
 
   return (
     <View className="flex-1 justify-center items-center bg-white px-4">

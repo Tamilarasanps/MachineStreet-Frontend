@@ -20,7 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import FilterComponent from "./Filter";
 import useApi from "../hooks/useApi";
 import ReviewModal from "./ReviewModal";
-import { AuthContext } from "../context/AuthProvider";
+import {AuthContext}  from "../context/AuthProvider";
 import { useContext } from "react";
 import { useNavigation } from "expo-router";
 import Header from "../component/(header)/Header";

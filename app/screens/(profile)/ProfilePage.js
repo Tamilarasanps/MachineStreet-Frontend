@@ -119,23 +119,23 @@ const ProfilePage = ({}) => {
   };
 
   const passwordReset = useCallback(async () => {
-  if (password !== confirmpass) {
-    alert("password should not match");
-    return;
-  }
+    if (password !== confirmpass) {
+      alert("password should not match");
+      return;
+    }
 
-  try {
-    const token = await AsyncStorage.getItem("userToken");
-    const response = await postJsonApi(
-      "profile/passwordReset",
-      { password },
-      token
-    );
-    // handle response if needed
-  } catch (error) {
-    console.error(error.message, "error");
-  }
-}, [password, confirmpass]);
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+      const response = await postJsonApi(
+        "profile/passwordReset",
+        { password },
+        token
+      );
+      // handle response if needed
+    } catch (error) {
+      console.error(error.message, "error");
+    }
+  }, [password, confirmpass]);
 
   const handleLogout = useCallback(() => {
     if (Platform.OS === "web") {
@@ -189,21 +189,20 @@ const ProfilePage = ({}) => {
 
   // post likes
 
-  
-const handleLike = useCallback(async (post) => {
-  const token = await AsyncStorage.getItem("userToken");
+  const handleLike = useCallback(async (post) => {
+    const token = await AsyncStorage.getItem("userToken");
 
-  try {
-    const result = await postJsonApi(
-      "mechanicList/postLikes",
-      { post },
-      token
-    );
-    setComments(result.data);
-  } catch (err) {
-    console.log(err);
-  }
-}, []);
+    try {
+      const result = await postJsonApi(
+        "mechanicList/postLikes",
+        { post },
+        token
+      );
+      setComments(result.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState("");
@@ -590,7 +589,7 @@ const handleLike = useCallback(async (post) => {
               animationType="slide"
               // visible={modalVisible}
               visible={updateModal}
-              onRequestClose={() => setUpdateModal(true)}
+              onRequestClose={() => setUpdateModal(false)}
             >
               <BlurView
                 intensity={50}
@@ -789,7 +788,6 @@ const handleLike = useCallback(async (post) => {
           posts={posts}
           onPostPress={(index) => {
             setActivePostIndex(index);
-            console.log("index :", index);
           }}
           width={width}
           // loading={isLoading}
