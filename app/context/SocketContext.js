@@ -13,11 +13,12 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [authUser, setAuthUser] = useContext(AuthContext);
- 
+
   useEffect(() => {
     if (authUser) {
       // ✅ Checking if authUser is valid
       const newSocket = io("https://api.machinestreets.com", {
+      // const newSocket = io("http://192.168.1.5:5000", {
         transports: ["websocket", "polling"],
         query: { token: authUser },
         withCredentials: true, // 👈 Optional but helps in cross-domain auth
