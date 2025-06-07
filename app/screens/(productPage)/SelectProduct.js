@@ -75,7 +75,7 @@ export default function SelectProduct() {
   const fetchProduct = useCallback(async () => {
     try {
       const data = await getJsonApi(`productDetails/${id}`);
-      console.log("data :", data);
+      // console.log("data :", data);
 
       const productData = data?.data?.mainProduct;
 
@@ -99,7 +99,7 @@ export default function SelectProduct() {
           : []),
       ]);
 
-      console.log(data?.data?.mainProduct?.machineVideos);
+      // console.log(data?.data?.mainProduct?.machineVideos);
 
       setProduct(productData);
 

@@ -110,7 +110,7 @@ const LandingPage = () => {
     </View>
   );
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={{ backgroundColor: "#f8fafc" }}>
         {/* Header */}
         <View style={styles.header}>
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     paddingHorizontal: 0,
     paddingTop: 12,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#ffffff",
     flex: 1,
   },
   heroTitle: {

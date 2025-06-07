@@ -14,12 +14,12 @@ const QrPage = () => {
       try {
         const token = await AsyncStorage.getItem("userToken");
         const response = await getJsonApi("adminApproval/adminQr", token);
-        console.log("response :", response);
+        // console.log("response :", response);
         if (response.status === 200) {
           setQr(response?.data?.qrCodes);
         }
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     };
     fetchQr();

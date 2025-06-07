@@ -71,7 +71,7 @@ const Login = () => {
         // await AsyncStorage.setItem("qr", response.data.qr);
 
         if (Platform.OS === "web") {
-          router.replace("/mechanicApp/MechanicList_2");
+          router.push("/mechanicApp/MechanicList_2");
         } else {
           navigation.navigate("MechanicProfiles");
         }

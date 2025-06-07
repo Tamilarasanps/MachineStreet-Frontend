@@ -84,7 +84,7 @@ const EditProfile = ({
         const data = await getJsonApi(
           `CategoryPage/${mechanicDetails.industry}/sell`
         );
-        console.log("category suggestion", data);
+        // console.log("category suggestion", data);
         setCategorySuggestion(data.data.categoryNames);
       }
     } catch (err) {
@@ -109,10 +109,10 @@ const EditProfile = ({
   const handleChange = (key, value) => {
     setMechanicDetails((prev) => ({ ...prev, [key]: value }));
   };
-console.log('mechanicDetails :', mechanicDetails)
-console.log('location :', location)
-console.log('phoneNumber :', phoneNumber)
-console.log('count :', selectedCode)
+// console.log('mechanicDetails :', mechanicDetails)
+// console.log('location :', location)
+// console.log('phoneNumber :', phoneNumber)
+// console.log('count :', selectedCode)
   const handleSubmit = async () => {
     if (
       !mechanicDetails.organization ||
@@ -156,7 +156,7 @@ console.log('count :', selectedCode)
           updatedDetails,
           token
         );
-        console.log("Profile updated:", result);
+        // console.log("Profile updated:", result);
         toast.show("Profile updated!", {
           type: "success",
           placement: "top",
@@ -198,7 +198,7 @@ console.log('count :', selectedCode)
       // nextref?.current?.focus();
     }
   };
-  console.log(mechanicDetails);
+  // console.log(mechanicDetails);
   return (
     <Modal
       animationType="slide"

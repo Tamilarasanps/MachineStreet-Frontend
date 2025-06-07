@@ -22,7 +22,7 @@ const Layout = () => {
                 <FormatTimeProvider>
                   <Toast /> {/* ✅ This renders the toast */}
                   <SafeAreaView
-                    style={{ zIndex: 9999, backgroundColor: "#d5d8dc" }}
+                    style={{ zIndex: 9999, backgroundColor: "ffffff" }}
                   >
                     {/* Your header or nav */}
                   </SafeAreaView>

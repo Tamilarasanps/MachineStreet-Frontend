@@ -11,6 +11,7 @@ const useApi = () => {
   const handleRequest = async (request, path, token) => {
     try {
       const response = await request();
+      console.log('response :', response)
       const successMessage =
         response?.data?.message || response?.data || "Request successful";
       if (typeof successMessage === "string") {
@@ -23,7 +24,7 @@ const useApi = () => {
 
       return response;
     } catch (err) {
-      console.log('err :', err)
+      // console.log('err :', err)
       const errorMessage =
         err.response?.data?.message ||
         err.response?.data ||

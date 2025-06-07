@@ -20,7 +20,7 @@ const SubCategoryList = ({ cat, setPopUp, popUp, setSelectedSub }) => {
                 key={index}
                 className="mt-4 bg-blue-500 p-4 rounded-md"
                 onPress={() => {
-                  console.log(index);
+                  // console.log(index);
                   setSelectedSub(index);
                   setPopUp(!popUp);
                 }}

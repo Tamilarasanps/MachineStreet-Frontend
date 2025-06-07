@@ -108,7 +108,7 @@ export default function FilterComponent({
       className={`bg-white ml-2 rounded-md   p-4 
          shadow-md flex ${
            width < 1024
-             ? "absolute z-50 h-screen w-[100%] flex-col pb-20"
+             ? "absolute z-50 flex-1 w-[100%] flex-col pb-20"
              : "flex-row h-[95%] my-auto"
          }`}
     >

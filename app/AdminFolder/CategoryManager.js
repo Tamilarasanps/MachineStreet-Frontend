@@ -40,7 +40,7 @@ const CategoryManager = () => {
       if (response.status === 200 && fetchdata === "category") {
         setCategoryList(response.data.category);
       } else if (response.status === 200 && fetchdata === "subcategory") {
-        console.log(response.data.category.subCategories);
+        // console.log(response.data.category.subCategories);
 
         setIndustry(response.data.category.industry?.name || "");
         setCategory(response.data.category.category?.name || "");
@@ -77,7 +77,7 @@ const CategoryManager = () => {
   }, [selected]);
 
   const handleSubmit = async () => {
-    console.log("triggered");
+    // console.log("triggered");
     if (!industry?.trim()) {
       return showToast("Please enter an industry name.");
     }
@@ -137,7 +137,7 @@ const CategoryManager = () => {
           "Content-Type": "application/json",
         },
       });
-      console.log('response :', response)
+      // console.log('response :', response)
       if (response.status === 200) {
         showToast(response.data.message);
         setCategory("");
@@ -147,7 +147,7 @@ const CategoryManager = () => {
       if (error.response?.data?.code === 409) {
         showToast("You have already entered this field!");
       }
-      console.log("Backend error:", error.response?.data);
+      // console.log("Backend error:", error.response?.data);
     }
   };
 

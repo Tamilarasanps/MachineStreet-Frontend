@@ -29,13 +29,16 @@ export default function CommentModal({
   const { width, height } = Dimensions.get("window");
   const { socket } = useSocketContext();
   const { formatTime } = useContext(FormatTime); // ✅ correct way to use
+  console.log("comment :", comment);
 
   useEffect(() => {
     const handleCommentsUpdate = (data) => {
+      console.log('@data :', data)
       setComments((prev) => [...prev, data.comment]);
     };
 
     if (socket) {
+      console.log('@socke ')
       socket.on("comments-updated", handleCommentsUpdate);
     }
 
@@ -48,6 +51,7 @@ export default function CommentModal({
 
   useEffect(() => {
     if (socket && socket.connected && selectedPost) {
+      // console.log('@triggered :', selectedPost)
       socket.emit("join-post-room", selectedPost);
       return () => {
         socket.emit("leave-post-room", selectedPost);

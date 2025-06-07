@@ -14,7 +14,7 @@ const useGeoLocation = () => {
   // Fetch address whenever location updates
   useEffect(() => {
     if (location) {
-      console.log(location);
+      // console.log(location);
       fetchAddress(location.latitude, location.longitude);
     }
   }, [location]);
