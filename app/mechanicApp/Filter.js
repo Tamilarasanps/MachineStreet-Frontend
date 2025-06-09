@@ -13,6 +13,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import RadioGroup from "react-native-radio-buttons-group";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 export default function FilterComponent({
+  isOpen,
   setIsOpen,
   industries,
   categories,
@@ -34,7 +35,7 @@ export default function FilterComponent({
   radioButtonData,
   setSelectedPriceType,
   selectedPriceType,
-  ProductList,
+
   makes,
   setSelectedMakes,
   selectedMakes,
@@ -159,7 +160,7 @@ export default function FilterComponent({
                     : "flex-row items-center justify-between"
                 }`}
               >
-                <Text className="font-semibold text-base md:text-lg lg:text-xl text-gray-900">
+                <Text className="font-semibold text-base md:text-md lg:text-lg text-gray-900">
                   Select State
                 </Text>
 
@@ -171,7 +172,7 @@ export default function FilterComponent({
                     status={otherThanIndia ? "checked" : "unchecked"}
                     color="#EF4444"
                   />
-                  <Text className="font-semibold text-base md:text-lg lg:text-xl text-gray-900">
+                  <Text className="font-semibold text-base md:text-md lg:text-lg text-gray-900">
                     Other than India
                   </Text>
                 </Pressable>

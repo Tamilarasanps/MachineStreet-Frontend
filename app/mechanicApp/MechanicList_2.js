@@ -20,7 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import FilterComponent from "./Filter";
 import useApi from "../hooks/useApi";
 import ReviewModal from "./ReviewModal";
-import {AuthContext}  from "../context/AuthProvider";
+import { AuthContext } from "../context/AuthProvider";
 import { useContext } from "react";
 import { useNavigation } from "expo-router";
 import Header from "../component/(header)/Header";
@@ -49,7 +49,7 @@ const MechanicList_2 = () => {
     otherThanIndiaLocation,
     setTotalPages,
     qr,
-    setQr
+    setQr,
   } = GetMechanic();
 
   const isSmallScreen = width < 768;
@@ -258,6 +258,8 @@ const MechanicList_2 = () => {
               otherThanIndia={otherThanIndia}
               setOtherThanIndia={setOtherThanIndia}
               dataToMap={dataToMap}
+              setIsOpen={setIsOpen}
+              isOpen={isOpen}
               // setSelectedPriceType={setSelectedPriceType}
               selectedState={selectedState}
               setSelectedState={setSelectedState}
@@ -273,18 +275,16 @@ const MechanicList_2 = () => {
               setSelectedServices={setSelectedServices}
               selectedRating={selectedRating}
               setSelectedRating={setSelectedRating}
-              setIsOpen={setIsOpen}
               selectedDistricts={selectedDistricts}
               setSelectedDistricts={setSelectedDistricts}
               setOtherThanIndiaLocation={setOtherThanIndiaLocation}
               otherThanIndiaLocation={otherThanIndiaLocation}
             />
-            
           </View>
         )}
         {/* Scrollable blue content */}
         <ScrollView>
-          {!qr&&<QrModal visible={!qr} onClose={()=>setQr(true)}/>}
+          {!qr && <QrModal visible={!qr} onClose={() => setQr(true)} />}
           <View className=" min-h-screen flex flex-rrow  px-2 pb-6 mt-5 ">
             <View
               className={`flex flex-row rounded-sm mt-5 min-h-screen  gap-2 mb-48`}
@@ -711,27 +711,33 @@ const MechanicList_2 = () => {
                   )}
                 </>
 
-                <View className="flex flex-row justify-between px-2">
+                <View className="flex flex-row justify-between px-2 items-center">
                   <View>
-                    <Text>
+                    <Text className="font-bold">
                       Page {page} of {totalPages}
                     </Text>
                   </View>
                   <View className="flex flex-row gap-8">
                     <Pressable
+                      className="px-8 py-4 bg-TealGreen rounded-md"
                       disabled={page === totalPages}
                       onPress={() => {
                         // console.log("triggered");
                         setPage(page + 1);
                       }}
                     >
-                      <Text className="font-semibold cursor-pointer">Next</Text>
+                      <Text className="font-semibold cursor-pointer text-white">
+                        Next
+                      </Text>
                     </Pressable>
                     <Pressable
+                      className="px-8 py-4 bg-TealGreen rounded-md"
                       disabled={page === 1}
                       onPress={() => setPage(page - 1)}
                     >
-                      <Text className="font-semibold cursor-pointer">Prev</Text>
+                      <Text className="font-semibold cursor-pointer text-white">
+                        Prev
+                      </Text>
                     </Pressable>
                   </View>
                 </View>
