@@ -34,7 +34,7 @@ import QrModal from "./QrModal";
 
 const MechanicList_2 = () => {
   const { width } = useWindowDimensions();
-  // console.log("posts :", posts);
+
   const {
     loading,
     mechanics,
@@ -235,7 +235,7 @@ const MechanicList_2 = () => {
         page="mechanic"
       />
 
-      {width < 1024 && (
+      {width <= 1024 && (
         <Pressable onPress={() => setIsOpen(!isOpen)}>
           <Octicons
             name="filter"
@@ -248,8 +248,8 @@ const MechanicList_2 = () => {
 
       <View className="flex-row flex-1">
         {/* Fixed red sidebar */}
-        {(width >= 1024 || isOpen) && (
-          <View className={`${width < 1024 ? "absolute z-50 w-[80%]" : ""} `}>
+        {(width > 1024 || isOpen) && (
+          <View className={`${width <= 1024 ? "absolute z-50 w-[80%]" : ""} `}>
             <FilterComponent
               page="mech"
               industries={industries}
@@ -279,17 +279,7 @@ const MechanicList_2 = () => {
               setOtherThanIndiaLocation={setOtherThanIndiaLocation}
               otherThanIndiaLocation={otherThanIndiaLocation}
             />
-            {width < 1024 ? (
-              <MaterialIcons
-                name="cancel"
-                size={24}
-                color="black"
-                className="absolute right-1 mt-2 z-50"
-                onPress={() => setIsOpen(!isOpen)}
-              />
-            ) : (
-              ""
-            )}
+            
           </View>
         )}
         {/* Scrollable blue content */}

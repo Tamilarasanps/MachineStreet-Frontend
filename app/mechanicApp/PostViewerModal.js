@@ -65,7 +65,7 @@ const PostViewerModal = ({
   }, [posts]);
 
   const navigation = useNavigation();
-  console.log("posts :", posts);
+
   posts.forEach((post) => {
     console.log("post.userId :", post.userId);
   });

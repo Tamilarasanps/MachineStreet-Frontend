@@ -70,14 +70,14 @@
 //       quality: 1,
 //     });
 
-    if (!result.canceled) {
-      try {
-        const token = await AsyncStorage.getItem("userToken");
-        const formdata = new FormData();
-        console.log(result);
-        result.assets.forEach((asset) => {
-          formdata.append("images", asset.file);
-        });
+    // if (!result.canceled) {
+    //   try {
+    //     const token = await AsyncStorage.getItem("userToken");
+    //     const formdata = new FormData();
+    //     console.log(result);
+    //     result.assets.forEach((asset) => {
+    //       formdata.append("images", asset.file);
+    //     });
 
 //         const response = await postJsonApi(
 //           `profile/updateProfileImage`,

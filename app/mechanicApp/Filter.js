@@ -46,7 +46,6 @@ export default function FilterComponent({
   dataToMap,
   price,
 }) {
-
   const { width } = useWindowDimensions(); // Dynamically get the screen width
 
   const [activeFilter, setActiveFilter] = useState("Location");
@@ -101,22 +100,29 @@ export default function FilterComponent({
   //   );
   // };
 
-
-
   return (
     <View
-      className={`bg-white ml-2 rounded-md   p-4 
-         shadow-md flex ${
-           width < 1024
-             ? "absolute z-50 flex-1 w-[100%] flex-col pb-20"
-             : "flex-row h-[95%] my-auto"
-         }`}
+      className={`bg-white ml-2 rounded-md p-4 shadow-md flex ${
+        width <= 1024
+          ? "absolute z-50 flex-col pb-20 max-w-[100vw]"
+          : "flex-row h-[95%] my-auto"
+      }`}
     >
-      
+      {width <= 1024 && (
+        <View className="w-full items-end mb-2">
+          <MaterialIcons
+            name="cancel"
+            size={24}
+            color="black"
+            onPress={() => setIsOpen(!isOpen)}
+          />
+        </View>
+      )}
+
       {/* Left Tabs */}
       <View
         className={`mb-4 ${
-          width < 1024 ? "w-full flex-row flex-wrap" : "w-[150px]"
+          width <= 1024 ? "w-full flex-row flex-wrap" : "w-[150px]"
         }`}
       >
         {filters?.map((filter) => (
@@ -137,38 +143,40 @@ export default function FilterComponent({
           </Pressable>
         ))}
       </View>
-
       {/* Right Filter Details */}
       <View
         className={`pl-4 relative ${
-          width < 1024 ? "w-full flex-1 overflow-scroll h-full" : "w-[272px]"
+          width <= 1024 ? "w-full flex-1 overflow-scroll h-full" : "w-[272px]"
         }`}
       >
         <ScrollView className="h-[90%] mb-4">
           {activeFilter === "Location" && (
             <View className="h-96 ">
               <View
-                className={`flex ${
+                className={`flex w-full mb-4 rounded-md ${
                   width < 1024
-                    ? "flex-col"
-                    : "flex-row items-center justify-between mt-2"
+                    ? "flex-col space-y-2 items-start"
+                    : "flex-row items-center justify-between"
                 }`}
               >
-                <Text className="font-semibold text-lg mb-2 text-gray-900">
+                <Text className="font-semibold text-base md:text-lg lg:text-xl text-gray-900">
                   Select State
                 </Text>
 
                 <Pressable
-                  className="flex-row items-center mb-3"
+                  className="flex-row items-center space-x-2"
                   onPress={() => setOtherThanIndia(!otherThanIndia)}
                 >
                   <Checkbox
                     status={otherThanIndia ? "checked" : "unchecked"}
                     color="#EF4444"
                   />
-                  <Text className="ml-2 text-base">Other than India</Text>
+                  <Text className="font-semibold text-base md:text-lg lg:text-xl text-gray-900">
+                    Other than India
+                  </Text>
                 </Pressable>
               </View>
+
               {/* {!otherThanIndia && ( */}
               <>
                 <ScrollView className="min-h-[150px] max-h-[250px]">
@@ -451,7 +459,6 @@ export default function FilterComponent({
         <View className=" bg-white flex-row justify-between border-t border-gray-200 px-4 py-3 rounded-sm absolute right-2 bottom-0">
           <Pressable
             onPress={() => {
-              console.log("popopop");
               if (page === "mech") {
                 setSelectedIndustry("");
                 setSelectedCategory("");
@@ -475,11 +482,11 @@ export default function FilterComponent({
           >
             <Text className="text-red-500 text-md font-bold">Deselect All</Text>
           </Pressable>
-          {width < 1024 && (
+          {/* {width < 1024 && (
             <Pressable onPress={() => setIsOpen(false)}>
               <Text className="text-red-500 font-semibold">Apply</Text>
             </Pressable>
-          )}
+          )} */}
         </View>
       </View>
     </View>

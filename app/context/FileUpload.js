@@ -40,6 +40,7 @@ export const FileUploadProvider = ({ children }) => {
       allowsMultipleSelection: type === "image" && page === "sell", // optional
       allowsEditing: true, // Disable editing on web
       aspect: page === "banner" ? [16,9] : [1, 1], // Set the aspect ratio to 1:1
+      base64:true
     });
 
     const showToast = (text1, text2) => {

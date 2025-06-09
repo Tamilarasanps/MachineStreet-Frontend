@@ -20,49 +20,40 @@ const PostGrid = ({ posts, onPostPress, width }) => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      {posts?.length > 0 ? (
-        <FlatList
-          data={posts}
-          key={`cols-${columns}`}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={{
-            padding: 16,
-            paddingHorizontal: width >= 1024 ? 32 : 16,
-          }}
-          numColumns={columns}
-          renderItem={({ item, index }) => {
-            const isVideo = item.media.length === 24;
+  <View style={{ flexWrap: 'wrap', flexDirection: 'row', padding: 16 }}>
+    {posts?.length > 0 &&
+      posts.map((item, index) => {
+        const isVideo = item.media.length === 24;
 
-            return (
-              <Pressable
-                onPress={() => onPostPress(index)}
-                style={{
-                  width: width >= 1024 ? "25%" : "33.33%",
-                  aspectRatio: 1,
-                  padding: 1,
-                }}
-              >
-                {isVideo ? (
-                  <VideoGridItem
-                    videoId={item.media}
-                    onPostPress={onPostPress}
-                    index={index}
-                  />
-                ) : (
-                  <Image
-                    source={{ uri: `data:image/jpeg;base64,${item.media}` }}
-                    className="w-full h-full"
-                    resizeMode="cover"
-                  />
-                )}
-              </Pressable>
-            );
-          }}
-        />
-      ) : null}
-    </View>
-  );
+        return (
+          <Pressable
+            key={item._id}
+            onPress={() => onPostPress(index)}
+            style={{
+              width: width >= 1024 ? '25%' : '33.33%',
+              aspectRatio: 1,
+              padding: 1,
+            }}
+          >
+            {isVideo ? (
+              <VideoGridItem
+                videoId={item.media}
+                onPostPress={onPostPress}
+                index={index}
+              />
+            ) : (
+              <Image
+                source={{ uri: `data:image/jpeg;base64,${item.media}` }}
+                className="w-full h-full"
+                resizeMode="cover"
+              />
+            )}
+          </Pressable>
+        );
+      })}
+  </View>
+);
+
 };
 
 const VideoGridItem = ({ videoId, onPostPress, index }) => {
