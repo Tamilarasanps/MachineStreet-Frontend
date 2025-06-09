@@ -3,8 +3,8 @@ import { useToast } from "react-native-toast-notifications";
 
 const useApi = () => {
 
-  // const API_URL = "https://api.machinestreets.com";
-  const API_URL = "http://192.168.1.9:5000";
+  const API_URL = "https://api.machinestreets.com";
+  // const API_URL = "http://192.168.1.9:5000";
 
   const toast = useToast();
 
