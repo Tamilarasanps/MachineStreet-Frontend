@@ -64,23 +64,31 @@ const Login = () => {
         mailOrphone,
         password,
       });
-      // console.log("response :", response);
+
       if (response && response.status === 200) {
+        const userRole = response.data.role;
         await AsyncStorage.setItem("userToken", response.data.token);
-        await AsyncStorage.setItem("role", response.data.role);
-        // await AsyncStorage.setItem("qr", response.data.qr);
+        await AsyncStorage.setItem("role", userRole);
 
         if (Platform.OS === "web") {
-          router.push("/mechanicApp/MechanicList_2");
+          if (userRole === "admin") {
+            router.push("/AdminFolder/HomePageAdmin");
+          } else {
+            router.push("/mechanicApp/MechanicList_2");
+          }
         } else {
-          navigation.navigate("MechanicProfiles");
+          if (userRole === "admin") {
+            router.push("/AdminFolder/HomePageAdmin");
+          } else {
+            navigation.navigate("MechanicProfiles");
+          }
         }
 
         setMailOrphone("");
         setPassword("");
       }
     } catch (error) {
-      console.error("Invaild Date:", error);
+      console.error("Invalid Data:", error);
     }
   };
 

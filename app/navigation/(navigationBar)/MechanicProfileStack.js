@@ -6,7 +6,6 @@ import ProfilePage from "../../screens/(profile)/ProfilePage";
 import Login from "../../screens/(auth)/(login)/Login";
 import SignUp from "../../screens/(auth)/(SignIn)/SignUp";
 
-
 const Stack = createNativeStackNavigator();
 
 export default function MechanicProfileStack() {
@@ -58,6 +57,7 @@ export default function MechanicProfileStack() {
         component={SignUp}
         options={{ title: "SignUp ", headerShown: false }}
       />
+      
     </Stack.Navigator>
   );
 }

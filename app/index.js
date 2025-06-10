@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import LandingPage from "./screens/LandingPage";
 import { Platform } from "react-native";
-import BottomNavBar from "./navigation/(navigationBar)/BottomNavBar";
-
-import AdminHomePage from "./AdminFolder/MenuNavigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import HomePageAdmin from "./AdminFolder/HomePageAdmin";
+import LandingPage from "./screens/LandingPage";
+import BottomNavBar from "./navigation/(navigationBar)/BottomNavBar";
 
 export default function Index() {
   const [role, setRole] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getRole = async () => {
@@ -16,39 +17,21 @@ export default function Index() {
         setRole(storedRole);
       } catch (error) {
         console.error("Failed to get role:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     getRole();
   }, []);
-  // console.log();
-  //   if (role === null) {
-  //     return Platform.OS === "web" ? <LandingPage /> : <BottomNavBar />;
-  //   }
 
-  //   if (Platform.OS === "web" && role !== "admin") {
-  //     if (Platform.OS === "web") {
-  //       <LandingPage />;
-  //     } else {
-  //       <BottomNavBar />;
-  //     }
-  //   }
-  //   if (Platform.OS === "web" && role === "admin") return <AdminHomePage />;
-
-  //   return role === "admin" ? <AdminHomePage /> : <BottomNavBar />;
-  // }
-
-  if (role === null) {
+  if (isLoading) {
     return Platform.OS === "web" ? <LandingPage /> : <BottomNavBar />;
   }
 
   if (Platform.OS === "web") {
-    if (role === "admin") {
-      return <AdminHomePage />;
-    } else {
-      return <LandingPage />;
-    }
+    return role === "admin" ? <HomePageAdmin /> : <LandingPage />;
   }
 
-  // For mobile (non-web)
-  return role === "admin" ? <AdminHomePage /> : <BottomNavBar />;
+  return role === "admin" ? <HomePageAdmin /> : <BottomNavBar />;
+  // return <HomePageAdmin />;
 }

@@ -9,6 +9,7 @@ import Toast from "react-native-toast-message";
 import axios from "axios";
 import EditCategory from "./EditCategory";
 import AdminCat from "./AdminCat";
+import MenuNavigation from "./MenuNavigation";
 
 const CategoryManager = () => {
   const [industry, setIndustry] = useState("");

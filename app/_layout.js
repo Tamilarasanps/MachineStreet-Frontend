@@ -1,5 +1,5 @@
 import React from "react";
-import {  SafeAreaView } from "react-native";
+import { SafeAreaView } from "react-native";
 import "../global.css";
 import { Stack } from "expo-router";
 import { LoadingProvider } from "./context/LoadingContext";
@@ -10,6 +10,11 @@ import { FileUploadProvider } from "./context/FileUpload";
 import { FormatTimeProvider } from "./context/FormatTime";
 import Toast from "react-native-toast-message";
 import { ToastProvider } from "react-native-toast-notifications";
+import MenuNavigation from "./AdminFolder/MenuNavigation";
+import { NavigationContainer } from "@react-navigation/native";
+import BottomNavBar from "./navigation/(navigationBar)/BottomNavBar";
+import AdminPageNavigation from "./navigation/(navigationBar)/AdminPageNavigation";
+import LandingPage from "./screens/LandingPage";
 
 const Layout = () => {
   return (
@@ -21,11 +26,9 @@ const Layout = () => {
               <FileUploadProvider>
                 <FormatTimeProvider>
                   <Toast /> {/* ✅ This renders the toast */}
-                  <SafeAreaView
+                  {/* <SafeAreaView
                     style={{ zIndex: 9999, backgroundColor: "ffffff" }}
-                  >
-                    {/* Your header or nav */}
-                  </SafeAreaView>
+                  ></SafeAreaView> */}
                   <Stack screenOptions={{ headerShown: false }} />
                 </FormatTimeProvider>
               </FileUploadProvider>

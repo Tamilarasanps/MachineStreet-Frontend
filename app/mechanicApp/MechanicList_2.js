@@ -49,7 +49,7 @@ const MechanicList_2 = () => {
     otherThanIndiaLocation,
     setTotalPages,
     qr,
-    setQr
+    setQr,
   } = GetMechanic();
 
   const isSmallScreen = width < 768;
@@ -196,6 +196,7 @@ const MechanicList_2 = () => {
         //   mechanic.averageRating < selectedRating + 1
         true;
     console.log("selectedRating:", selectedRating);
+    console.log("mechanic", mechanic);
 
     return (
       matchesIndustry &&
@@ -294,7 +295,7 @@ const MechanicList_2 = () => {
         )}
         {/* Scrollable blue content */}
         <ScrollView>
-          {!qr&&<QrModal visible={!qr} onClose={()=>setQr(true)}/>}
+          {!qr && <QrModal visible={!qr} onClose={() => setQr(true)} />}
           <View className=" min-h-screen flex flex-rrow  px-2 pb-6 mt-5 ">
             <View
               className={`flex flex-row rounded-sm mt-5 min-h-screen  gap-2 mb-48`}
@@ -495,7 +496,7 @@ const MechanicList_2 = () => {
                                 }}
                               >
                                 <View className="h-full w-full items-center justify-center md:flex-col  ">
-                                  <View className="bg-gray-200 rounded-full overflow-hidden shadow-md z-10">
+                                  <View className="bg-red-200 rounded-full overflow-hidden shadow-md z-10">
                                     <Image
                                       source={{
                                         uri: `data:image/jpeg;base64,${mechanic.profileImage}`,

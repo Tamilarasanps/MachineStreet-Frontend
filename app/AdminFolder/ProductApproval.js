@@ -53,62 +53,62 @@ const ProductApproval = () => {
   };
 
   return (
-    <ScrollView>
-      <View className="flex-1 bg-gray-50 p-4">
-        {/* Status Buttons */}
-        <View className="flex flex-col md:flex-row mb-6 space-y-4 md:space-y-0 md:space-x-4">
-          <Pressable
-            onPress={() => setStatus("pending")}
-            className="flex-1 bg-yellow-500 rounded-full py-4 shadow-lg"
-          >
-            <Text className="text-center text-white text-lg font-bold">
-              Pending Approval
-            </Text>
-          </Pressable>
+    // <ScrollView >
+    <View className="p-4" style={{ zIndex: -1 }}>
+      {/* Status Buttons */}
+      <View className="flex flex-col md:flex-row mb-6 space-y-4 md:space-y-0 md:space-x-4">
+        <Pressable
+          onPress={() => setStatus("pending")}
+          className="flex-1 bg-yellow-500 rounded-full py-4 shadow-lg"
+          style={{ zIndex: -1 }}
+        >
+          <Text className="text-center text-white text-lg font-bold">
+            Pending Approval
+          </Text>
+        </Pressable>
 
-          <Pressable
-            onPress={() => setStatus("rejected")}
-            className="flex-1 bg-red-600 rounded-full py-4 shadow-lg"
-          >
-            <Text className="text-center text-white text-lg font-bold">
-              Rejected
-            </Text>
-          </Pressable>
+        <Pressable
+          onPress={() => setStatus("rejected")}
+          className="flex-1 bg-red-600 rounded-full py-4 shadow-lg"
+        >
+          <Text className="text-center text-white text-lg font-bold">
+            Rejected
+          </Text>
+        </Pressable>
 
-          <Pressable
-            onPress={() => setStatus("approved")}
-            className="flex-1  rounded-full py-4 shadow-lg"
-            style={{ backgroundColor: "green"}}
-          >
-            <Text className="text-center text-white text-lg font-bold">
-              Accepted
-            </Text>
-          </Pressable>
-        </View>
-
-        {/* Product List Component */}
-        <Product
-          products={products}
-          status={status}
-          setIsModalVisible={setIsModalVisible}
-          setCurrentIndex={setCurrentIndex}
-        />
-
-        {/* Product Approval Modal */}
-        {product && isModalVisible && (
-          <ProductApprovalModal
-            isVisible={isModalVisible}
-            product={product}
-            onClose={() => setIsModalVisible(false)}
-            onApprove={handleApprove}
-            onPrev={handlePrev}
-            onNext={handleNext}
-            currentIndex={currentIndex}
-            totalProducts={products.length}
-          />
-        )}
+        <Pressable
+          onPress={() => setStatus("approved")}
+          className="flex-1  rounded-full py-4 shadow-lg"
+          style={{ backgroundColor: "green" }}
+        >
+          <Text className="text-center text-white text-lg font-bold">
+            Accepted
+          </Text>
+        </Pressable>
       </View>
-    </ScrollView>
+
+      {/* Product List Component */}
+      <Product
+        products={products}
+        status={status}
+        setIsModalVisible={setIsModalVisible}
+        setCurrentIndex={setCurrentIndex}
+      />
+
+      {/* Product Approval Modal */}
+      {product && isModalVisible && (
+        <ProductApprovalModal
+          isVisible={isModalVisible}
+          product={product}
+          onClose={() => setIsModalVisible(false)}
+          onApprove={handleApprove}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          currentIndex={currentIndex}
+          totalProducts={products.length}
+        />
+      )}
+    </View>
   );
 };
 

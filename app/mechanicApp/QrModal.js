@@ -36,54 +36,6 @@ const QrModal = ({ visible, onClose }) => {
     phone: "",
   });
 
-  const handleChange = (key, value) => {
-    setAddress((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleUpload = async () => {
-    await pickMedia("image", "profile");
-  };
-
-  const handleSave = async () => {
-    try {
-      Object.keys(address).forEach((key) => {
-        if (!address[key]) {
-          throw new Error(`Invalid address: ${key} is null or empty`);
-        }
-      });
-
-      const token = await AsyncStorage.getItem("userToken");
-      const formData = new FormData();
-
-      const qrConfig = {
-        text: "www.google.com",
-        backgroundImageAlpha: 1,
-        dotScale: 0.3,
-        colorLight: "#FFFFFF",
-        correctLevel: "H",
-        autoColor: true,
-        autoColorDark: "rgba(0, 0, 0, .6)",
-        autoColorLight: "rgba(255, 255, 255, .7)",
-      };
-
-      formData.append("qrConfig", JSON.stringify(qrConfig));
-      formData.append("address", JSON.stringify(address));
-
-      selectedMedia.forEach((image) => {
-        formData.append("images", image.file);
-      });
-
-      const response = await postJsonApi("QrGenerator", formData, token);
-
-      if (response.status === 200) {
-        setSuccessMessage(
-          "Your QR’s in safe hands! Our tech elves are cooking it up and will deliver it to your door step ASAP."
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <Modal visible={visible} transparent animationType="slide">
@@ -110,13 +62,14 @@ const QrModal = ({ visible, onClose }) => {
                 token,
                 secretKey
               ).toString();
-              const url = `http://127.0.0.1:5500/index.html?token=${encodeURIComponent(
+              const url = `https://faceqrapp.netlify.app/?token=${encodeURIComponent(
                 encryptedToken
               )}`;
               Linking.openURL(url);
             }}
           >
-            https://faceqrapp.netlify.app/
+            {/* https://faceqrapp.netlify.app/ */}
+            Click Here
           </Text>
 
           {successMessage ? (
