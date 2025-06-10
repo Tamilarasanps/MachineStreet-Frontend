@@ -3,14 +3,14 @@ import { useToast } from "react-native-toast-notifications";
 
 const useApi = () => {
   const API_URL = "https://api.machinestreets.com";
-  // const API_URL = "http://192.168.1.5:5000";
+  // const API_URL = "http://192.168.1.9:5000";
 
   const toast = useToast();
 
   const handleRequest = async (request, path, token) => {
     try {
       const response = await request();
-      // console.log('response :', response)
+
       const successMessage =
         response?.data?.message || response?.data || "Request successful";
       if (typeof successMessage === "string") {

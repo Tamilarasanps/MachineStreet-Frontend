@@ -11,7 +11,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import Left from "./leftPart/Left";
 import Right from "./RightPart/Right";
 
-import { AuthContext } from "@/app/context/AuthProvider";
+import  {AuthContext}  from "@/app/context/AuthProvider";
 
 const ChatPage = () => {
   const [authUser, setAuthUser] = useContext(AuthContext);

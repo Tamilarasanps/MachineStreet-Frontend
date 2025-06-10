@@ -38,6 +38,7 @@ const useGeoLocation = () => {
           navigator.geolocation.getCurrentPosition(
             async (position) => {
               const { latitude, longitude } = position.coords;
+              console.log(latitude, longitude)
               setLocation({ latitude, longitude });
               await fetchAddress(latitude, longitude);
             },
@@ -78,11 +79,10 @@ const useGeoLocation = () => {
   const fetchAddress = async (latitude, longitude) => {
     try {
       const response = await fetch(
-          `https://machinestreets.com/api/reverse-geocode?lat=${latitude}&lon=${longitude}`
+          `https://api.machinestreets.com/api/reverse-geocode?lat=${latitude}&lon=${longitude}`
       );
 
       const data = await response.json();
-
 
       if (data.address) {
         setAddress({

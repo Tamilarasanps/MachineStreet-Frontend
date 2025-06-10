@@ -93,22 +93,44 @@ const LandingPage = () => {
     description,
     isLast,
     isHorizontal,
-  }) => (
-    <View
-      style={{
-        flexDirection: isHorizontal ? "row" : "column",
-        alignItems: "center",
-        width: "450px",
-      }}
-    >
-      <Step icon={icon} title={title} description={description} />
-      {!isLast && (
-        <Text style={{ fontSize: 24, marginHorizontal: 12, marginVertical: 8 }}>
-          {isHorizontal ? "➡️" : "⬇️"}
-        </Text>
-      )}
+  }) => {
+    const { width: screenWidth } = Dimensions.get("window");
+    const isMobile = Platform.OS !== "web" || screenWidth < 768;
+
+    return (
+      <View
+        style={{
+          flexDirection: isHorizontal && !isMobile ? "row" : "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: isMobile ? "100%" : 450,
+          marginBottom: 16,
+        }}
+      >
+        <Step icon={icon} title={title} description={description} />
+        {!isLast && (
+          <Text
+            style={{
+              fontSize: 24,
+              marginHorizontal: isHorizontal && !isMobile ? 12 : 0,
+              marginVertical: !isHorizontal || isMobile ? 8 : 0,
+            }}
+          >
+            {isHorizontal && !isMobile ? "➡️" : "⬇️"}
+          </Text>
+        )}
+      </View>
+    );
+  };
+
+  const Step = ({ icon, title, description }) => (
+    <View style={styles.stepBox}>
+      <Text style={styles.stepIcon}>{icon}</Text>
+      <Text style={styles.stepTitle}>{title}</Text>
+      <Text style={styles.stepDesc}>{description}</Text>
     </View>
   );
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={{ backgroundColor: "#f8fafc" }}>
@@ -117,7 +139,8 @@ const LandingPage = () => {
           <Text style={styles.brand}>Machine Street</Text>
         </View>
 
-        {/* Hero Section */}
+        {/* main container */}
+
         <View style={styles.mainContainer}>
           <View
             style={{
@@ -166,7 +189,6 @@ const LandingPage = () => {
               resizeMode="cover"
             />
           </View>
-
           {/* Stats */}
           <View style={styles.statsRow}>
             <StatBox
@@ -184,45 +206,42 @@ const LandingPage = () => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>How It Works</Text>
             <View
-              style={[
-                styles.stepsRow,
-                {
-                  flexDirection:
-                    Platform.OS === "web"
-                      ? windowWidth >= 1024
-                        ? "row"
-                        : "column"
-                      : "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                },
-              ]}
+              style={{
+                flexDirection:
+                  Platform.OS === "web" && windowWidth >= 1024
+                    ? "row"
+                    : "column",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 16,
+                paddingHorizontal: 8,
+              }}
             >
               <StepWithArrow
                 icon="🔍"
                 title="Search"
                 description="Find mechanics by industry, location, or specialty."
                 isLast={false}
-                isHorizontal={windowWidth >= 1024}
+                isHorizontal={Platform.OS === "web" && windowWidth >= 1024}
               />
               <StepWithArrow
                 icon="📄"
                 title="View Profiles"
                 description="Check detailed profiles, ratings, and skills."
                 isLast={false}
-                isHorizontal={windowWidth >= 1024}
+                isHorizontal={Platform.OS === "web" && windowWidth >= 1024}
               />
               <StepWithArrow
                 icon="🤝"
                 title="Connect"
                 description="Contact mechanics directly and get your job Done."
                 isLast={true}
-                isHorizontal={windowWidth >= 1024}
+                isHorizontal={Platform.OS === "web" && windowWidth >= 1024}
               />
             </View>
           </View>
         </View>
-        {Platform.OS === "web" && <Footer />}
       </ScrollView>
     </SafeAreaView>
   );
@@ -235,14 +254,6 @@ const StatBox = ({ value, label }) => (
   </View>
 );
 
-const Step = ({ icon, title, description }) => (
-  <View style={styles.stepBox}>
-    <Text style={styles.stepIcon}>{icon}</Text>
-    <Text style={styles.stepTitle}>{title}</Text>
-    <Text style={styles.stepDesc}>{description}</Text>
-  </View>
-);
-
 const styles = StyleSheet.create({
   header: {
     backgroundColor: "#1a2236",
@@ -252,8 +263,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     elevation: 6,
-    // borderBottomLeftRadius: 22,
-    // borderBottomRightRadius: 22,
     shadowColor: "#000",
     shadowOpacity: 0.08,
     shadowRadius: 12,
@@ -265,44 +274,10 @@ const styles = StyleSheet.create({
     color: "#f5c242",
     letterSpacing: 1.2,
   },
-  navLinks: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  navLink: {
-    fontSize: 17,
-    color: "#f8fafc",
-    fontWeight: "500",
-    marginHorizontal: 10,
-    marginVertical: 2,
-    opacity: 0.92,
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: "#facc15",
-    // marginTop:'20px'
-    cursor: "pointer",
-  },
-  border: {
-    fontSize: 17,
-    color: "#f8fafc",
-    fontWeight: "500",
-    marginHorizontal: 10,
-    marginVertical: 2,
-    opacity: 0.92,
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-    backgroundColor: "red",
-    borderWidth: 2,
-    borderColor: "#facc15",
-    cursor: "pointer",
-  },
   mainContainer: {
     paddingHorizontal: 0,
     paddingTop: 12,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fff",
     flex: 1,
   },
   heroTitle: {
@@ -363,7 +338,6 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 18,
     margin: 8,
-    // minWidth: width * 0.26,
     elevation: 3,
     shadowColor: "#000",
     shadowOpacity: 0.1,
@@ -383,45 +357,6 @@ const styles = StyleSheet.create({
     color: "#475569",
     marginTop: 4,
   },
-  section: {
-    marginTop: 32,
-    paddingHorizontal: 12,
-    paddingVertical: 22,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    marginHorizontal: 10,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOpacity: 0.07,
-    shadowRadius: 7,
-    shadowOffset: { width: 0, height: 3 },
-    alignItems: "center",
-  },
-  sectionAlt: {
-    marginTop: 30,
-    marginBottom: 32,
-    paddingHorizontal: 12,
-    paddingVertical: 22,
-    backgroundColor: "#e9ecf7",
-    borderRadius: 20,
-    marginHorizontal: 10,
-    elevation: 1,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#1a2236",
-    marginBottom: 18,
-    textAlign: "center",
-    letterSpacing: 0.6,
-  },
-  stepsRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    flexWrap: "wrap",
-    marginTop: 8,
-    gap: 8,
-  },
   stepBox: {
     flex: 1,
     alignItems: "center",
@@ -430,9 +365,7 @@ const styles = StyleSheet.create({
     padding: 16,
     margin: 6,
     width: "300px",
-
-    // minWidth: width * 0.24,
-    // maxWidth: width * 0.32,
+    height: "150px",
     elevation: 1,
     shadowColor: "#000",
     shadowOpacity: 0.06,
@@ -458,54 +391,27 @@ const styles = StyleSheet.create({
     opacity: 0.9,
     marginTop: 2,
   },
-  // Why Machine Street section styles
-  whyRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 18,
-  },
-  whyFeatures: {
-    flex: 2,
-    justifyContent: "center",
-    gap: 14,
-  },
-  whyCard: {
-    backgroundColor: "rgba(255,255,255,0.85)",
-    borderRadius: 16,
-    paddingVertical: 18,
-    paddingHorizontal: 16,
-    marginBottom: 14,
-    marginRight: 0,
-    elevation: 3,
+  section: {
+    marginTop: 32,
+    paddingHorizontal: 12,
+    paddingVertical: 22,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    marginHorizontal: 10,
+    elevation: 2,
     shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    alignItems: "flex-start",
-    borderLeftWidth: 4,
-    borderLeftColor: "#f5c242", // gold accent
+    shadowOpacity: 0.07,
+    shadowRadius: 7,
+    shadowOffset: { width: 0, height: 3 },
+    alignItems: "center",
   },
-  whyIconBox: {
-    backgroundColor: "#f5c242",
-    borderRadius: 8,
-    padding: 6,
-    marginBottom: 8,
-  },
-  whyIcon: {
-    fontSize: 22,
-    color: "#1a2236",
-  },
-  whyCardTitle: {
-    fontSize: 16,
+  sectionTitle: {
+    fontSize: 20,
     fontWeight: "bold",
     color: "#1a2236",
-    marginBottom: 4,
-  },
-  whyCardDesc: {
-    fontSize: 13,
-    color: "#475569",
-    opacity: 0.92,
+    marginBottom: 18,
+    textAlign: "center",
+    letterSpacing: 0.6,
   },
 });
 export default LandingPage;

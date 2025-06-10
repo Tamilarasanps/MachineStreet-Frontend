@@ -10,8 +10,6 @@ const VideoGridItem = ({ videoId, onPostPress, index }) => {
     }
   );
 
-  console.log('video :' , videoId)
-
   return (
     <Pressable
       onPress={() => onPostPress(index)}

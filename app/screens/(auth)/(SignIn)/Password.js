@@ -142,7 +142,7 @@ const Password = ({
           formSubmit({ password, confirmpass }, router.push("/"));
           stopLoading();
         }}
-        className={`bg-TealGreen mb-8 py-4 px-4 h-max mt-10 w-24 mx-auto rounded-md ${
+        className={`bg-TealGreen mb-8 py-4 px-4 h-max mt-10 w-48 mx-auto rounded-md ${
           password === confirmpass
             ? "opacity-[100%]"
             : "opacity-[50%] cursor-not-allowed"

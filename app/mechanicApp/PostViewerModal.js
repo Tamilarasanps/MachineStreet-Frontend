@@ -65,7 +65,7 @@ const PostViewerModal = ({
   }, [posts]);
 
   const navigation = useNavigation();
-  console.log("posts :", posts);
+
   posts.forEach((post) => {
     console.log("post.userId :", post.userId);
   });
@@ -208,7 +208,7 @@ const PostViewerModal = ({
       // const { isPlaying } = useEvent(player, "playingChange", {
       //   isPlaying: player.playing,
       // });
-
+console
       return (
         <View
           key={post._id}

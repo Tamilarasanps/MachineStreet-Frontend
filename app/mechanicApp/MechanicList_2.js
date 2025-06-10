@@ -34,7 +34,7 @@ import QrModal from "./QrModal";
 
 const MechanicList_2 = () => {
   const { width } = useWindowDimensions();
-  // console.log("posts :", posts);
+
   const {
     loading,
     mechanics,
@@ -236,7 +236,7 @@ const MechanicList_2 = () => {
         page="mechanic"
       />
 
-      {width < 1024 && (
+      {width <= 1024 && (
         <Pressable onPress={() => setIsOpen(!isOpen)}>
           <Octicons
             name="filter"
@@ -249,8 +249,8 @@ const MechanicList_2 = () => {
 
       <View className="flex-row flex-1">
         {/* Fixed red sidebar */}
-        {(width >= 1024 || isOpen) && (
-          <View className={`${width < 1024 ? "absolute z-50 w-[80%]" : ""} `}>
+        {(width > 1024 || isOpen) && (
+          <View className={`${width <= 1024 ? "absolute z-50 w-[80%]" : ""} `}>
             <FilterComponent
               page="mech"
               industries={industries}
@@ -259,6 +259,8 @@ const MechanicList_2 = () => {
               otherThanIndia={otherThanIndia}
               setOtherThanIndia={setOtherThanIndia}
               dataToMap={dataToMap}
+              setIsOpen={setIsOpen}
+              isOpen={isOpen}
               // setSelectedPriceType={setSelectedPriceType}
               selectedState={selectedState}
               setSelectedState={setSelectedState}
@@ -274,23 +276,11 @@ const MechanicList_2 = () => {
               setSelectedServices={setSelectedServices}
               selectedRating={selectedRating}
               setSelectedRating={setSelectedRating}
-              setIsOpen={setIsOpen}
               selectedDistricts={selectedDistricts}
               setSelectedDistricts={setSelectedDistricts}
               setOtherThanIndiaLocation={setOtherThanIndiaLocation}
               otherThanIndiaLocation={otherThanIndiaLocation}
             />
-            {width < 1024 ? (
-              <MaterialIcons
-                name="cancel"
-                size={24}
-                color="black"
-                className="absolute right-1 mt-2 z-50"
-                onPress={() => setIsOpen(!isOpen)}
-              />
-            ) : (
-              ""
-            )}
           </View>
         )}
         {/* Scrollable blue content */}
@@ -722,27 +712,33 @@ const MechanicList_2 = () => {
                   )}
                 </>
 
-                <View className="flex flex-row justify-between px-2">
+                <View className="flex flex-row justify-between px-2 items-center">
                   <View>
-                    <Text>
+                    <Text className="font-bold">
                       Page {page} of {totalPages}
                     </Text>
                   </View>
                   <View className="flex flex-row gap-8">
                     <Pressable
+                      className="px-8 py-4 bg-TealGreen rounded-md"
                       disabled={page === totalPages}
                       onPress={() => {
                         // console.log("triggered");
                         setPage(page + 1);
                       }}
                     >
-                      <Text className="font-semibold cursor-pointer">Next</Text>
+                      <Text className="font-semibold cursor-pointer text-white">
+                        Next
+                      </Text>
                     </Pressable>
                     <Pressable
+                      className="px-8 py-4 bg-TealGreen rounded-md"
                       disabled={page === 1}
                       onPress={() => setPage(page - 1)}
                     >
-                      <Text className="font-semibold cursor-pointer">Prev</Text>
+                      <Text className="font-semibold cursor-pointer text-white">
+                        Prev
+                      </Text>
                     </Pressable>
                   </View>
                 </View>
