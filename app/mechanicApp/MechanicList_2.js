@@ -121,7 +121,7 @@ const MechanicList_2 = () => {
         setReviewText("");
         setReviewPopup(false);
       } else {
-        // console.warn("Failed to submit review", result);
+        console.warn("Failed to submit review", result);
       }
     } catch (err) {
       console.error("Error posting review:", err);

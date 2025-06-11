@@ -61,13 +61,7 @@ const useApi = () => {
       path,
       token
     );
-  const PATCHAPI = async (path, data, token) =>
-    await handleRequest(
-      () =>
-        axios.patch(`${API_URL}/${path}`, data, { headers: jsonHeader(token) }),
-      path,
-      token
-    );
+    
   const DELETEAPI = async (path, data, token) =>
     await handleRequest(
       () =>

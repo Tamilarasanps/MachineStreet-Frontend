@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "frontend",
+    "name": "MachineStreet",
     "jsEngine": "hermes",
     "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/AppLogo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -21,6 +21,7 @@
       "userInterfaceStyle": "light",
       "package": "com.tamilarasanps.frontend",
       "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
