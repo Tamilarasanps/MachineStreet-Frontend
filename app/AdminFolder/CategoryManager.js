@@ -3,13 +3,10 @@ import { Platform, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import OperationSwitcher from "./OperationSwitcher";
 import { useState } from "react";
-import CreateCategory from "./CreateCategory";
-import SubCategoryDisplayer from "./SubCategoryDisplayer";
 import Toast from "react-native-toast-message";
 import axios from "axios";
 import EditCategory from "./EditCategory";
 import AdminCat from "./AdminCat";
-import MenuNavigation from "./MenuNavigation";
 
 const CategoryManager = () => {
   const [industry, setIndustry] = useState("");

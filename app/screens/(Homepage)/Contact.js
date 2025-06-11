@@ -17,7 +17,6 @@ export default function Contact() {
         email : email,
         message : message
       },token)
-       console.log(result)
        if(result.status===200){
         setEmail("")
         setMessage("")

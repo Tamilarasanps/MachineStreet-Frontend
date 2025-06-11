@@ -1,19 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  SafeAreaView,
-} from "react-native";
-import { useToast } from "react-native-toast-notifications";
-import axios from "axios";
-import { allCountries } from "country-telephone-data";
+import { Platform, SafeAreaView } from "react-native";
 import UsernameScreen from "./UsernameScreen";
 import { View, Text } from "react-native";
-// import OtpScreen from "./OtpScreen";
-// import Password from "./Password";
 import { router } from "expo-router";
-// import useApi from "./hooks/useApi";
 import Toast from "react-native-toast-message";
 
 import { useWindowDimensions } from "react-native";
@@ -61,8 +50,6 @@ const SignUp = () => {
 
   let api_Data;
 
-  const toast = useToast();
-
   const getSignupUrl = (step) => {
     if (step === 2) {
       return "signup/otpcheck";
@@ -92,7 +79,7 @@ const SignUp = () => {
       break;
 
     default:
-      console.log("Invalid step");
+      // console.log("Invalid step");
   }
 
   const formSubmit = async () => {
@@ -106,11 +93,14 @@ const SignUp = () => {
         ? !otp || !mailOrphone
         : ""
     ) {
-      toast.show("Please fill all fields", {
-        type: "danger",
-        placement: "top",
-        animationType: "slide-in",
+      Toast.show({
+        type: "error",
+        text1: "Please fill all fields",
+        position: "top",
+        visibilityTime: 2000,
+        animation: "slide",
       });
+
       return;
     }
 
@@ -121,7 +111,13 @@ const SignUp = () => {
 
       if (response && response.status === 200) {
         if (step == 2) {
-          toast.show("OTP verified successfully!", { type: "success" });
+          Toast.show({
+            type: "success",
+            text1: "OTP verified successfully!",
+            position: "top",
+            visibilityTime: 2000,
+            animation: "slide",
+          });
         }
         if (step == 3) {
           setUsername("");
@@ -169,7 +165,7 @@ const SignUp = () => {
     setStep(2);
   }
   if (step === 0) {
-    console.log("object");
+    // console.log("object");
     return (
       <RoleSelection
         subCategories={subCategories}
@@ -182,7 +178,7 @@ const SignUp = () => {
       />
     );
   }
-  console.log(mechanicDetails);
+  // console.log(mechanicDetails);
 
   return (
     <SafeAreaView className="mt-24  w-screen items-center justify-center ">

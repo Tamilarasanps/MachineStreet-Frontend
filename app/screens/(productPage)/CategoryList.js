@@ -30,9 +30,7 @@ export default function CategoryList() {
   const isScreen = width > 1024;
   const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
-  console.log("category :", categories);
   const [IndustriesData, setIndustriesData] = useState([]);
-  console.log("industriesdata :", IndustriesData);
   const [totalCount, setTotalCount] = useState(null);
   const route = useRoute();
   const { getJsonApi } = useApi();
@@ -108,9 +106,7 @@ export default function CategoryList() {
       const data = await getJsonApi(
         `CategoryPage/subCategoryPage/${category}/subCategoryPage`
       );
-      console.log(data.status);
       if (data.status === 200) {
-        console.log(data.data);
         setSubategories([data.data]);
         setTotalCount(data.data.totalProductCount);
       }
@@ -147,7 +143,6 @@ export default function CategoryList() {
     setSubategories([]);
     setIsSubCategoryView(false);
   };
-  console.log("industry :", industry);
 
   return (
     <ScrollView>

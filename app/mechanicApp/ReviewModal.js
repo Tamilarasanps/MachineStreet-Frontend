@@ -37,7 +37,7 @@ const ReviewModal = ({
 
   useEffect(() => {
     const handleReviewsUpdate = (data) => {
-      console.log('data :', data)
+      // console.log('data :', data)
       setReviews((prev) => [...prev, data.review]);
         setMechanics((prev) =>
           prev.map((mech) =>
@@ -62,11 +62,11 @@ const ReviewModal = ({
       }
     };
   }, [socket]);
-  console.log('@iiii ', (socket && selectedMech))
+  // console.log('@iiii ', (socket && selectedMech))
 
   useEffect(() => {
     if (socket && selectedMech) {
-      console.log('@useef')
+      // console.log('@useef')
       socket.emit("join-review-room", selectedMech);
 
       return () => {

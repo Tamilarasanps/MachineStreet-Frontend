@@ -16,7 +16,7 @@ export default function Explore({ categoriesData }) {
   const handleProductPress = (category) => {
     const categoryId = category.industry; // Ensure you're using the correct key
 
-    console.log("Navigating to SelectedProduct with id:", categoryId); // Check if id is correct
+
 
     if (Platform.OS === "web") {
       router.push(
@@ -24,7 +24,6 @@ export default function Explore({ categoriesData }) {
       );
     } else {
       navigation.navigate("CategoryList", { industry: category?.industry });
-      console.log(category);
     }
   };
   return (

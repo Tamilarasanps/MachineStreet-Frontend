@@ -38,7 +38,7 @@ const useGeoLocation = () => {
           navigator.geolocation.getCurrentPosition(
             async (position) => {
               const { latitude, longitude } = position.coords;
-              console.log(latitude, longitude)
+              // console.log(latitude, longitude)
               setLocation({ latitude, longitude });
               await fetchAddress(latitude, longitude);
             },

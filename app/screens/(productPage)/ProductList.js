@@ -147,9 +147,6 @@ export default function ProductList() {
       navigation.navigate("SelectProduct", { id: product });
     }
   };
-
-  console.log("selectedPriceType :", otherThanIndiaLocation);
-
   const toggleFilter = (filter) =>
     setActiveFilter(activeFilter === filter ? null : filter);
   return (
@@ -289,7 +286,6 @@ export default function ProductList() {
                 <Pressable
                   disabled={page === totalPages}
                   onPress={() => {
-                    console.log("triggered");
                     setPage(page + 1);
                   }}
                 >

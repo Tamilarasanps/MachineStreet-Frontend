@@ -1,11 +1,9 @@
 import axios from "axios";
-import { useToast } from "react-native-toast-notifications";
+import Toast from "react-native-toast-message";
 
 const useApi = () => {
   const API_URL = "https://api.machinestreets.com";
-  // const API_URL = "http://192.168.1.9:5000";
-
-  const toast = useToast();
+  // const API_URL = "http://192.168.1.5:5000";
 
   const handleRequest = async (request, path, token) => {
     try {
@@ -14,10 +12,12 @@ const useApi = () => {
       const successMessage =
         response?.data?.message || response?.data || "Request successful";
       if (typeof successMessage === "string") {
-        toast.show(successMessage, {
+        Toast.show({
           type: "success",
-          placement: "top",
-          duration: 3000,
+          text1: "Success!",
+          text2: successMessage, // Your dynamic message here
+          position: "top", // not "placement"
+          visibilityTime: 2000, // instead of "duration"
         });
       }
 
@@ -31,10 +31,17 @@ const useApi = () => {
         "An error occurred";
 
       if (typeof errorMessage === "string") {
-        toast.show(errorMessage, {
-          type: "danger",
-          placement: "top",
-          duration: 3000,
+        // Toast.show(errorMessage, {
+        //   type: "danger",
+        //   placement: "top",
+        //   duration: 3000,
+        // });
+        Toast.show({
+          type: "error", //
+          text1: errorMessage,
+          position: "top",
+          visibilityTime: 2000,
+          animation: "slide",
         });
       }
 
@@ -61,7 +68,7 @@ const useApi = () => {
       path,
       token
     );
-    
+
   const DELETEAPI = async (path, data, token) =>
     await handleRequest(
       () =>

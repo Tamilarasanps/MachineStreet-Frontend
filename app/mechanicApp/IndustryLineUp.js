@@ -53,7 +53,7 @@ function IndustyLineup({
         setSelectedIndex(-1);
       }
     }
-    console.log("indutryarrow", nativeEvent.key);
+    // console.log("indutryarrow", nativeEvent.key);
   };
 
   useEffect(() => {

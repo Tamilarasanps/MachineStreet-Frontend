@@ -29,16 +29,16 @@ export default function CommentModal({
   const { width, height } = Dimensions.get("window");
   const { socket } = useSocketContext();
   const { formatTime } = useContext(FormatTime); // ✅ correct way to use
-  console.log("comment :", comment);
+  // console.log("comment :", comment);
 
   useEffect(() => {
     const handleCommentsUpdate = (data) => {
-      console.log('@data :', data)
+      // console.log('@data :', data)
       setComments((prev) => [...prev, data.comment]);
     };
 
     if (socket) {
-      console.log('@socke ')
+      // console.log('@socke ')
       socket.on("comments-updated", handleCommentsUpdate);
     }
 
@@ -62,7 +62,7 @@ export default function CommentModal({
   // useEffect(()=>{
   //   if(postId) fectchComments(postId)
   // },[postId])
-  console.log("comment :", comment);
+  // console.log("comment :", comment);
   return (
     <Modal animationType="slide" transparent={true}>
       <BlurView intensity={50} tint="light" style={styles.blurContainer}>

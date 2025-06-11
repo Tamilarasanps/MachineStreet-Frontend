@@ -89,7 +89,6 @@ export default function SellScreen() {
       try {
         try {
           const data = await getJsonApi(`CategoryPage`);
-          console.log("data:", data);
           setIndustries(data?.data.industries.industries);
         } catch (error) {
           console.error(error);
@@ -102,7 +101,6 @@ export default function SellScreen() {
   // fetching categories
 
   const getCategory = async () => {
-    console.log("searchValues.industry", searchValues.industry);
     try {
       const inputCategory = searchValues.industry.toLowerCase().trim();
 
@@ -115,7 +113,6 @@ export default function SellScreen() {
           `CategoryPage/${searchValues.industry}/sell`
         );
         setCategories(data.data.categoryNames);
-        console.log("data :", data);
       }
     } catch (err) {
       console.log(err);
@@ -131,11 +128,10 @@ export default function SellScreen() {
       );
 
       if (isValidCategory && inputCategory.length > 0) {
-        console.log("triggered");
         const data = await getJsonApi(
           `CategoryPage/subCategoryPage/${searchValues.category}/sell`
         );
-        console.log("data :", data.data);
+
         setSubCategories(data.data);
       }
     } catch (err) {
@@ -156,7 +152,6 @@ export default function SellScreen() {
         const data = await getJsonApi(
           `CategoryPage/${searchValues.subcategory}`
         );
-        console.log("data :", data);
         setMakes(data.data);
       }
     } catch (err) {
@@ -166,12 +161,8 @@ export default function SellScreen() {
 
   // setting searchValues
   const handleChange = (key, value) => {
-    console.log("key :", key.toLowerCase())
     setSearchValues((prev) => ({ ...prev, [key]: value }));
   };
-
-  // sending data to backend
-  console.log("industries :", selectedCode);
 
   const sentData = async (e) => {
     e.preventDefault();
@@ -617,7 +608,6 @@ const SearchComponent = ({
               renderItem={({ item }) => (
                 <Pressable
                   onPress={() => {
-                   
                     handleChange(label.toLowerCase(), item);
                     setTimeout(() => setIsFocused(false), 200);
                   }}

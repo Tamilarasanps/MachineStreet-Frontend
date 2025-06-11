@@ -73,8 +73,8 @@ const ImageAndVideo = ({
   };
 
   const handleVideo = (file) => {
-    console.log("file :", file);
-    console.log("file :", file.duration > 16000);
+    // console.log("file :", file);
+    // console.log("file :", file.duration > 16000);
     if (file.duration > 16000) {
       return showToast("File duration should be within 15 seconds.");
     }

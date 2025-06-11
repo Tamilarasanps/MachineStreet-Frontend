@@ -41,10 +41,8 @@ export default function HomeScreen() {
       const token = await AsyncStorage.getItem("userToken");
       const queraystring = new URLSearchParams(geoCoords).toString();
       const data = await getJsonApi(`homepage/?${queraystring}`, token);
-      console.log("data : ", data);
       setImg(() => data.data.banners.map((banner) => banner.bannerImages));
       setPageDetails(data.data);
-      console.log(data, "data in home page");
     } catch (error) {
       console.error(error);
     } finally {

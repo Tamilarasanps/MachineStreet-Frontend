@@ -859,7 +859,7 @@ export default function SellPage() {
       try {
         try {
           const data = await getJsonApi(`CategoryPage`);
-          console.log("data:", data);
+          "data:", data;
           setIndustries(data?.data.industries.industries);
         } catch (error) {
           console.error(error);
@@ -878,20 +878,20 @@ export default function SellPage() {
           `CategoryPage/${searchValues.industry}/sell`
         );
         setCategories(data.data);
-        console.log("data :", data);
+        // console.log("data :", data);
       }
     } catch (err) {
       console.log(err);
     }
   };
   const getSubCategory = async () => {
-    console.log("triggered", searchValues.category);
+    // console.log("triggered", searchValues.category);
     try {
       if (searchValues.category.length > 0) {
         const data = await getJsonApi(
           `CategoryPage/subCategoryPage/${searchValues.category}/sell`
         );
-        console.log("data :", data.data);
+        // console.log("data :", data.data);
         setSubCategories(data.data);
       }
     } catch (err) {
@@ -906,7 +906,7 @@ export default function SellPage() {
         const data = await getJsonApi(
           `CategoryPage/${searchValues.subcategory}`
         );
-        console.log("data :", data);
+        // console.log("data :", data);
         setMakes(data.data);
       }
     } catch (err) {

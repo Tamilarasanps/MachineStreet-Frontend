@@ -47,7 +47,7 @@ const UsernameScreen = ({
 
   return (
     <View
-      style={{ flex: 1 }}
+      // style={{ flex: 1 }}
       className={`${
         Platform.OS === "web" ? "w-full sm:w-full h-[415px]" : "w-full mx-auto"
       } p-5 py-8`}

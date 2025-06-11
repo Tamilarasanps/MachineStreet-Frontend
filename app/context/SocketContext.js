@@ -27,7 +27,7 @@ export const SocketProvider = ({ children }) => {
           withCredentials: true,
         });
 
-        console.log("socket reached");
+        // console.log("socket reached");
         setSocket(newSocket);
 
         newSocket.on("getOnlineUsers", (users) => {
@@ -47,7 +47,7 @@ export const SocketProvider = ({ children }) => {
         if (socket) {
           socket.disconnect();
           setSocket(null);
-          console.log("disconnected :");
+          // console.log("disconnected :");
         }
       }
     };

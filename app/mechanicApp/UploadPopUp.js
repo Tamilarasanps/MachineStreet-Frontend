@@ -31,7 +31,7 @@ const UploadPopUp = ({
     const formdata = new FormData();
     try {
       const type = selectedMedia[0].mimeType.split("/")[0];
-      console.log("object:", selectedMedia)
+      // console.log("object:", selectedMedia)
       formdata.append("bio", description);
       selectedMedia.forEach((media) => {
       if(Platform.OS === 'web'){

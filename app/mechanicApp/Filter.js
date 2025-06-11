@@ -478,7 +478,7 @@ export default function FilterComponent({
               setSelectedDistrict([]);
               setOtherThanIndia(false);
               dataToMap = location;
-              console.log(dataToMap);
+              // console.log(dataToMap);
             }}
           >
             <Text className="text-red-500 text-md font-bold">Deselect All</Text>

@@ -10,7 +10,6 @@ const SearchComponent = ({
   getMakes,
   handleChange,
 }) => {
-  console.log("data:", data);
   const [isFocused, setIsFocused] = useState(false);
   const [delayedFocus, setDelayedFocus] = useState(false);
 
@@ -18,8 +17,6 @@ const SearchComponent = ({
     data?.length > 0
       ? data.filter((item) => item.toLowerCase().includes(value.toLowerCase()))
       : data;
-  console.log("value:", value);
-  console.log("filteredDatar:", filteredData);
 
   useEffect(() => {
     if (isFocused) {

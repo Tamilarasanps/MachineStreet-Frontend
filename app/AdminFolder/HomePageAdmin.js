@@ -60,7 +60,7 @@ export default function HomePageAdmin() {
     <Pressable
       onPress={() => {
         setSelectedPage(pageKey);
-        toggleMenu(); // Use animated toggle
+        toggleMenu();
       }}
       style={{
         marginTop: 16,
@@ -102,7 +102,6 @@ export default function HomePageAdmin() {
             left: 0,
             height: "100%",
             width: "60%",
-            // backgroundColor: "#2095A2",
             zIndex: 20,
             padding: 18,
             borderTopRightRadius: 24,
@@ -110,8 +109,8 @@ export default function HomePageAdmin() {
             borderRightWidth: 2,
             borderRightColor: "#fecaca",
             transform: [{ translateX: menuAnim }],
+            backgroundColor: "#e5e7eb", // fallback for bg-gray-200
           }}
-          className='bg-gray-200'
         >
           <Pressable
             onPress={toggleMenu}
@@ -126,8 +125,11 @@ export default function HomePageAdmin() {
               textAlign: "center",
               marginTop: 40,
               letterSpacing: 1.2,
+              backgroundColor: "#1f2937", // fallback for bg-gray-800
+              color: "#fff",
+              padding: 8,
+              borderRadius: 8,
             }}
-            className="bg-gray-800"
           >
             MachineStreet
           </Text>
@@ -148,15 +150,10 @@ export default function HomePageAdmin() {
             top: 0,
             height: "100%",
             width: "20%",
-            // backgroundColor: "#2095A2",
             zIndex: 10,
             padding: 24,
-            // borderTopRightRadius: 24,
-            // borderBottomRightRadius: 24,
-            // borderRightWidth: 2,
-            // borderRightColor: "#fecaca",
+            backgroundColor: "#d1d5db", // fallback for bg-gray-300
           }}
-          className="bg-gray-300"
         >
           <Text
             style={{
@@ -165,9 +162,12 @@ export default function HomePageAdmin() {
               textAlign: "center",
               letterSpacing: 1.5,
               marginBottom: 32,
+              backgroundColor: "#6b7280", // fallback for bg-gray-500
+              color: "#fff",
+              padding: 10,
+              borderRadius: 8,
             }}
-            className="bg-gray-500 p-2 rounded-md "
-        >
+          >
             MachineStreet
           </Text>
           <View style={{ marginTop: 16 }}>
@@ -198,8 +198,8 @@ export default function HomePageAdmin() {
           </View>
         </ScrollView>
 
-        {/* Menu Toggle Button for Mobile */}
-        {width < 1024 && (
+        {/* Menu Toggle Button for Mobile (only when menu is closed) */}
+        {width < 1024 && !isMenuVisible && (
           <Pressable
             onPress={toggleMenu}
             style={{
@@ -208,12 +208,12 @@ export default function HomePageAdmin() {
               left: 20,
               zIndex: 30,
               backgroundColor: "#fff",
-              // borderRadius: 20,
               padding: 6,
               elevation: 3,
               shadowColor: "#000",
               shadowOpacity: 0.1,
               shadowRadius: 3,
+              borderRadius: 20,
             }}
           >
             <Ionicons name="menu" size={30} color="black" />

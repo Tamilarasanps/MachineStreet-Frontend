@@ -24,7 +24,7 @@ export default function SubCategory({
   handleSubCategoryChange,
   handleBrandChange,
 }) {
-  console.log("subCategories", subCategories);
+  // console.log("subCategories", subCategories);
   const [activeSubIndex, setActiveSubIndex] = useState(null);
   const [activeBrandIndex, setActiveBrandIndex] = useState(null);
   const [highlightedCategoryIndex, setHighlightedCategoryIndex] =

@@ -130,7 +130,6 @@ export default function SelectProduct() {
 
   const share = useCallback(async () => {
     if (!product) {
-      console.log("Product Not Found");
       return;
     }
 
@@ -149,7 +148,6 @@ export default function SelectProduct() {
             text: message,
             url: productUrl,
           });
-          console.log("✅ Shared via Web Share API");
         } else {
           // Fallback: copy to clipboard
           await navigator.clipboard.writeText(message);
@@ -158,14 +156,10 @@ export default function SelectProduct() {
       } else {
         const result = await NativeShare.share({ message });
         if (result.action === NativeShare.sharedAction) {
-          console.log("✅ Shared on mobile");
         } else if (result.action === NativeShare.dismissedAction) {
-          console.log("ℹ️ Share dismissed");
         }
       }
-    } catch (error) {
-      console.log("❌ Error while sharing:", error);
-    }
+    } catch (error) {}
   }, [product]);
 
   const openDailer = () => {

@@ -11,6 +11,7 @@ import {
   Linking,
   ActivityIndicator,
   FlatList,
+  SafeAreaView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -156,7 +157,7 @@ const MechanicList_2 = () => {
       const phoneNumber = `${countryCode}${number}`;
       Linking.openURL(`tel:${phoneNumber}`);
     } else {
-      console.log("No contact number available");
+      // console.log("No contact number available");
     }
   }
 
@@ -195,8 +196,8 @@ const MechanicList_2 = () => {
       : // &&
         //   mechanic.averageRating < selectedRating + 1
         true;
-    console.log("selectedRating:", selectedRating);
-    console.log("mechanic", mechanic);
+    // console.log("selectedRating:", selectedRating);
+    // console.log("mechanic", mechanic);
 
     return (
       matchesIndustry &&
@@ -228,6 +229,9 @@ const MechanicList_2 = () => {
 
   return (
     <>
+    <SafeAreaView>
+      
+    </SafeAreaView>
       <Header
         mechanicSearchResults={mechanicSearchResults}
         setMechanicSearchResults={setMechanicSearchResults}
@@ -486,19 +490,28 @@ const MechanicList_2 = () => {
                                 }}
                               >
                                 <View className="h-full w-full items-center justify-center md:flex-col  ">
-                                  <View className="bg-red-200 rounded-full overflow-hidden shadow-md z-10">
-                                    <Image
-                                      source={{
-                                        uri: `data:image/jpeg;base64,${mechanic.profileImage}`,
-                                      }}
-                                      resizeMode="cover"
-                                      style={{
-                                        width: 150,
-                                        height: 150,
-                                        borderRadius: 75,
-                                      }}
-                                    />
+                                  <View className="bg-gray-200 rounded-full overflow-hidden shadow-md z-10 w-[150px] h-[150px] items-center justify-center">
+                                    {mechanic.profileImage ? (
+                                      <Image
+                                        source={{
+                                          uri: `data:image/jpeg;base64,${mechanic.profileImage}`,
+                                        }}
+                                        resizeMode="cover"
+                                        style={{
+                                          width: 150,
+                                          height: 150,
+                                          borderRadius: 75,
+                                        }}
+                                      />
+                                    ) : (
+                                      <Icon
+                                        name="account-circle"
+                                        size={150}
+                                        color="#374151"
+                                      />
+                                    )}
                                   </View>
+
                                   <View className="flex-row md:flex-col items-center md:items-start space-x-4 md:space-x-0 md:space-y-2 mt-8">
                                     {/* Username */}
                                     <Text className="text-lg font-extrabold text-gray-600 text-center md:text-left">

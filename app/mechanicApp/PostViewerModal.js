@@ -64,12 +64,7 @@ const PostViewerModal = ({
     setHeartAnimations(newAnimations);
   }, [posts]);
 
-  const navigation = useNavigation();
-
-  posts.forEach((post) => {
-    console.log("post.userId :", post.userId);
-  });
-  console.log("handleLike :", handleLike);
+  
 
   async function deletePostLogic(postId) {
     const token = await AsyncStorage.getItem("userToken");
@@ -102,7 +97,7 @@ const PostViewerModal = ({
       try {
         setPosts((prevPosts) =>
           prevPosts.map((post) => {
-            console.log("socket");
+            // console.log("socket");
             if (post._id.toString() === data.postId.toString()) {
               return {
                 ...post,

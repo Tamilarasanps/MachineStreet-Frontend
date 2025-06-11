@@ -16,7 +16,7 @@ import Mobile from "../(SignIn)/Mobile";
 import Email from "../(SignIn)/Email";
 import { useNavigation } from "@react-navigation/native";
 import useApi from "@/app/hooks/useApi";
-import { Toast, useToast } from "react-native-toast-notifications";
+import Toast from "react-native-toast-message";
 
 const Login = () => {
   const [mailOrphone, setMailOrphone] = useState("");
@@ -31,7 +31,7 @@ const Login = () => {
   const navigation = useNavigation();
   const { postJsonApi } = useApi();
   const router = useRouter();
-  const toast = useToast();
+  // const toast = useToast();
 
   const { width } = useWindowDimensions();
   const isScreenSmall = width < 768; // Adjust this value as needed for small screens
@@ -40,20 +40,21 @@ const Login = () => {
   const cleanCountryName = (name) => name.replace(/\s*\(.*?\)/g, "").trim();
 
   // Filtering countries list
-  const filteredCountries = allCountries
-    .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    .map((c) => ({
-      name: cleanCountryName(c.name),
-      dialCode: c.dialCode,
-      iso2: c.iso2,
-    }));
+  // const filteredCountries = allCountries
+  //   .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  //   .map((c) => ({
+  //     name: cleanCountryName(c.name),
+  //     dialCode: c.dialCode,
+  //     iso2: c.iso2,
+  //   }));
 
   const Login = async (e) => {
     if (!mailOrphone || !password) {
-      toast.show("Please fill all fields", {
-        type: "danger", // or "error" if you've custom defined it
-        placement: "top",
-        duration: 3000, // optional, default is 4000ms
+      Toast.show({
+        type: "error",
+        text1: "Please Fill all the fields!",
+        position: "top", // not "placement"
+        visibilityTime: 2000, // instead of "duration"
       });
 
       return;
@@ -74,7 +75,7 @@ const Login = () => {
           if (userRole === "admin") {
             router.push("/AdminFolder/HomePageAdmin");
           } else {
-            router.push("/mechanicApp/MechanicList_2");
+            navigation.navigate("/mechanicApp/MechanicList_2");
           }
         } else {
           if (userRole === "admin") {

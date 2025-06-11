@@ -12,7 +12,6 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useNavigation } from "expo-router";
-import Footer from "../component/(footer)/Footer";
 import useApi from "../hooks/useApi";
 
 const { width } = Dimensions.get("window");

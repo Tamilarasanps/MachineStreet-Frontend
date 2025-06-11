@@ -11,7 +11,7 @@ import {
   Platform,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useToast } from "react-native-toast-notifications";
+import Toast from "react-native-toast-message";
 import IndustyLineup from "./IndustryLineUp";
 import SubCategory from "./SubCategory";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -34,7 +34,6 @@ const EditProfile = ({
   page,
   setStep,
 }) => {
-  const toast = useToast();
   const { getJsonApi, pathchApi } = useApi();
   const [phoneNumber, setPhoneNumber] = useState(
     mechanicDetails?.contact.number
@@ -109,26 +108,27 @@ const EditProfile = ({
   const handleChange = (key, value) => {
     setMechanicDetails((prev) => ({ ...prev, [key]: value }));
   };
-// console.log('mechanicDetails :', mechanicDetails)
-// console.log('location :', location)
-// console.log('phoneNumber :', phoneNumber)
-// console.log('count :', selectedCode)
+  // console.log('mechanicDetails :', mechanicDetails)
+  // console.log('location :', location)
+  // console.log('phoneNumber :', phoneNumber)
+  // console.log('count :', selectedCode)
   const handleSubmit = async () => {
     if (
       !mechanicDetails.organization ||
       !mechanicDetails.industry ||
       !subCategories ||
-      mechanicDetails.services.length===0 ||
+      mechanicDetails.services.length === 0 ||
       !phoneNumber?.trim() ||
       // !String(location?.coords || "").trim() ||
       !String(location?.region || "").trim() ||
       !String(location?.country || "").trim()
     ) {
-      toast.show("All fields are required!", {
-        type: "danger",
-        placement: "top",
-        duration: 3000,
-        animationType: "slide-in",
+      Toast.show({
+        type: "error",
+        text1: "failed!",
+        text2: "All fields are required", // Your dynamic message here
+        position: "top", // not "placement"
+        visibilityTime: 2000, // instead of "duration"
       });
       return; // stop further execution
     }
@@ -157,19 +157,21 @@ const EditProfile = ({
           token
         );
         // console.log("Profile updated:", result);
-        toast.show("Profile updated!", {
+        Toast.show({
           type: "success",
-          placement: "top",
-          duration: 3000,
-          animationType: "slide-in",
+          text1: "Profile updated!",
+          position: "top",
+          visibilityTime: 2000,
+          animation: "slide",
         });
       } catch (err) {
         // console.error("Edit profile error:", err);
-        toast.show("Failed to update profile", {
-          type: "danger",
-          placement: "top",
-          duration: 3000,
-          animationType: "slide-in",
+        Toast.show({
+          type: "error",
+          text1: "Failed to update profile",
+          position: "top",
+          visibilityTime: 3000,
+          animation: "slide",
         });
       }
     }
@@ -225,6 +227,7 @@ const EditProfile = ({
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
           >
+            {/* <Toast /> */}
             {mechanicDetails.hasOwnProperty("username" && "bio") && (
               <>
                 <Text className="text-lg font-bold mb-4 text-gray-800">
