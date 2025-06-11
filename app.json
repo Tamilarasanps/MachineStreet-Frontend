@@ -20,7 +20,10 @@
     "android": {
       "userInterfaceStyle": "light",
       "package": "com.tamilarasanps.frontend",
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
       "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -57,9 +60,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "ac6ba6e8-c7d2-4cb1-9626-79dd4f82cac2"
+        "projectId": "4c0ca6db-8a13-4b46-8572-a07a100e0367"
       }
     },
-    "owner": "tamilarasan.ps"
+    "owner": "tamilarasan.dev"
   }
 }
