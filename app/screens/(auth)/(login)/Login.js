@@ -100,7 +100,7 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white">
       <View className="h-screen w-screen  align-items-center bg-gray-200 ">
         <View
           className={`bg-white mt-28 ${
