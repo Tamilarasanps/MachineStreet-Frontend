@@ -6,6 +6,7 @@ import {
   ScrollView,
   Animated,
   Easing,
+  Platform,
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,12 +14,15 @@ import AdminHomePage from "./AdminHomePage";
 import CategoryManager from "./CategoryManager";
 import BannerUpload from "./BannerUpload";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router, useNavigation } from "expo-router";
 
 export default function HomePageAdmin() {
   const { width } = useWindowDimensions();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [selectedPage, setSelectedPage] = useState("AdminHomePage");
   const menuAnim = useRef(new Animated.Value(-width * 0.6)).current;
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     menuAnim.setValue(-width * 0.6);

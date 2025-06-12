@@ -65,15 +65,10 @@ const MechanicProfile = () => {
         options={{ title: "HomePage", headerShown: false }}
       />
       <Stack.Screen
-        name="MechanicPage"
+        name="MechanicProfiles"
         component={MechanicList_2}
-        options={{ title: "MechanicPage", headerShown: false }}
+        options={{ title: "MechanicProfiles", headerShown: false }}
       />
-      {/* <Stack.Screen
-        name="MechanicProfilePage"
-        component={ProfilePage}
-        options={{ title: "MechanicProfilePage", headerShown: false }}
-      /> */}
     </Stack.Navigator>
   );
 };

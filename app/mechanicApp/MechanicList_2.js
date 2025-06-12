@@ -97,13 +97,39 @@ const MechanicList_2 = () => {
     authcheck();
   }, []);
 
+  // async function authcheck() {
+  //   const token = await AsyncStorage.getItem("userToken");
+  //   const userRole = await AsyncStorage.getItem("role");
+
+  //   if (!token || !userRole) {
+  //     // Not authenticated or no role
+  //     if (Platform.OS === "web") {
+  //       router.push("/screens/Login");
+  //     }
+  //     return;
+  //   }
+
+  //   // Authenticated and has role
+  //   if (Platform.OS === "web") {
+  //     if (userRole === "admin") {
+  //       router.push("/AdminFolder/HomePageAdmin");
+  //     } else {
+  //       router.push("/mechanicApp/MechanicList_2");
+  //     }
+  //   } else {
+  //     if (userRole === "admin") {
+  //       router.push("/AdminFolder/HomePageAdmin");
+  //     } else {
+  //       navigation.navigate("MechanicProfiles");
+  //     }
+  //   }
+  // }
   async function authcheck() {
     const token = await AsyncStorage.getItem("userToken");
     if (!token) {
       router.push("/screens/Login");
     }
   }
-
   const handleReviewSubmit = async () => {
     const userReview = {
       star: rating,
@@ -229,9 +255,7 @@ const MechanicList_2 = () => {
 
   return (
     <>
-    <SafeAreaView>
-      
-    </SafeAreaView>
+      <SafeAreaView></SafeAreaView>
       <Header
         mechanicSearchResults={mechanicSearchResults}
         setMechanicSearchResults={setMechanicSearchResults}

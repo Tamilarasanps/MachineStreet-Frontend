@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { useNavigation } from "expo-router";
 import useApi from "../hooks/useApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 
@@ -85,6 +86,20 @@ const LandingPage = () => {
       return () => clearTimeout(timer);
     }
   }, [machineCount, machineLimit]);
+
+  const getStarted = async () => {
+    const token = await AsyncStorage.getItem("userToken");
+
+    if (Platform.OS === "web") {
+      if (!token) {
+        router.push("/screens/Login");
+      } else {
+        router.push("/mechanicApp/MechanicList_2");
+      }
+    } else {
+      navigation.navigate("MechanicProfiles");
+    }
+  };
 
   const StepWithArrow = ({
     icon,
@@ -164,11 +179,12 @@ const LandingPage = () => {
               <View style={styles.heroButtons}>
                 <TouchableOpacity
                   style={styles.primaryBtn}
-                  onPress={() => {
-                    Platform.OS === "web"
-                      ? router.push("/mechanicApp/MechanicList_2")
-                      : navigation.navigate("MechanicProfiles");
-                  }}
+                  // onPress={() => {
+                  //   Platform.OS === "web"
+                  //     ? router.push("/mechanicApp/MechanicList_2")
+                  //     : navigation.navigate("MechanicProfiles");
+                  // }}
+                  onPress={() => getStarted()}
                 >
                   <Text style={styles.primaryBtnText}>Get Started</Text>
                 </TouchableOpacity>

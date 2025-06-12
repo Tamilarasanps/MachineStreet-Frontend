@@ -9,10 +9,8 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { FloatingLabelInput } from "react-native-floating-label-input";
-import { allCountries } from "country-telephone-data";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Mobile from "../(SignIn)/Mobile";
 import Email from "../(SignIn)/Email";
 import { useNavigation } from "@react-navigation/native";
 import useApi from "@/app/hooks/useApi";
@@ -21,11 +19,6 @@ import Toast from "react-native-toast-message";
 const Login = () => {
   const [mailOrphone, setMailOrphone] = useState("");
   const [password, setPassword] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [selectedCode, setSelectedCode] = useState("+91");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const navigation = useNavigation();
@@ -36,25 +29,14 @@ const Login = () => {
   const { width } = useWindowDimensions();
   const isScreenSmall = width < 768; // Adjust this value as needed for small screens
 
-  // Cleaning country name
-  const cleanCountryName = (name) => name.replace(/\s*\(.*?\)/g, "").trim();
-
-  // Filtering countries list
-  // const filteredCountries = allCountries
-  //   .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
-  //   .map((c) => ({
-  //     name: cleanCountryName(c.name),
-  //     dialCode: c.dialCode,
-  //     iso2: c.iso2,
-  //   }));
-
-  const Login = async (e) => {
+  const Loginbtn = async (e) => {
     if (!mailOrphone || !password) {
       Toast.show({
         type: "error",
-        text1: "Please Fill all the fields!",
-        position: "top", // not "placement"
-        visibilityTime: 2000, // instead of "duration"
+        text1: "⚠️ Missing Fields",
+        text2: "Please fill all the fields!",
+        visibilityTime: 2000,
+        position: "top",
       });
 
       return;
@@ -71,17 +53,13 @@ const Login = () => {
         await AsyncStorage.setItem("userToken", response.data.token);
         await AsyncStorage.setItem("role", userRole);
 
-        if (Platform.OS === "web") {
-          if (userRole === "admin") {
-            router.push("/AdminFolder/HomePageAdmin");
+        if (userRole === "admin") {
+          router.push("/AdminFolder/HomePageAdmin");
+        } else {
+          if (Platform.OS !== "web") {
+            navigation.navigate("MechanicProfiles");
           } else {
             router.push("/mechanicApp/MechanicList_2");
-          }
-        } else {
-          if (userRole === "admin") {
-            router.push("/AdminFolder/HomePageAdmin");
-          } else {
-            navigation.navigate("MechanicProfiles");
           }
         }
 
@@ -95,7 +73,7 @@ const Login = () => {
 
   const handleKeyPress = (e, nextref) => {
     if (Platform.OS === "web" && e.nativeEvent.key === "Enter") {
-      Login();
+      Loginbtn();
       // nextref?.current?.focus();
     }
   };
@@ -264,7 +242,7 @@ const Login = () => {
 
             {/* Login Button */}
             <Pressable
-              onPress={() => Login()}
+              onPress={() => Loginbtn()}
               className={`bg-TealGreen mb-4 py-4  px-4 h-max mx-auto rounded-md ${
                 isScreenSmall ? "w-[90%]" : "w-[75%]"
               } ${

@@ -40,12 +40,10 @@ export default function MechanicStack() {
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-
-       
-    {/* </Stack.Navigator> */}
+      {/* </Stack.Navigator> */}
       {isLogin ? (
         <Stack.Screen
-          name="MechanicProfilePage"
+          name="MechanicProfiles"
           component={MechanicList_2}
           options={{ title: "Profile" }}
         />
