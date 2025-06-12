@@ -49,8 +49,8 @@ const UsernameScreen = ({
     <View
       // style={{ flex: 1 }}
       className={`${
-        Platform.OS === "web" ? "w-full sm:w-full h-[415px]" : "w-full mx-auto"
-      } p-5 py-8 h-full`}
+        Platform.OS === "web" ? "w-full sm:w-full h-[505px] m" : "w-full mx-auto"
+      } p-5 py-8 h-ful`}
     >
       <Text className="md:text-2xl text-lg font-bold mx-auto text-TealGreen mb-4">
         Create Your Account

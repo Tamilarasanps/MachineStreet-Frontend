@@ -10,7 +10,7 @@ import {
 
 const OtpScreen = ({ mailOrphone, otp, setOtp, formSubmit, setStep }) => {
   const inputs = useRef([]);
-  const [counter, setCounter] = useState(30); // countdown state
+  const [counter, setCounter] = useState(60); // countdown state
   const [isResendDisabled, setIsResendDisabled] = useState(true);
 
   // Countdown effect

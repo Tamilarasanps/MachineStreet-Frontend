@@ -226,6 +226,7 @@ const EditProfile = ({
           <ScrollView
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
+            className="h-screen mb-10"
           >
             {/* <Toast /> */}
             {mechanicDetails.hasOwnProperty("username" && "bio") && (

@@ -203,7 +203,10 @@ const LandingPage = () => {
           </View>
 
           {/* How It Works */}
-          <View style={styles.section} className="h-screen">
+          <View
+            style={styles.section}
+            className={`${Platform.OS === "web" && isMobile ? "h-screen" : ""}`}
+          >
             <Text style={styles.sectionTitle}>How It Works</Text>
             <View
               style={{

@@ -797,7 +797,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { FlatList } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Toast from "react-native-toast-message";
 import React from "react";
 // import Mobile from "../(SignIn)/Mobile";
@@ -871,7 +871,7 @@ export default function SellPage() {
 
   // fetching categories
 
-  const getCategory = async () => {
+  const getCategory = useCallback(async () => {
     try {
       if (searchValues.industry.length > 0) {
         const data = await getJsonApi(
@@ -883,8 +883,8 @@ export default function SellPage() {
     } catch (err) {
       console.log(err);
     }
-  };
-  const getSubCategory = async () => {
+  }, [searchValues.category]);
+  const getSubCategory = useCallback(async () => {
     // console.log("triggered", searchValues.category);
     try {
       if (searchValues.category.length > 0) {
@@ -897,10 +897,10 @@ export default function SellPage() {
     } catch (err) {
       console.log(err);
     }
-  };
+  }, [searchValues.category]);
 
   // fetching makes
-  const getMakes = async () => {
+  const getMakes = useCallback(async () => {
     try {
       if (searchValues.category.length > 0) {
         const data = await getJsonApi(
@@ -912,7 +912,7 @@ export default function SellPage() {
     } catch (err) {
       console.log(err);
     }
-  };
+  },[searchValues.category]);
 
   // setting searchValues
   const handleChange = (key, value) => {
