@@ -56,6 +56,21 @@ export default function HomePageAdmin() {
     }
   }
 
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem("userToken");
+      await AsyncStorage.removeItem("role");
+      // Navigation
+      if (Platform.OS === "web") {
+        router.push("/");
+      } else {
+        navigation.navigate("HomePage");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
   const MenuItem = ({ label, pageKey }) => (
     <Pressable
       onPress={() => {
@@ -138,6 +153,14 @@ export default function HomePageAdmin() {
             <MenuItem label="CategoryManager" pageKey="CategoryManager" />
             <MenuItem label="Banner Upload" pageKey="BannerUpload" />
           </View>
+          <Pressable
+            onPress={() => {
+              logout();
+            }}
+            className="bg-red-600 p-3 rounded-sm h-10 items-center justify-center"
+          >
+            <Text className="text-lg text-white font-bold ">Logout</Text>
+          </Pressable>
         </Animated.View>
       )}
 
@@ -175,6 +198,14 @@ export default function HomePageAdmin() {
             <MenuItem label="CategoryManager" pageKey="CategoryManager" />
             <MenuItem label="Banner Upload" pageKey="BannerUpload" />
           </View>
+          <Pressable
+            onPress={() => {
+              logout();
+            }}
+            className="bg-red-600 p-3 rounded-sm h-10 items-center justify-center mt-10"
+          >
+            <Text className="text-lg text-white font-bold ">Logout</Text>
+          </Pressable>
         </View>
       )}
 
