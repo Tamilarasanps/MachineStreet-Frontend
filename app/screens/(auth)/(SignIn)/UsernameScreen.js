@@ -1,4 +1,4 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -50,7 +50,7 @@ const UsernameScreen = ({
       // style={{ flex: 1 }}
       className={`${
         Platform.OS === "web" ? "w-full sm:w-full h-[415px]" : "w-full mx-auto"
-      } p-5 py-8`}
+      } p-5 py-8 h-full`}
     >
       <Text className="md:text-2xl text-lg font-bold mx-auto text-TealGreen mb-4">
         Create Your Account
@@ -79,7 +79,6 @@ const UsernameScreen = ({
         />
       </View>
 
-      
       <Email
         mailOrphone={mailOrphone}
         setMailOrphone={setMailOrphone}
@@ -100,7 +99,6 @@ const UsernameScreen = ({
       {/* Navigation and CTA */}
 
       <View className="mt-20  mb-4">
-        
         <Pressable
           disabled={isLoading}
           onPress={handleNextPress}
@@ -116,7 +114,6 @@ const UsernameScreen = ({
       </Text>
       <Pressable
         disabled={isLoading}
-        
         onPress={() => {
           if (Platform.OS === "web") {
             router.push("/screens/Login");

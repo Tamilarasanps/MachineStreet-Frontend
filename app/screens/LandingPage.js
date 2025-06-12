@@ -105,6 +105,7 @@ const LandingPage = () => {
           width: isMobile ? "100%" : 450,
           marginBottom: 16,
         }}
+        className=""
       >
         <Step icon={icon} title={title} description={description} />
         {!isLast && (
@@ -202,7 +203,7 @@ const LandingPage = () => {
           </View>
 
           {/* How It Works */}
-          <View style={styles.section}>
+          <View style={styles.section} className="h-screen">
             <Text style={styles.sectionTitle}>How It Works</Text>
             <View
               style={{

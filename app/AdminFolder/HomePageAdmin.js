@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AdminHomePage from "./AdminHomePage";
 import CategoryManager from "./CategoryManager";
 import BannerUpload from "./BannerUpload";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomePageAdmin() {
   const { width } = useWindowDimensions();

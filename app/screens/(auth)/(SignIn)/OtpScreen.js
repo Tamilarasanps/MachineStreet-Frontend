@@ -58,7 +58,7 @@ const OtpScreen = ({ mailOrphone, otp, setOtp, formSubmit, setStep }) => {
   return (
     <View
       className={`${
-        Platform.OS === "web" ? "w-[60%] h-[415px]" : "w-full"
+        Platform.OS === "web" ? "w-full h-[415px]" : "w-full"
       } flex flex-col gap-8 p- items-center bg-white rounded-md m-auto p-5 py-8`}
     >
       <Text className="text-2xl font-bold mx-auto text-TealGreen">

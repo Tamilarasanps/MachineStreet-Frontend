@@ -75,7 +75,7 @@ const Login = () => {
           if (userRole === "admin") {
             router.push("/AdminFolder/HomePageAdmin");
           } else {
-            navigation.navigate("/mechanicApp/MechanicList_2");
+            router.push("/mechanicApp/MechanicList_2");
           }
         } else {
           if (userRole === "admin") {
