@@ -3,7 +3,7 @@
     "name": "MachineStreet",
     "jsEngine": "hermes",
     "slug": "frontend",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/AppLogo.png",
     "scheme": "myapp",
@@ -20,8 +20,11 @@
     "android": {
       "userInterfaceStyle": "light",
       "package": "com.tamilarasanps.frontend",
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
-      "versionCode": 3,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -62,9 +65,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "4c0ca6db-8a13-4b46-8572-a07a100e0367"
+        "projectId": "d2089d71-fd40-4f03-b6ab-bff3a83267b4"
       }
     },
-    "owner": "tamilarasan.dev"
+    "owner": "tamildeveloper"
   }
 }
