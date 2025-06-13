@@ -25,7 +25,6 @@ export default function CommentModal({
   setComments,
   handlePostComment,
   selectedPost,
-  // postId,
 }) {
   const { width, height } = Dimensions.get("window");
   const { socket } = useSocketContext();
