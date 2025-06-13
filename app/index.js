@@ -5,6 +5,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import HomePageAdmin from "./AdminFolder/HomePageAdmin";
 import LandingPage from "./screens/LandingPage";
 import BottomNavBar from "./navigation/(navigationBar)/BottomNavBar";
+import QrModal from "./mechanicApp/QrModal";
 
 export default function Index() {
   const [role, setRole] = useState(null);
@@ -33,5 +34,5 @@ export default function Index() {
   }
 
   return role === "admin" ? <HomePageAdmin /> : <BottomNavBar />;
-  // return <HomePageAdmin />;
+  // return <QrModal />;
 }

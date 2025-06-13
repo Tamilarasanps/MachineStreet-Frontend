@@ -8,12 +8,11 @@ const QrPage = () => {
   const [qr, setQr] = useState([]);
 
   useEffect(() => {
-
     const fetchQr = async () => {
-
       try {
         const token = await AsyncStorage.getItem("userToken");
         const response = await getJsonApi("adminApproval/adminQr", token);
+        console.log("response", response);
         // console.log("response :", response);
         if (response.status === 200) {
           setQr(response?.data?.qrCodes);
@@ -30,7 +29,6 @@ const QrPage = () => {
       {qr?.map((qrItem, index) => {
         // const cleanBase64 = qrItem.qr.replace(/^"|"$/g, ""); // remove outer quotes
         const cleanBase64 = qrItem.qr.replace(/^["']+|["']+$/g, "");
-
 
         return (
           <View

@@ -43,6 +43,7 @@ const ProfilePage = ({}) => {
   const { id, page } = useLocalSearchParams();
   const { pickMedia, selectedMedia, setSelectedMedia } = useContext(FileUpload);
   const [userProfile, setUserProfile] = useState(null);
+  // console.log("userProfile :", userProfile);
   const [fileUpload, setFileUpload] = useState(false);
   const [posts, setPosts] = useState(false);
   const { getJsonApi, postJsonApi, deleteApi } = useApi();
@@ -283,7 +284,6 @@ const ProfilePage = ({}) => {
     checkProfile();
   }, [id, mechanics]);
 
-
   async function handleImageUpload(result, imagetype) {
     try {
       if (!result || result.canceled) return;
@@ -522,10 +522,10 @@ const ProfilePage = ({}) => {
           {/* Posts Grid */}
 
           <PostGrid
+            userProfile={userProfile}
             posts={posts}
             onPostPress={(index) => {
               setActivePostIndex(index);
-              // console.log("index :", index);
             }}
             width={width}
             // loading={isLoading}

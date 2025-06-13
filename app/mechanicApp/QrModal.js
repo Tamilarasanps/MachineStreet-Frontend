@@ -22,9 +22,33 @@ const QrModal = ({ visible, onClose }) => {
   const { pickMedia, selectedMedia } = useContext(FileUpload);
   const { width } = useWindowDimensions();
   const modalWidth = Platform.OS === "web" && width >= 1024 ? "50%" : "90%";
-  const { postJsonApi } = useApi();
+  const { postJsonApi, getJsonApi } = useApi();
   const [successMessage, setSuccessMessage] = useState("");
   // const [authUser] = useContext(AuthContext);
+
+  // console.log("postJsonApi", postJsonApi);
+  // const api = async () => {
+  //   const checkrole = await postJsonApi("role");
+  //    const token = await AsyncStorage.getItem("userToken");
+  //   console.log("checkrole :", checkrole);
+  // };
+  // useEffect(() => {
+  //   api();
+  // }, []);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const role = await AsyncStorage.getItem("role");
+        console.log("role", role);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchRole();
+  }, []);
+  // const userRole=role;
 
   const [address, setAddress] = useState({
     name: "",
@@ -35,7 +59,6 @@ const QrModal = ({ visible, onClose }) => {
     postalCode: "",
     phone: "",
   });
-
 
   return (
     <Modal visible={visible} transparent animationType="slide">

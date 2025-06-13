@@ -97,6 +97,9 @@ const MechanicList_2 = () => {
     authcheck();
   }, []);
 
+  const [userRole, setUserRole] = useState("mechanic");
+  console.log(userRole, "userROles");
+
   // async function authcheck() {
   //   const token = await AsyncStorage.getItem("userToken");
   //   const userRole = await AsyncStorage.getItem("role");
@@ -126,6 +129,9 @@ const MechanicList_2 = () => {
   // }
   async function authcheck() {
     const token = await AsyncStorage.getItem("userToken");
+    const usersRole = await AsyncStorage.getItem("role");
+    setUserRole(usersRole);
+    console.log("userRole", userRole);
     if (!token) {
       router.push("/screens/Login");
     }
@@ -313,7 +319,9 @@ const MechanicList_2 = () => {
         )}
         {/* Scrollable blue content */}
         <ScrollView>
-          {!qr && <QrModal visible={!qr} onClose={() => setQr(true)} />}
+          {!qr && userRole === "mechanic" && (
+            <QrModal visible={!qr} onClose={() => setQr(true)} />
+          )}
           <View className=" min-h-screen flex flex-rrow  px-2 pb-6 mt-5 ">
             <View
               className={`flex flex-row rounded-sm mt-5 min-h-screen  gap-2 mb-48`}
