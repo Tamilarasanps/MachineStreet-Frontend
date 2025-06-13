@@ -63,7 +63,7 @@ const Footer = () => {
       <View className="bg-gray-800 py-3 items-center">
         <Text className="text-white text-sm">
           © {new Date().getFullYear()} Copyright:{" "}
-          <Text className="font-semibold">DevTeam</Text>
+          <Text className="font-semibold">Tamiarasan</Text>
         </Text>
       </View>
     </View>
