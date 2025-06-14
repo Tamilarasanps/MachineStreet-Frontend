@@ -19,9 +19,19 @@ const Password = ({
     useState(false);
   const { isLoading, startLoading, stopLoading } = useContext(LoadingContext);
 
+  const handleNextPress = async () => {
+    startLoading();
+    try {
+      await formSubmit({ username, mailOrphone });
+    } catch (error) {
+      console.error(error);
+    }
+    stopLoading();
+  };
+
   const handleKeyPress = (e) => {
-    if ((Platform.OS = "web" && e.nativeEvent.key === "Enter")) {
-      formSubmit();
+    if (Platform.OS === "web" && e.key === "Enter") {
+      handleNextPress();
     }
   };
 
@@ -138,8 +148,9 @@ const Password = ({
       <Pressable
         disabled={password !== confirmpass}
         onPress={() => {
+          console.log("buttton clicked");
           startLoading();
-          formSubmit({ password, confirmpass }, router.push("/"));
+          formSubmit({ password, confirmpass });
           stopLoading();
         }}
         className={`bg-TealGreen mb-8 py-4 px-4 h-max mt-10 w-48 mx-auto rounded-md ${

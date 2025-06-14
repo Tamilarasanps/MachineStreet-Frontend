@@ -40,7 +40,7 @@ const QrModal = ({ visible, onClose }) => {
     const fetchRole = async () => {
       try {
         const role = await AsyncStorage.getItem("role");
-        console.log("role", role);
+        // console.log("role", role);
       } catch (err) {
         console.log(err);
       }

@@ -11,7 +11,7 @@ import { useVideoPlayer, VideoView } from "expo-video";
 
 const PostGrid = ({ posts, onPostPress, width, userProfile }) => {
   const columns = width >= 1024 ? 4 : 3;
-  console.log("userprofile post grid:", userProfile?.role);
+  // console.log("userprofile post grid:", userProfile?.role);
 
   if (userProfile?.role === "mechanic") {
     if (!posts) {

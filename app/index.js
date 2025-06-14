@@ -35,4 +35,5 @@ export default function Index() {
 
   return role === "admin" ? <HomePageAdmin /> : <BottomNavBar />;
   // return <QrModal />;
+  // return <BottomNavBar />;
 }

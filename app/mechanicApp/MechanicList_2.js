@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Image,
@@ -32,6 +32,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import QrModal from "./QrModal";
+import { useFocusEffect } from "@react-navigation/native";
 
 const MechanicList_2 = () => {
   const { width } = useWindowDimensions();
@@ -80,7 +81,8 @@ const MechanicList_2 = () => {
   const [selectedDistricts, setSelectedDistricts] = useState([]);
 
   // review section
-
+  const [storeToken, setStoreToken] = useState("");
+  // console.log("storeToken :", storeToken);
   const [reviewPopUp, setReviewPopup] = useState(false);
   const [reviewModal, setReviewModal] = useState(false);
   const [reviews, setReviews] = useState([]); // Modal visibility state
@@ -93,12 +95,8 @@ const MechanicList_2 = () => {
   // sumbit reviews
   const navigation = useNavigation();
 
-  useEffect(() => {
-    authcheck();
-  }, []);
-
   const [userRole, setUserRole] = useState("mechanic");
-  console.log(userRole, "userROles");
+  // console.log(userRole, "userROles");
 
   // async function authcheck() {
   //   const token = await AsyncStorage.getItem("userToken");
@@ -127,15 +125,27 @@ const MechanicList_2 = () => {
   //     }
   //   }
   // }
-  async function authcheck() {
-    const token = await AsyncStorage.getItem("userToken");
-    const usersRole = await AsyncStorage.getItem("role");
-    setUserRole(usersRole);
-    console.log("userRole", userRole);
-    if (!token) {
-      router.push("/screens/Login");
-    }
-  }
+  useFocusEffect(
+    useCallback(() => {
+      const authcheck = async () => {
+        const token = await AsyncStorage.getItem("userToken");
+        setStoreToken(token);
+        const usersRole = await AsyncStorage.getItem("role");
+        setUserRole(usersRole);
+        // console.log("userRole", usersRole); // use usersRole, not userRole from state (which is async)
+
+        if (!token) {
+          if (Platform.OS === "web") {
+            router.push("/screens/Login");
+          } else {
+            navigation.navigate("Profile");
+          }
+        }
+      };
+
+      authcheck();
+    }, [])
+  );
   const handleReviewSubmit = async () => {
     const userReview = {
       star: rating,
@@ -225,11 +235,7 @@ const MechanicList_2 = () => {
 
     const matchesRating = selectedRating
       ? mechanic.averageRating >= selectedRating
-      : // &&
-        //   mechanic.averageRating < selectedRating + 1
-        true;
-    // console.log("selectedRating:", selectedRating);
-    // console.log("mechanic", mechanic);
+      : true;
 
     return (
       matchesIndustry &&
@@ -241,6 +247,7 @@ const MechanicList_2 = () => {
       matchesRating
     );
   });
+
   const handleProfileNavigation = async (id) => {
     const token = await AsyncStorage.getItem("userToken");
 
@@ -259,7 +266,7 @@ const MechanicList_2 = () => {
     }
   };
 
-  return (
+  return storeToken ? (
     <>
       <SafeAreaView></SafeAreaView>
       <Header
@@ -810,6 +817,10 @@ const MechanicList_2 = () => {
         </ScrollView>
       </View>
     </>
+  ) : (
+    <View className="bg-white h-full">
+      <Text>Not storetoken</Text>
+    </View>
   );
 };
 

@@ -24,7 +24,7 @@ const Email = ({ setMailOrphone, mailOrphone, Enterkey }) => {
             alignSelf: "center",
             borderRadius: 8,
             paddingHorizontal: 4,
-            elevation: 2,
+
             borderColor: "#2095A2",
           },
           isScreenSmall ? { width: "100%" } : { width: "75%" },

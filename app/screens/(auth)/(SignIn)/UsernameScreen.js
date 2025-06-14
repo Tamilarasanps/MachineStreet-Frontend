@@ -72,7 +72,7 @@ const UsernameScreen = ({
               alignSelf: "center",
               borderRadius: 8,
               paddingHorizontal: 4,
-              elevation: 2,
+              // elevation: 2,
             },
             isScreen ? { width: "75%" } : { width: "100%" },
           ]}

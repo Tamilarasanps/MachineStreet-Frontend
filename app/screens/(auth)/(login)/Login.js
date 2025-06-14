@@ -50,6 +50,7 @@ const Login = () => {
 
       if (response && response.status === 200) {
         const userRole = response.data.role;
+        console.log("userRole :", userRole);
         await AsyncStorage.setItem("userToken", response.data.token);
         await AsyncStorage.setItem("role", userRole);
 
@@ -57,6 +58,7 @@ const Login = () => {
           router.push("/AdminFolder/HomePageAdmin");
         } else {
           if (Platform.OS !== "web") {
+            console.log("plllll");
             navigation.navigate("MechanicProfiles");
           } else {
             router.push("/mechanicApp/MechanicList_2");

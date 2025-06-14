@@ -3,18 +3,17 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Keyboard, Platform } from "react-native"; // <-- ADD THIS
-import HomeStack, { SellStack, WishlistStack } from "./HomeStack";
-import ScreenNavigation, { MechanicProfile } from "./ScreenNavigation";
-import SellScreen from "@/app/screens/(sellerForm)/SellScreen";
-import WishlistScreen from "@/app/screens/(wishlists)/WishlistScreen";
-import ProfileStack from "./ProfileStack";
+// import HomeStack, { SellStack, WishlistStack } from "./HomeStack";
+// import ScreenNavigation, { MechanicProfile } from "./ScreenNavigation";
+// import SellScreen from "@/app/screens/(sellerForm)/SellScreen";
+// import WishlistScreen from "@/app/screens/(wishlists)/WishlistScreen";
+// import ProfileStack from "./ProfileStack";
 import MechanicList_2 from "@/app/mechanicApp/MechanicList_2";
-import { color } from "@rneui/base";
+// import { color } from "@rneui/base";
 // import ProfilePage from "@/app/screens/(profile)/ProfilePage";
-import EditProfile from "@/app/mechanicApp/EditProfile";
-import MechanicStack from "./MechanicStack";
 import LandingPage from "@/app/screens/LandingPage";
 import MechanicProfileStack from "./MechanicProfileStack";
+import AuthStack from "./AuthStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -125,10 +124,9 @@ function BottomNavBar() {
       />
       <Tab.Screen
         name="MechanicProfiles"
-        component={MechanicStack}
+        component={MechanicList_2}
         options={{
           tabBarIcon: ({ color }) => (
-           
             <MaterialCommunityIcons
               name="account-cog"
               size={30}

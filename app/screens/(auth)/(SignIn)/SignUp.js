@@ -4,7 +4,7 @@ import UsernameScreen from "./UsernameScreen";
 import { View, Text } from "react-native";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
-
+import { useNavigation } from "expo-router";
 import { useWindowDimensions } from "react-native";
 import RoleSelection from "@/app/mechanicApp/RoleSelection";
 import useApi from "@/app/hooks/useApi";
@@ -28,6 +28,7 @@ const SignUp = () => {
     { name: "", services: [""] },
   ]);
 
+  const navigation = useNavigation();
   useEffect(() => {
     if (subCategories.length > 0) {
       setMechanicDetails((prev) => ({
@@ -79,7 +80,7 @@ const SignUp = () => {
       break;
 
     default:
-      // console.log("Invalid step");
+    // console.log("Invalid step");
   }
 
   const formSubmit = async () => {
@@ -106,10 +107,14 @@ const SignUp = () => {
 
     try {
       // Dynamically generate the signup URL
-
+      console.log('function triggered ')
       const response = await postJsonApi(getSignupUrl(step), api_Data);
 
+      console.log('response :', response)
+
       if (response && response.status === 200) {
+
+        console.log('step :', step)
         if (step == 2) {
           Toast.show({
             type: "success",
@@ -126,7 +131,12 @@ const SignUp = () => {
           setPassword("");
           setConfirmPass("");
           // toast.show("Registration successfully!", { type: "success" });
-          router.push("/screens/Login");
+          console.log(Platform.OS === "web")
+          if (Platform.OS === "web") {
+            router.push("/screens/Login");
+          } else {
+            navigation.navigate("LoginPage")
+          }
         }
         if (step !== (3 || 4)) {
           setStep((prevStep) => prevStep + 1);
