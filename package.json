@@ -20,8 +20,8 @@
     "@react-native-picker/picker": "^2.11.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/drawer": "^7.1.1",
-    "@react-navigation/native": "^7.1.9",
-    "@react-navigation/native-stack": "^7.3.13",
+    "@react-navigation/native": "^7.1.6",
+    "@react-navigation/native-stack": "^7.3.10",
     "@rneui/base": "^4.0.0-rc.8",
     "@rneui/themed": "^4.0.0-rc.8",
     "axios": "^0.21.1",
@@ -31,7 +31,7 @@
     "easyqrcodejs": "^4.6.2",
     "expo": "^53.0.11",
     "expo-av": "~15.1.6",
-    "expo-blur": "~14.1.4",
+    "expo-blur": "~14.1.5",
     "expo-checkbox": "~4.1.4",
     "expo-constants": "~17.1.6",
     "expo-font": "~13.3.1",
@@ -39,7 +39,7 @@
     "expo-linear-gradient": "~14.1.5",
     "expo-linking": "~7.1.5",
     "expo-location": "~18.1.5",
-    "expo-router": "~5.0.7",
+    "expo-router": "~5.1.0",
     "expo-sharing": "~13.1.5",
     "expo-splash-screen": "^0.30.9",
     "expo-status-bar": "~2.2.3",
@@ -73,6 +73,20 @@
     "zustand": "^5.0.3",
     "expo-asset": "~11.1.5"
   },
+"expo": {
+  "doctor": {
+    "reactNativeDirectoryCheck": {
+      "exclude": [
+        "react-native-toast-notifications",
+        "@rneui/base",
+        "@rneui/themed",
+        "react-native-responsive-dimensions"
+      ],
+      "listUnknownPackages": false
+    }
+  }
+},
+
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~19.0.10",

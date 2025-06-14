@@ -47,7 +47,6 @@ const UsernameScreen = ({
 
   return (
     <View
-      // style={{ flex: 1 }}
       className={`${
         Platform.OS === "web" ? "w-full sm:w-full h-[505px] m" : "w-full mx-auto"
       } p-5 py-8 h-ful`}
@@ -57,6 +56,7 @@ const UsernameScreen = ({
       </Text>
 
       {/* Username Input */}
+
       <View style={{ width: "100%", marginTop: 16 }} className="mb-4">
         <TextInput
           label={"UserName"}
@@ -85,16 +85,6 @@ const UsernameScreen = ({
         Enterkey={handleKeyPress}
       />
 
-      <View
-        className={`mx-auto mt-2 ${
-          Platform.OS === "web" ? "w-[75%]" : "w-[90%]"
-        }`}
-      >
-        <Text
-          className="text-blue-500 text-md font-semibold text-right mt-2 underline"
-          onPress={() => setMobile(!mobile)}
-        ></Text>
-      </View>
 
       {/* Navigation and CTA */}
 
