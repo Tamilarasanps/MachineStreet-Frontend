@@ -260,7 +260,7 @@ const EditProfile = ({
               onChangeText={(value) => handleChange("organization", value)}
             />
 
-            <View className="z-50">
+            
               <IndustyLineup
                 handleChange={handleChange}
                 data={industrySuggetion}
@@ -268,7 +268,7 @@ const EditProfile = ({
                 value={mechanicDetails.industry}
                 onChange={(value) => handleChange("industry", value)}
               />
-            </View>
+            
 
             <View className="z-10 mt-2 ">
               <SubCategory

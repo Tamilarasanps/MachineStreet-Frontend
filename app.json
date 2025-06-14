@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "MachineStreet",
+    "name": "Machinestreet",
     "jsEngine": "hermes",
     "slug": "frontend",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/AppLogo.png",
     "scheme": "myapp",
@@ -20,11 +20,8 @@
     "android": {
       "userInterfaceStyle": "light",
       "package": "com.tamilarasanps.frontend",
-      "permissions": [
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION"
-      ],
-      "versionCode": 4,
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

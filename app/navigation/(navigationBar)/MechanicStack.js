@@ -45,7 +45,7 @@ export default function MechanicStack() {
         <Stack.Screen
           name="MechanicProfiles"
           component={MechanicList_2}
-          options={{ title: "Profile" }}
+          options={{ title: "MechanicProfiles" }}
         />
       ) : (
         <Stack.Screen

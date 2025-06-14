@@ -9,6 +9,7 @@ import {
 import { FlatList } from "react-native";
 import { useEffect, useState, useRef } from "react";
 import React from "react";
+import { ScrollView } from "react-native-gesture-handler";
 
 function IndustyLineup({
   data,
@@ -96,7 +97,7 @@ function IndustyLineup({
           {delayedFocus && (
             <View
               className="absolute mt-16 left-0 right-0 bg-gray-100 border border-teal-500 rounded-md shadow-md"
-              style={{ maxHeight: 200 }}
+              // style={{ maxHeight: 200 }}
             >
               <FlatList
                 ref={flatListRef}
