@@ -51,6 +51,11 @@ export default function FilterComponent({
 
   const [activeFilter, setActiveFilter] = useState("Location");
 
+  console.log("isOpen", isOpen);
+
+  const [ii, setII] = useState(false);
+  console.log("tests", ii);
+
   const filters =
     page === "mech"
       ? ["Location", "Ratings", "Industry"]
@@ -113,9 +118,9 @@ export default function FilterComponent({
         <View className="w-full items-end mb-2">
           <MaterialIcons
             name="cancel"
-            size={24}
-            color="black"
-            onPress={() => setIsOpen(!isOpen)}
+            size={40}
+            color="red"
+            onPress={() => setII(console.log("pressed by into icon"))}
           />
         </View>
       )}

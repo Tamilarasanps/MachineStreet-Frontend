@@ -23,7 +23,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useCallback } from "react";
 import { useNavigation } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-
+import { Share as NativeShare, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PostViewerModal = ({
@@ -53,6 +53,8 @@ const PostViewerModal = ({
   const [showDelete, setShowDelete] = useState("");
   const [heartAnimations, setHeartAnimations] = useState({});
 
+  // console.log("postviewmoda", posts);
+
   useEffect(() => {
     const newAnimations = {};
     posts.forEach((post) => {
@@ -63,8 +65,6 @@ const PostViewerModal = ({
     });
     setHeartAnimations(newAnimations);
   }, [posts]);
-
-  
 
   async function deletePostLogic(postId) {
     const token = await AsyncStorage.getItem("userToken");
@@ -188,6 +188,42 @@ const PostViewerModal = ({
       ]).start();
     });
   };
+  const share = useCallback(async () => {
+    // console.log(posts); 
+    const id = posts.map((id) => id._id);
+    const bio =
+      typeof posts === "string"
+        ? "Awesome post by me"
+        : posts.map((bio) => bio.bio);
+
+    const productUrl = `https://machinestreets.com/posts/${id}`;
+
+    const message = `Check out this post: ${bio}\n${productUrl}`;
+
+    try {
+      if (Platform.OS === "web") {
+        if (navigator.share) {
+          await navigator.share({
+            title: "Check out this product!",
+            text: message,
+            url: productUrl,
+          });
+        } else {
+          await navigator.clipboard.writeText(message);
+          alert("🔗 URL copied to clipboard (Web Share not supported)");
+        }
+      } else {
+        const result = await NativeShare.share({ message });
+        if (result.action === NativeShare.sharedAction) {
+          // Shared successfully
+        } else if (result.action === NativeShare.dismissedAction) {
+          // User dismissed the share
+        }
+      }
+    } catch (error) {
+      console.error("Sharing failed:", error);
+    }
+  }, [posts]);
 
   // Move all hook declarations before any conditional returns
   const renderPosts = () => {
@@ -203,7 +239,7 @@ const PostViewerModal = ({
       // const { isPlaying } = useEvent(player, "playingChange", {
       //   isPlaying: player.playing,
       // });
-console
+      console;
       return (
         <View
           key={post._id}
@@ -387,13 +423,14 @@ console
                   />
                   <Text>{post?.comments.length}</Text>
                 </>
-
-                <Icon
-                  name="send"
-                  size={24}
-                  color="TealGreen"
-                  className="cursor-pointer"
-                />
+                <Pressable onPress={share}>
+                  <Icon
+                    name="send"
+                    size={24}
+                    color="black"
+                    className="cursor-pointer"
+                  />
+                </Pressable>
               </View>
               <Text style={{ color: "black", marginTop: 16, marginLeft: 8 }}>
                 {post.bio}
@@ -467,7 +504,7 @@ console
 
 const VideoGridItem = ({ videoId, onPostPress, index }) => {
   const player = useVideoPlayer(
-    `http://192.168.200.158:5000/video/${videoId}`,
+    `https://api.machinestreets.com/video/${videoId}`,
     (player) => {
       player.loop = true;
       player.play();

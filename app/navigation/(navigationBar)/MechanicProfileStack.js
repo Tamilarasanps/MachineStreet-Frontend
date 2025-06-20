@@ -2,6 +2,8 @@ import React, { useState, useCallback } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+
+// Screens
 import ProfilePage from "../../screens/(profile)/ProfilePage";
 import Login from "../../screens/(auth)/(login)/Login";
 import SignUp from "../../screens/(auth)/(SignIn)/SignUp";
@@ -10,21 +12,19 @@ const Stack = createNativeStackNavigator();
 
 export default function MechanicProfileStack() {
   const [isLogin, setIsLogin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
-  // 👇 Runs every time the screen gains focus
-
+  // Check token every time screen gains focus
   useFocusEffect(
     useCallback(() => {
       const checkToken = async () => {
         try {
           const storedToken = await AsyncStorage.getItem("userToken");
+          console.log("Stored Token:", storedToken);
           setIsLogin(!!storedToken);
         } catch (error) {
-          console.error("Error checking token:", error);
+          console.error("Error reading token:", error);
           setIsLogin(false);
-        } finally {
-          setLoading(false);
         }
       };
 
@@ -32,32 +32,31 @@ export default function MechanicProfileStack() {
     }, [])
   );
 
-  // Optional loading placeholder
-  if (loading) {
-    return null;
-  }
-
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {isLogin ? (
-        <Stack.Screen
-          name="MechanicProfilePage"
-          component={ProfilePage}
-          options={{ title: "Profile" }}
-        />
+      {/* If user is NOT logged in, show Login & SignUp */}
+      {!isLogin ? (
+        <>
+          <Stack.Screen
+            name="LoginPage"
+            component={Login}
+            options={{ title: "Login" }}
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUp}
+            options={{ title: "Sign Up" }}
+          />
+        </>
       ) : (
-        <Stack.Screen
-          name="LoginPage"
-          component={Login}
-          options={{ title: "Login" }}
-        />
+        <>
+          <Stack.Screen
+            name="ProfilePage"
+            component={ProfilePage}
+            options={{ title: "Profile" }}
+          />
+        </>
       )}
-      <Stack.Screen
-        name="SignUp" // 👈 new screen
-        component={SignUp}
-        options={{ title: "SignUp ", headerShown: false }}
-      />
-      
     </Stack.Navigator>
   );
 }

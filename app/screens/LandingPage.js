@@ -10,6 +10,7 @@ import {
   Dimensions,
   Platform,
   SafeAreaView,
+  Pressable,
 } from "react-native";
 import { useNavigation } from "expo-router";
 import useApi from "../hooks/useApi";
@@ -24,6 +25,7 @@ const LandingPage = () => {
   const isMobile = windowWidth < 600;
 
   // Actual counts fetched from API
+
   const [mechanicLimit, setMechanicLimit] = useState(0);
   const [machineLimit, setMachineLimit] = useState(0);
 
@@ -219,7 +221,14 @@ const LandingPage = () => {
           </View>
 
           {/* How It Works */}
-          <View
+          <Pressable
+            onPress={() => {
+              if (Platform.OS === "web") {
+                router.push("/mechanicApp/MechanicList_2");
+              } else {
+                navigation.navigate("MechanicProfiles");
+              }
+            }}
             style={styles.section}
             className={`${Platform.OS === "web" && isMobile ? "h-screen" : ""}`}
           >
@@ -259,7 +268,7 @@ const LandingPage = () => {
                 isHorizontal={Platform.OS === "web" && windowWidth >= 1024}
               />
             </View>
-          </View>
+          </Pressable>
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -10,6 +10,7 @@ import RoleSelection from "@/app/mechanicApp/RoleSelection";
 import useApi from "@/app/hooks/useApi";
 import Password from "./Password";
 import OtpScreen from "./OtpScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignUp = () => {
   const [step, setStep] = useState(0);
@@ -27,6 +28,15 @@ const SignUp = () => {
   const [subCategories, setSubCategories] = useState([
     { name: "", services: [""] },
   ]);
+
+  useEffect(() => {
+    checkToken();
+  },[]);
+
+  const checkToken = async () => {
+    const storedToken = await AsyncStorage.getItem("userToken");
+    console.log("storedTokenin sign up pages :", storedToken);
+  };
 
   const navigation = useNavigation();
   useEffect(() => {
@@ -101,20 +111,18 @@ const SignUp = () => {
         visibilityTime: 2000,
         animation: "slide",
       });
-
       return;
     }
 
     try {
       // Dynamically generate the signup URL
-      console.log('function triggered ')
+      console.log("function triggered ");
       const response = await postJsonApi(getSignupUrl(step), api_Data);
 
-      console.log('response :', response)
+      console.log("response :", response);
 
       if (response && response.status === 200) {
-
-        console.log('step :', step)
+        console.log("step :", step);
         if (step == 2) {
           Toast.show({
             type: "success",
@@ -130,12 +138,13 @@ const SignUp = () => {
           setOtp("");
           setPassword("");
           setConfirmPass("");
-          // toast.show("Registration successfully!", { type: "success" });
-          console.log(Platform.OS === "web")
+          // toast.show("Registration successfully!", { type: "success" }
+
+          console.log(Platform.OS === "web");
           if (Platform.OS === "web") {
             router.push("/screens/Login");
           } else {
-            navigation.navigate("LoginPage")
+            navigation.navigate("LoginPage");
           }
         }
         if (step !== (3 || 4)) {

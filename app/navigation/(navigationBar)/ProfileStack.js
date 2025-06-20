@@ -59,11 +59,6 @@ export default function ProfileStack() {
         component={SignUp}
         options={{ title: "SignUp ", headerShown: false }}
       />
-      <Stack.Screen
-        name="ProfilePage" // 👈 new screen
-        component={ProfilePage}
-        options={{ title: "ProfilePage ", headerShown: false }}
-      />
     </Stack.Navigator>
   );
 }

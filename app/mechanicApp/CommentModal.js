@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useContext } from "react";
 import {
   Modal,
   View,
@@ -9,13 +9,15 @@ import {
   ScrollView,
   Text,
   TextInput,
+  KeyboardAvoidingView,
+  Keyboard,
+  Platform,
   TouchableOpacity,
 } from "react-native";
 import { BlurView } from "expo-blur";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSocketContext } from "../context/SocketContext";
 import { FormatTime } from "../context/FormatTime";
-import { useContext } from "react";
 
 export default function CommentModal({
   onClose,
@@ -28,20 +30,22 @@ export default function CommentModal({
 }) {
   const { width, height } = Dimensions.get("window");
   const { socket } = useSocketContext();
-  const { formatTime } = useContext(FormatTime); // ✅ correct way to use
-  // console.log("comment :", comment);
+  const { formatTime } = useContext(FormatTime);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   useEffect(() => {
     const handleCommentsUpdate = (data) => {
-      // console.log('@data :', data)
       setComments((prev) => [...prev, data.comment]);
     };
-
     if (socket) {
-      // console.log('@socke ')
       socket.on("comments-updated", handleCommentsUpdate);
     }
-
     return () => {
       if (socket) {
         socket.off("comments-updated", handleCommentsUpdate);
@@ -51,7 +55,6 @@ export default function CommentModal({
 
   useEffect(() => {
     if (socket && socket.connected && selectedPost) {
-      // console.log('@triggered :', selectedPost)
       socket.emit("join-post-room", selectedPost);
       return () => {
         socket.emit("leave-post-room", selectedPost);
@@ -59,14 +62,26 @@ export default function CommentModal({
     }
   }, [socket?.connected, selectedPost]);
 
-  // useEffect(()=>{
-  //   if(postId) fectchComments(postId)
-  // },[postId])
-  // console.log("comment :", comment);
+  // Helper to send comment and clear input
+  const sendComment = () => {
+    if (comment.trim().length === 0) return;
+    handlePostComment(selectedPost, comment);
+  };
+
+  // const addTodo = () => {
+  //   if (!input.trim()) return;
+  //   setTodos([
+  //     ...todos,
+  //     { id: Date.now().toString(), title: input.trim(), done: false },
+  //   ]);
+  //   setInput("");
+  //   inputRef.current?.clear();
+  // };
   return (
     <Modal animationType="slide" transparent={true}>
       <BlurView intensity={50} tint="light" style={styles.blurContainer}>
-        <View
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={[
             styles.modalWrapper,
             {
@@ -76,13 +91,15 @@ export default function CommentModal({
             },
           ]}
         >
-          {/* Close Button */}
           <Pressable style={styles.closeButton} onPress={onClose}>
             <Text style={styles.closeText}>✕</Text>
           </Pressable>
 
-          <View style={{ flex: 1, marginTop: 16 }}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={{ flex: 1, marginTop: 2 }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: 80 }}
+            >
               {comments && comments.length > 0 ? (
                 [...comments].reverse().map((cmt, index) => (
                   <View key={index} style={{ marginBottom: 16 }}>
@@ -107,13 +124,18 @@ export default function CommentModal({
                           resizeMode="cover"
                         />
                       </View>
-                      <View className="flex flex-row items-center gap-4">
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                      >
                         <Text style={{ fontWeight: "bold", fontSize: 16 }}>
                           {cmt.userId.username}
                         </Text>
                         <Text
                           style={{
-                            // marginLeft: 50,
                             color: "#888",
                             fontSize: 12,
                             marginTop: 2,
@@ -130,7 +152,11 @@ export default function CommentModal({
                 ))
               ) : (
                 <Text
-                  style={{ textAlign: "center", marginTop: 20, color: "#aaa" }}
+                  style={{
+                    textAlign: "center",
+                    marginTop: 20,
+                    color: "#aaa",
+                  }}
                 >
                   No comments yet.
                 </Text>
@@ -138,31 +164,22 @@ export default function CommentModal({
             </ScrollView>
           </View>
 
-          {/* Comment Input */}
-          <View style={styles.inputRow}>
+          <View style={styles.inputContainer}>
             <TextInput
-              placeholder="Write a comment..."
-              placeholderTextColor="#888"
+              ref={inputRef}
+              style={styles.input}
+              placeholder="Add a comment"
               value={comment}
-              onChangeText={(text) => setComment(text)}
-              style={{
-                flex: 1,
-                height: 45,
-                backgroundColor: "#f0f0f0",
-                borderRadius: 8,
-                paddingHorizontal: 12,
-                textAlignVertical: "center", // Vertically centers placeholder
-              }}
+              onChangeText={setComment}
+              onSubmitEditing={sendComment}
+              returnKeyType="send"
+              blurOnSubmit={false}
             />
-
-            <TouchableOpacity
-              onPress={() => handlePostComment(selectedPost, comment)}
-              style={styles.sendButton}
-            >
+            <TouchableOpacity style={styles.addButton} onPress={sendComment}>
               <Ionicons name="send" size={20} color="#fff" />
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </BlurView>
     </Modal>
   );
@@ -174,15 +191,17 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+    paddingTop: 40,
   },
   modalWrapper: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "white",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     paddingTop: 40,
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    paddingBottom: 0,
     elevation: 5,
+    flex: 1,
   },
   closeButton: {
     position: "absolute",
@@ -195,31 +214,31 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#333",
   },
-  inputRow: {
+  inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: "auto",
+    borderTopColor: "#eee",
     borderTopWidth: 1,
-    borderColor: "#ddd",
-    paddingTop: 8,
+    padding: 16,
+    backgroundColor: "#fff",
   },
   input: {
     flex: 1,
-    height: 40,
-    backgroundColor: "#f0f0f0",
+    borderColor: "#ddd",
+    borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
+    height: 44,
+    backgroundColor: "#f9f9f9",
     color: "#000",
   },
-  sendButton: {
+  addButton: {
     marginLeft: 8,
     backgroundColor: "#007AFF",
-    paddingVertical: 8,
-    paddingHorizontal: 14,
     borderRadius: 8,
+    paddingHorizontal: 16,
+    justifyContent: "center",
+    height: 44,
   },
-  sendText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
+  addButtonText: { color: "#fff", fontSize: 24 },
 });

@@ -80,7 +80,7 @@ export default function SubCategory({
   }, [selectIndex]);
 
   return (
-    <>
+    <View>
       <Text className="text-lg font-semibold mb-2 text-teal-700">
         {labels[0]} and {labels[1]}
       </Text>
@@ -266,6 +266,6 @@ export default function SubCategory({
           + Add Another {labels[0]}
         </Text>
       </TouchableOpacity>
-    </>
+    </View>
   );
 }

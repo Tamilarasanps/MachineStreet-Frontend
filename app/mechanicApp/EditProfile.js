@@ -208,10 +208,10 @@ const EditProfile = ({
       visible={modalVisible}
       onRequestClose={() => setModalVisible(false)}
     >
-      <KeyboardAvoidingView
+      <View
         style={styles.modalOverlay}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
+        className="flex-1 pt-16 "
       >
         <View style={styles.modalContainer}>
           <View className="w-full flex  items-end ">
@@ -260,15 +260,15 @@ const EditProfile = ({
               onChangeText={(value) => handleChange("organization", value)}
             />
 
-            
+            <View className="z-50">
               <IndustyLineup
-                handleChange={handleChange}
-                data={industrySuggetion}
-                label="Industry"
-                value={mechanicDetails.industry}
-                onChange={(value) => handleChange("industry", value)}
-              />
-            
+              handleChange={handleChange}
+              data={industrySuggetion}
+              label="Industry"
+              value={mechanicDetails.industry}
+              onChange={(value) => handleChange("industry", value)}
+            />
+            </View>
 
             <View className="z-10 mt-2 ">
               <SubCategory
@@ -375,16 +375,16 @@ const EditProfile = ({
             </Pressable>
           </ScrollView>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 };
 
 const styles = {
   modalOverlay: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: "rgba(0,0,0,0.4)",
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
   },
   modalContainer: {

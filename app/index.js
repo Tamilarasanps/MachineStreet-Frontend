@@ -6,6 +6,11 @@ import HomePageAdmin from "./AdminFolder/HomePageAdmin";
 import LandingPage from "./screens/LandingPage";
 import BottomNavBar from "./navigation/(navigationBar)/BottomNavBar";
 import QrModal from "./mechanicApp/QrModal";
+import SplashScreen from "./screens/SplashScreen";
+import RoleSelection from "./mechanicApp/RoleSelection";
+import SignUp from "./screens/(auth)/(SignIn)/SignUp";
+import ProfilePage from "./screens/(profile)/ProfilePage";
+import App from "./App";
 
 export default function Index() {
   const [role, setRole] = useState(null);
@@ -34,6 +39,6 @@ export default function Index() {
   }
 
   return role === "admin" ? <HomePageAdmin /> : <BottomNavBar />;
-  // return <QrModal />;
-  // return <BottomNavBar />;
+
+  // return <App />; 
 }

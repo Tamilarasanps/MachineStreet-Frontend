@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../global.css";
 import { Stack } from "expo-router";
 import { LoadingProvider } from "./context/LoadingContext";
@@ -8,8 +8,19 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { FileUploadProvider } from "./context/FileUpload";
 import { FormatTimeProvider } from "./context/FormatTime";
 import Toast from "react-native-toast-message";
+import SplashScreen from "./screens/SplashScreen";
 
 const Layout = () => {
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2500); // ⏱️ Show splash for 2.5 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <AuthProvider>
       <SocketProvider>
@@ -17,8 +28,14 @@ const Layout = () => {
           <LoadingProvider>
             <FileUploadProvider>
               <FormatTimeProvider>
-                <Stack screenOptions={{ headerShown: false }} />
-                <Toast />
+                {showSplash ? (
+                  <SplashScreen />
+                ) : (
+                  <>
+                    <Stack screenOptions={{ headerShown: false }} />
+                    <Toast />
+                  </>
+                )}
               </FormatTimeProvider>
             </FileUploadProvider>
           </LoadingProvider>

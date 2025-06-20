@@ -57,14 +57,12 @@ const Login = () => {
         if (userRole === "admin") {
           router.push("/AdminFolder/HomePageAdmin");
         } else {
-          if (Platform.OS !== "web") {
-            console.log("plllll");
-            navigation.navigate("MechanicProfiles");
-          } else {
+          if (Platform.OS === "web") {
             router.push("/mechanicApp/MechanicList_2");
+          } else {
+            navigation.navigate("MechanicProfiles");
           }
         }
-
         setMailOrphone("");
         setPassword("");
       }

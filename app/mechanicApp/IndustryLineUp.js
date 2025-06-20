@@ -97,7 +97,7 @@ function IndustyLineup({
           {delayedFocus && (
             <View
               className="absolute mt-16 left-0 right-0 bg-gray-100 border border-teal-500 rounded-md shadow-md"
-              // style={{ maxHeight: 200 }}
+              style={{ zIndex: 999 }}
             >
               <FlatList
                 ref={flatListRef}
@@ -110,6 +110,7 @@ function IndustyLineup({
                       setTimeout(() => setIsFocused(false), 200);
                       setSelectedIndex(-1);
                     }}
+                    style={{ zIndex: 999 }}
                   >
                     <Text
                       className="p-3 text-gray-700"

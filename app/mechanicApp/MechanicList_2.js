@@ -53,7 +53,10 @@ const MechanicList_2 = () => {
     qr,
     setQr,
   } = GetMechanic();
-
+  // console.log("mechanics :", mechanics);
+  // useEffect(() => {
+  //   setMechanics();
+  // }, []);
   const isSmallScreen = width < 768;
   const isMediumScreen = width >= 768 && width < 1024;
   const isLargeScreen = width > 1024;
@@ -63,7 +66,6 @@ const MechanicList_2 = () => {
   // const [showServiceModal, setShowServiceModal] = useState(false);
   // const [showServiceModalId, setShowServiceModalId] = useState(null);
   const [mechanicSearchResults, setMechanicSearchResults] = useState([]);
-
   const [searchBar, setSearchBar] = useState("");
   const [authUser] = useContext(AuthContext);
   const [expandedMechanicId, setExpandedMechanicId] = useState(null);
@@ -129,6 +131,8 @@ const MechanicList_2 = () => {
     useCallback(() => {
       const authcheck = async () => {
         const token = await AsyncStorage.getItem("userToken");
+      console.log('token :', !token)
+
         setStoreToken(token);
         const usersRole = await AsyncStorage.getItem("role");
         setUserRole(usersRole);
@@ -142,7 +146,7 @@ const MechanicList_2 = () => {
           }
         }
       };
-
+      console.log('auth called')
       authcheck();
     }, [])
   );
@@ -266,7 +270,7 @@ const MechanicList_2 = () => {
     }
   };
 
-  return storeToken ? (
+  return (
     <>
       <SafeAreaView></SafeAreaView>
       <Header
@@ -817,10 +821,6 @@ const MechanicList_2 = () => {
         </ScrollView>
       </View>
     </>
-  ) : (
-    <View className="bg-white h-full">
-      <Text>Not storetoken</Text>
-    </View>
   );
 };
 

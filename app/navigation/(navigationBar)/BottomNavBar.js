@@ -14,6 +14,7 @@ import MechanicList_2 from "@/app/mechanicApp/MechanicList_2";
 import LandingPage from "@/app/screens/LandingPage";
 import MechanicProfileStack from "./MechanicProfileStack";
 import AuthStack from "./AuthStack";
+import ProfilePage from "@/app/screens/(profile)/ProfilePage";
 
 const Tab = createBottomTabNavigator();
 

@@ -38,6 +38,7 @@ import { useNavigation } from "expo-router";
 const { width } = Dimensions.get("window");
 
 const ProfilePage = ({}) => {
+  console.log("profile rendered ");
   const [editModal, setEditModal] = useState(false);
   const { width } = useWindowDimensions();
   const { id, page } = useLocalSearchParams();
@@ -240,6 +241,7 @@ const ProfilePage = ({}) => {
     const checkProfile = async () => {
       try {
         const storedToken = await AsyncStorage.getItem("userToken");
+        console.log("profile :", storedToken);
         const role = await AsyncStorage.getItem("role");
         // console.log("stroed token", storedToken);
 
@@ -247,8 +249,10 @@ const ProfilePage = ({}) => {
         if (!storedToken) {
           if (Platform.OS === "web") {
             router.replace("/screens/Login");
+          } else {
+            // router.replace("/screens/Login")
+            navigation.navigate("Profile");
           }
-          return;
         }
 
         // CASE 1: Visiting another mechanic's profile
