@@ -33,6 +33,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import QrModal from "./QrModal";
 import { useFocusEffect } from "@react-navigation/native";
+import App from "../App";
 
 const MechanicList_2 = () => {
   const { width } = useWindowDimensions();
@@ -131,7 +132,7 @@ const MechanicList_2 = () => {
     useCallback(() => {
       const authcheck = async () => {
         const token = await AsyncStorage.getItem("userToken");
-      console.log('token :', !token)
+        console.log("token :", !token);
 
         setStoreToken(token);
         const usersRole = await AsyncStorage.getItem("role");
@@ -146,7 +147,7 @@ const MechanicList_2 = () => {
           }
         }
       };
-      console.log('auth called')
+      console.log("auth called");
       authcheck();
     }, [])
   );
@@ -280,20 +281,12 @@ const MechanicList_2 = () => {
         setSearchBar={setSearchBar}
         page="mechanic"
       />
+      <Pressable onPress={() => setIsOpen(true)} className="mt-4 ml-3">
+        <Icon name="filter-list" size={40} color="#000" />
+      </Pressable>
 
-      {width <= 1024 && (
-        <Pressable onPress={() => setIsOpen(!isOpen)}>
-          <Octicons
-            name="filter"
-            size={24}
-            color="black"
-            className="ml-2 mt-2"
-          />
-        </Pressable>
-      )}
-
+      {/* <App setIsOpen={setIsOpen} isOpen={isOpen} /> */}
       <View className="flex-row flex-1">
-        {/* Fixed red sidebar */}
         {(width > 1024 || isOpen) && (
           <View className={`${width <= 1024 ? "absolute z-50 w-[80%]" : ""} `}>
             <FilterComponent
@@ -328,15 +321,23 @@ const MechanicList_2 = () => {
             />
           </View>
         )}
-        {/* Scrollable blue content */}
+
         <ScrollView>
           {!qr && userRole === "mechanic" && (
             <QrModal visible={!qr} onClose={() => setQr(true)} />
           )}
           <View className=" min-h-screen flex flex-rrow  px-2 pb-6 mt-5 ">
             <View
-              className={`flex flex-row rounded-sm mt-5 min-h-screen  gap-2 mb-48`}
-              style={{ zIndex: -1 }}
+              className={`flex flex-row rounded-sm mt-5 min-h-screen  gap-2 mb-24 `}
+              // style={{ zIndex: -1 }}
+              style={{
+                marginBottom:
+                  Platform.OS === "web"
+                    ? isSmallScreen
+                      ? "80%"
+                      : "" // or some default width for larger screens
+                    : "", // or any suitable value for Android/iOS
+              }}
             >
               <View
                 className={`${
@@ -556,7 +557,6 @@ const MechanicList_2 = () => {
                                   </View>
 
                                   <View className="flex-row md:flex-col items-center md:items-start space-x-4 md:space-x-0 md:space-y-2 mt-8">
-                                    {/* Username */}
                                     <Text className="text-lg font-extrabold text-gray-600 text-center md:text-left">
                                       {mechanic.username
                                         .charAt(0)
@@ -564,7 +564,6 @@ const MechanicList_2 = () => {
                                         mechanic.username.slice(1)}
                                     </Text>
 
-                                    {/* Post Count with Icon */}
                                     <View className="flex-row items-center">
                                       <MaterialCommunityIcons
                                         name="postage-stamp"
@@ -768,7 +767,12 @@ const MechanicList_2 = () => {
                   )}
                 </>
 
-                <View className="flex flex-row justify-between px-2 items-center">
+                <View
+                  className="flex flex-row justify-between  items-center "
+                  style={{
+                    marginTop: Platform.OS === "web" ? isSmallScreen : "-80px",
+                  }}
+                >
                   <View>
                     <Text className="font-bold">
                       Page {page} of {totalPages}
@@ -820,6 +824,8 @@ const MechanicList_2 = () => {
           </View>
         </ScrollView>
       </View>
+
+      {/* <Filter /> */}
     </>
   );
 };

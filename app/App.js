@@ -1,129 +1,61 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
-  SafeAreaView,
   View,
   Text,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  KeyboardAvoidingView,
+  Pressable,
+  ScrollView,
+  useWindowDimensions,
   Platform,
 } from "react-native";
+import Octicons from "@expo/vector-icons/Octicons";
+import MechanicList_2 from "./mechanicApp/MechanicList_2";
 
-export default function App() {
-  const [todos, setTodos] = useState([]);
-  const [input, setInput] = useState("");
-  const inputRef = useRef(null);
-
-  const addTodo = () => {
-    if (!input.trim()) return;
-    setTodos([
-      ...todos,
-      { id: Date.now().toString(), title: input.trim(), done: false },
-    ]);
-    setInput("");
-    inputRef.current?.clear();
-  };
-
-  const toggleTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, done: !todo.done } : todo
-      )
-    );
-  };
-
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  };
-
-  const renderItem = ({ item }) => (
-    <View style={styles.todoItem}>
-      <TouchableOpacity onPress={() => toggleTodo(item.id)}>
-        <Text style={[styles.todoText, item.done && styles.doneText]}>
-          {item.title}
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => deleteTodo(item.id)}>
-        <Text style={styles.deleteText}>🗑️</Text>
-      </TouchableOpacity>
-    </View>
-  );
+export default function App({ isOpen, setIsOpen }) {
+  const { width } = useWindowDimensions();
+  const isSmallScreen = width < 768;
+  // const [isOpen, setIsOpen] = useState(false); // default: hidden
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-      >
-        <View style={{ flex: 1 }}>
-          <Text style={styles.heading}>To-Do List</Text>
-          <FlatList
-            data={todos}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            contentContainerStyle={{ paddingBottom: 16 }}
-          />
-          <View style={styles.inputContainer}>
-            <TextInput
-              ref={inputRef}
-              style={styles.input}
-              placeholder="Add a new task"
-              value={input}
-              onChangeText={setInput}
-              onSubmitEditing={addTodo}
-              returnKeyType="done"
-            />
-            <TouchableOpacity style={styles.addButton} onPress={addTodo}>
-              <Text style={styles.addButtonText}>＋</Text>
-            </TouchableOpacity>
-          </View>
+    <View className="flex-1">
+      {isOpen && (
+        <View
+          style={{
+            position: isSmallScreen ? "absolute" : "relative",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: isSmallScreen ? "80%" : 300,
+            backgroundColor: "#fff",
+            elevation: 10, // Android
+            height: "100%",
+          }}
+        >
+          {/* Close Button */}
+          {isSmallScreen && (
+            <Pressable
+              onPress={() => setIsOpen(false)}
+              className="p-2 bg-gray-200"
+            >
+              <Text>Close</Text>
+            </Pressable>
+          )}
+
+          {/* Scrollable Filter Content */}
+          <ScrollView
+            contentContainerStyle={{ padding: 16 }}
+            style={{ flex: 1 }}
+            showsVerticalScrollIndicator
+          >
+            {Array.from({ length: 30 }).map((_, i) => (
+              <View key={i} className="mb-2 p-3 bg-gray-100 rounded">
+                <Text>Filter Option {i + 1}</Text>
+              </View>
+            ))}
+          </ScrollView>
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      )}
+
+      {/* <MechanicList_2 /> */}
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-  heading: { fontSize: 28, fontWeight: "bold", margin: 24, marginBottom: 12 },
-  todoItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    borderBottomColor: "#eee",
-    borderBottomWidth: 1,
-  },
-  todoText: { fontSize: 18, flex: 1 },
-  doneText: { textDecorationLine: "line-through", color: "#aaa" },
-  deleteText: { fontSize: 20, color: "#ff4444", paddingLeft: 12 },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderTopColor: "#eee",
-    borderTopWidth: 1,
-    padding: 16,
-    backgroundColor: "#fff",
-  },
-  input: {
-    flex: 1,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    height: 44,
-    backgroundColor: "#f9f9f9",
-  },
-  addButton: {
-    marginLeft: 8,
-    backgroundColor: "#007AFF",
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    justifyContent: "center",
-    height: 44,
-  },
-  addButtonText: { color: "#fff", fontSize: 24 },
-});

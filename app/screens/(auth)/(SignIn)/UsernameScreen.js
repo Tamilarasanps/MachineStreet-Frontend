@@ -12,6 +12,7 @@ import { router } from "expo-router";
 import { useNavigation } from "expo-router";
 import { LoadingContext } from "@/app/context/LoadingContext";
 import Loading from "@/app/component/Loading";
+import Toast from "react-native-toast-message";
 
 const UsernameScreen = ({
   username,
@@ -26,17 +27,32 @@ const UsernameScreen = ({
   const { width } = useWindowDimensions();
   const isScreen = width > 768;
   const navigation = useNavigation();
-
+  console.log("username :", username);
   const { isLoading, startLoading, stopLoading } = useContext(LoadingContext);
-
+  
   const handleNextPress = async () => {
+    if (username.length < 3) {
+      Toast.show({
+        type: "info",
+        text1: "Minimum 3 letters required",
+        text2: "Please enter at least 3 characters",
+      });
+      return; // stop here if validation fails
+    }
+
     startLoading();
     try {
       await formSubmit({ username, mailOrphone });
     } catch (error) {
       console.error(error);
+      Toast.show({
+        type: "error",
+        text1: "Submission Failed",
+        text2: "Please try again",
+      });
+    } finally {
+      stopLoading();
     }
-    stopLoading();
   };
 
   const handleKeyPress = (e) => {
@@ -48,7 +64,9 @@ const UsernameScreen = ({
   return (
     <View
       className={`${
-        Platform.OS === "web" ? "w-full sm:w-full h-[505px] m" : "w-full mx-auto"
+        Platform.OS === "web"
+          ? "w-full sm:w-full h-[505px] m"
+          : "w-full mx-auto"
       } p-5 py-8 h-ful`}
     >
       <Text className="md:text-2xl text-lg font-bold mx-auto text-TealGreen mb-4">
@@ -84,7 +102,6 @@ const UsernameScreen = ({
         setMailOrphone={setMailOrphone}
         Enterkey={handleKeyPress}
       />
-
 
       {/* Navigation and CTA */}
 

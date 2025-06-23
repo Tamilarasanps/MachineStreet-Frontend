@@ -33,6 +33,9 @@ const EditProfile = ({
   setSubCategories,
   page,
   setStep,
+  username,
+  setUsername,
+  formSubmit,
 }) => {
   const { getJsonApi, pathchApi } = useApi();
   const [phoneNumber, setPhoneNumber] = useState(
@@ -146,7 +149,8 @@ const EditProfile = ({
 
     setMechanicDetails(updatedDetails);
     setModalVisible(false);
-    setStep(1);
+    setStep(2);
+    formSubmit();
 
     if (page === "profile") {
       try {
@@ -250,6 +254,15 @@ const EditProfile = ({
               Professional Information
             </Text>
 
+            {/* <Text className="text-lg font-semibold text-teal-600 mt-6">
+              UserName
+            </Text>
+            <TextInput
+              className="w-full mt-4 h-12 border border-gray-300 rounded-md px-3 "
+              placeholder="Enter Your name"
+              value={username}
+              onChangeText={setUsername}
+            /> */}
             <Text className="text-lg font-semibold text-teal-600 mt-6">
               Organization Name
             </Text>
@@ -262,12 +275,12 @@ const EditProfile = ({
 
             <View className="z-50">
               <IndustyLineup
-              handleChange={handleChange}
-              data={industrySuggetion}
-              label="Industry"
-              value={mechanicDetails.industry}
-              onChange={(value) => handleChange("industry", value)}
-            />
+                handleChange={handleChange}
+                data={industrySuggetion}
+                label="Industry"
+                value={mechanicDetails.industry}
+                onChange={(value) => handleChange("industry", value)}
+              />
             </View>
 
             <View className="z-10 mt-2 ">

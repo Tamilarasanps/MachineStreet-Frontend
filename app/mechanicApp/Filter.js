@@ -1,17 +1,12 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Pressable,
-  TextInput,
-  ScrollView,
-  Platform,
-} from "react-native";
+import { View, Text, Pressable, TextInput, ScrollView } from "react-native";
 import { Checkbox, Divider } from "react-native-paper"; // Assuming you're using react-native-paper for Checkbox and RadioGroup components
 import { useWindowDimensions } from "react-native"; // To detect screen width dynamically
 import Icon from "react-native-vector-icons/MaterialIcons";
 import RadioGroup from "react-native-radio-buttons-group";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Octicons from "@expo/vector-icons/Octicons";
+
 export default function FilterComponent({
   isOpen,
   setIsOpen,
@@ -99,19 +94,12 @@ export default function FilterComponent({
       setSelectedRating(rating);
     }
   };
-
-  // const ProductList = ({ produc, minPrice, maxPrice }) => {
-  //   const products = produc.filter(
-  //     (product) => product.price >= minPrice && product.price <= maxPrice
-  //   );
-  // };
-
   return (
-    <View
-      className={`bg-white ml-2 rounded-md p-4 shadow-md flex ${
+    <ScrollView
+      className={`bg-gray-100  ml-2 rounded-md p-4 shadow-md  ${
         width <= 1024
           ? "absolute z-50 flex-col pb-20 max-w-[100vw]"
-          : "flex-row h-[95%] my-auto"
+          : "flex-row h-[100%] my-auto"
       }`}
     >
       {width <= 1024 && (
@@ -120,7 +108,8 @@ export default function FilterComponent({
             name="cancel"
             size={40}
             color="red"
-            onPress={() => setII(console.log("pressed by into icon"))}
+            // onPress={() => setII(console.log("pressed by into icon"),fals)}
+            onPress={() => setIsOpen(false)}
           />
         </View>
       )}
@@ -184,8 +173,8 @@ export default function FilterComponent({
               </View>
 
               {/* {!otherThanIndia && ( */}
-              <>
-                <ScrollView className="min-h-[150px] max-h-[250px]">
+              <View className="p-2">
+                <ScrollView style={{ height: 250 }} nestedScrollEnabled>
                   {selectedState ? (
                     <Pressable
                       onPress={() => {
@@ -223,8 +212,8 @@ export default function FilterComponent({
                     <Text className="font-semibold text-lg text-gray-800">
                       Districts in {selectedState}
                     </Text>
-                    <ScrollView className="min-h-[250px] mt-2 ">
-                      {selectedDistricts?.map((district) => (
+                    <ScrollView style={{ height: 250 }} nestedScrollEnabled>
+                      {selectedDistricts.map((district) => (
                         <Pressable
                           key={district}
                           onPress={() => handleDistrictClick(district)}
@@ -240,7 +229,8 @@ export default function FilterComponent({
                     </ScrollView>
                   </>
                 )}
-              </>
+              </View>
+
               {/* )} */}
             </View>
           )}
@@ -495,6 +485,6 @@ export default function FilterComponent({
           )} */}
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
