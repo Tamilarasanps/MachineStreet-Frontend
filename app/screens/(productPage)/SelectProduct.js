@@ -1,434 +1,434 @@
-import {
-  View,
-  Text,
-  Platform,
-  Image,
-  ScrollView,
-  useWindowDimensions,
-  Pressable,
-  SafeAreaView,
-  Linking,
-} from "react-native";
-import React, { useEffect, useCallback, useMemo } from "react";
-import { Share as NativeShare } from "react-native";
-import ProductDetails from "./ProductDetails";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import useConversation from "@/app/stateManagement/useConversation";
-import { useRouter } from "expo-router";
-import useWishlist from "@/app/hooks/useWishlist";
-import { useRoute } from "@react-navigation/native";
-import Recommeded from "../(Homepage)/Recommeded";
-import Footer from "@/app/component/(footer)/Footer";
-import useApi from "@/app/hooks/useApi";
-import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons } from "@expo/vector-icons";
-import VideoGridItem from "@/app/mechanicApp/VideoView";
-import Octicons from "@expo/vector-icons/Octicons";
+// import {
+//   View,
+//   Text,
+//   Platform,
+//   Image,
+//   ScrollView,
+//   useWindowDimensions,
+//   Pressable,
+//   SafeAreaView,
+//   Linking,
+// } from "react-native";
+// import React, { useEffect, useCallback, useMemo } from "react";
+// import { Share as NativeShare } from "react-native";
+// import ProductDetails from "./ProductDetails";
+// import FontAwesome from "react-native-vector-icons/FontAwesome";
+// import { useLocalSearchParams } from "expo-router";
+// import { useState } from "react";
+// import useConversation from "@/app/stateManagement/useConversation";
+// import { useRouter } from "expo-router";
+// import useWishlist from "@/app/hooks/useWishlist";
+// import { useRoute } from "@react-navigation/native";
+// import Recommeded from "../(Homepage)/Recommeded";
+// import Footer from "@/app/component/(footer)/Footer";
+// import useApi from "@/app/hooks/useApi";
+// import { useNavigation } from "@react-navigation/native";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { Ionicons } from "@expo/vector-icons";
+// import VideoGridItem from "@/app/mechanicApp/VideoView";
+// import Octicons from "@expo/vector-icons/Octicons";
 
-export default function SelectProduct() {
-  const { width } = useWindowDimensions();
-  const isScreen = width > 786;
-  const route = useRoute();
-  const router = useRouter();
-  const navigation = useNavigation();
+// export default function SelectProduct() {
+//   const { width } = useWindowDimensions();
+//   const isScreen = width > 786;
+//   const route = useRoute();
+//   const router = useRouter();
+//   const navigation = useNavigation();
 
-  const { selectedConversation, setSelectedConversation } = useConversation();
-  const { wishlist, addToWishlist } = useWishlist();
-  const [product, setProduct] = useState({});
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [media, setMedia] = useState([]);
+//   const { selectedConversation, setSelectedConversation } = useConversation();
+//   const { wishlist, addToWishlist } = useWishlist();
+//   const [product, setProduct] = useState({});
+//   const [currentIndex, setCurrentIndex] = useState(0);
+//   const [media, setMedia] = useState([]);
 
-  const { getJsonApi } = useApi();
+//   const { getJsonApi } = useApi();
 
-  const slideNavigator = (i) => {
-    setCurrentIndex(i);
-  };
-  let id;
+//   const slideNavigator = (i) => {
+//     setCurrentIndex(i);
+//   };
+//   let id;
 
-  if (Platform.OS === "web") {
-    id = useLocalSearchParams().id;
-  } else {
-    id = route?.params?.id;
-  }
+//   if (Platform.OS === "web") {
+//     id = useLocalSearchParams().id;
+//   } else {
+//     id = route?.params?.id;
+//   }
 
-  useEffect(() => {
-    const init = async () => {
-      const getToken = await AsyncStorage.getItem("userToken");
+//   useEffect(() => {
+//     const init = async () => {
+//       const getToken = await AsyncStorage.getItem("userToken");
 
-      if (!getToken) {
-        if (Platform.OS === "web") {
-          router.replace("/screens/(auth)/(login)/Login");
-        } else {
-          navigation.replace("LoginPage");
-        }
-      } else {
-        fetchProduct();
-      }
-    };
+//       if (!getToken) {
+//         if (Platform.OS === "web") {
+//           router.replace("/screens/(auth)/(login)/Login");
+//         } else {
+//           navigation.replace("LoginPage");
+//         }
+//       } else {
+//         fetchProduct();
+//       }
+//     };
 
-    if (id) init(); // ✅ id now has the correct value
-  }, [id]);
+//     if (id) init(); // ✅ id now has the correct value
+//   }, [id]);
 
-  const fetchProduct = useCallback(async () => {
-    try {
-      const data = await getJsonApi(`productDetails/${id}`);
-      // console.log("data :", data);
+//   const fetchProduct = useCallback(async () => {
+//     try {
+//       const data = await getJsonApi(`productDetails/${id}`);
+//       // console.log("data :", data);
 
-      const productData = data?.data?.mainProduct;
+//       const productData = data?.data?.mainProduct;
 
-      // media = [
-      //   data?.data?.mainProduct?.machineImages[0][0],
-      //   data?.data?.mainProduct?.machineVideos[0],
-      //   // ...data?.data?.mainProduct?.machineImages.slice(1, 3),
-      //   // data?.data?.mainProduct?.machineVideos[1],
-      // ];
-      setMedia([
-        data?.data?.mainProduct?.machineImages[0],
-        data?.data?.mainProduct?.machineVideos[0],
-        ...(data?.data?.mainProduct?.machineImages?.length > 1
-          ? data?.data?.mainProduct?.machineImages.slice(1, 3)
-          : []),
-        ...(data?.data?.mainProduct?.machineVideos?.length > 1
-          ? [data?.data?.mainProduct?.machineVideos[1]]
-          : []),
-        ...(data?.data?.mainProduct?.machineImages?.length > 3
-          ? data?.data?.mainProduct?.machineImages.slice(3)
-          : []),
-      ]);
+//       // media = [
+//       //   data?.data?.mainProduct?.machineImages[0][0],
+//       //   data?.data?.mainProduct?.machineVideos[0],
+//       //   // ...data?.data?.mainProduct?.machineImages.slice(1, 3),
+//       //   // data?.data?.mainProduct?.machineVideos[1],
+//       // ];
+//       setMedia([
+//         data?.data?.mainProduct?.machineImages[0],
+//         data?.data?.mainProduct?.machineVideos[0],
+//         ...(data?.data?.mainProduct?.machineImages?.length > 1
+//           ? data?.data?.mainProduct?.machineImages.slice(1, 3)
+//           : []),
+//         ...(data?.data?.mainProduct?.machineVideos?.length > 1
+//           ? [data?.data?.mainProduct?.machineVideos[1]]
+//           : []),
+//         ...(data?.data?.mainProduct?.machineImages?.length > 3
+//           ? data?.data?.mainProduct?.machineImages.slice(3)
+//           : []),
+//       ]);
 
-      // console.log(data?.data?.mainProduct?.machineVideos);
+//       // console.log(data?.data?.mainProduct?.machineVideos);
 
-      setProduct(productData);
+//       setProduct(productData);
 
-      // if (productData?.category) {
-      //   const recommendedData = await getJsonApi(
-      //     `products?category=${productData.category}`
-      //   );
+//       // if (productData?.category) {
+//       //   const recommendedData = await getJsonApi(
+//       //     `products?category=${productData.category}`
+//       //   );
 
-      //   const recommended = recommendedData?.data?.filter(
-      //     (item) => item._id !== productData._id
-      //   );
+//       //   const recommended = recommendedData?.data?.filter(
+//       //     (item) => item._id !== productData._id
+//       //   );
 
-      //   setRecommendedProducts(recommended || []);
-      // }
-    } catch (error) {
-      console.error(
-        "❌ Error fetching product or recommended products:",
-        error
-      );
-    }
-  }, [id]);
+//       //   setRecommendedProducts(recommended || []);
+//       // }
+//     } catch (error) {
+//       console.error(
+//         "❌ Error fetching product or recommended products:",
+//         error
+//       );
+//     }
+//   }, [id]);
 
-  if (Platform.OS === "web") {
-    id = useLocalSearchParams().id;
-  } else {
-    id = route?.params?.id;
-  }
+//   if (Platform.OS === "web") {
+//     id = useLocalSearchParams().id;
+//   } else {
+//     id = route?.params?.id;
+//   }
 
-  const share = useCallback(async () => {
-    if (!product) {
-      return;
-    }
+//   const share = useCallback(async () => {
+//     if (!product) {
+//       return;
+//     }
 
-    const productUrl = `https://machinestreets.com//product/${
-      product.MachineName || product._id
-    }`;
-    const message = `🛒 Check out this product: ${
-      product.MachineName || "Awesome Product"
-    }\n${productUrl}`;
+//     const productUrl = `https://machinestreets.com//product/${
+//       product.MachineName || product._id
+//     }`;
+//     const message = `🛒 Check out this product: ${
+//       product.MachineName || "Awesome Product"
+//     }\n${productUrl}`;
 
-    try {
-      if (Platform.OS === "web") {
-        if (navigator.share) {
-          await navigator.share({
-            title: "Check out this product!",
-            text: message,
-            url: productUrl,
-          });
-        } else {
-          // Fallback: copy to clipboard
-          await navigator.clipboard.writeText(message);
-          alert("🔗 URL copied to clipboard (Web Share not supported)");
-        }
-      } else {
-        const result = await NativeShare.share({ message });
-        if (result.action === NativeShare.sharedAction) {
-        } else if (result.action === NativeShare.dismissedAction) {
-        }
-      }
-    } catch (error) {}
-  }, [product]);
+//     try {
+//       if (Platform.OS === "web") {
+//         if (navigator.share) {
+//           await navigator.share({
+//             title: "Check out this product!",
+//             text: message,
+//             url: productUrl,
+//           });
+//         } else {
+//           // Fallback: copy to clipboard
+//           await navigator.clipboard.writeText(message);
+//           alert("🔗 URL copied to clipboard (Web Share not supported)");
+//         }
+//       } else {
+//         const result = await NativeShare.share({ message });
+//         if (result.action === NativeShare.sharedAction) {
+//         } else if (result.action === NativeShare.dismissedAction) {
+//         }
+//       }
+//     } catch (error) {}
+//   }, [product]);
 
-  const openDailer = () => {
-    Linking.openURL(`tel:${product.contact}`);
-  };
-  // console.log( "jjjjjj :" , media[currentIndex].length === 24 );
+//   const openDailer = () => {
+//     Linking.openURL(`tel:${product.contact}`);
+//   };
+//   // console.log( "jjjjjj :" , media[currentIndex].length === 24 );
 
-  return (
-    <ScrollView>
-      <SafeAreaView>
-        <View>
-          <View
-            className="flex flex-row pt-2 pl-2 mt-1 bg-zinc-100 shadow items-center "
-            style={{ zIndex: -1 }}
-          >
-            <Text className="text-lg">Home</Text>
-            <Ionicons
-              name="chevron-forward"
-              size={13}
-              color="black"
-              style={{ marginTop: "5px" }}
-            />
+//   return (
+//     <ScrollView>
+//       <SafeAreaView>
+//         <View>
+//           <View
+//             className="flex flex-row pt-2 pl-2 mt-1 bg-zinc-100 shadow items-center "
+//             style={{ zIndex: -1 }}
+//           >
+//             <Text className="text-lg">Home</Text>
+//             <Ionicons
+//               name="chevron-forward"
+//               size={13}
+//               color="black"
+//               style={{ marginTop: "5px" }}
+//             />
 
-            {/* Conditionally display the product's industry and category */}
-            {Object.keys(product)?.length > 0 && (
-              <View className="flex flex-row ">
-                <Text className="text-gray-500 text-lg">
-                  {product.industry}
-                </Text>
-                <Ionicons
-                  name="chevron-forward"
-                  size={13}
-                  color="gray"
-                  style={[
-                    Platform.OS !== "web" ? { marginTop: 3 } : { marginTop: 9 },
-                  ]}
-                />
+//             {/* Conditionally display the product's industry and category */}
+//             {Object.keys(product)?.length > 0 && (
+//               <View className="flex flex-row ">
+//                 <Text className="text-gray-500 text-lg">
+//                   {product.industry}
+//                 </Text>
+//                 <Ionicons
+//                   name="chevron-forward"
+//                   size={13}
+//                   color="gray"
+//                   style={[
+//                     Platform.OS !== "web" ? { marginTop: 3 } : { marginTop: 9 },
+//                   ]}
+//                 />
 
-                <Text className="text-gray-500 text-lg">
-                  {product.category}
-                </Text>
-              </View>
-            )}
-          </View>
+//                 <Text className="text-gray-500 text-lg">
+//                   {product.category}
+//                 </Text>
+//               </View>
+//             )}
+//           </View>
 
-          {Object.keys(product)?.length > 0 ? (
-            <>
-              <View>
-                {/* Star Icon */}
-                <View className="flex flex-row z-50 relative">
-                  <Pressable
-                    className="absolute top-2 right-10 "
-                    onPress={() => addToWishlist(product)}
-                  >
-                    <FontAwesome
-                      name="star"
-                      size={30}
-                      color={wishlist?.includes(product._id) ? "red" : "white"}
-                    />
-                  </Pressable>
-                </View>
+//           {Object.keys(product)?.length > 0 ? (
+//             <>
+//               <View>
+//                 {/* Star Icon */}
+//                 <View className="flex flex-row z-50 relative">
+//                   <Pressable
+//                     className="absolute top-2 right-10 "
+//                     onPress={() => addToWishlist(product)}
+//                   >
+//                     <FontAwesome
+//                       name="star"
+//                       size={30}
+//                       color={wishlist?.includes(product._id) ? "red" : "white"}
+//                     />
+//                   </Pressable>
+//                 </View>
 
-                {/* Name and Share Icon */}
-                <View className="flex flex-row mt-3 ">
-                  <Text
-                    className={`text-xl mt-3 ms-6 mb-3 `}
-                    style={{
-                      marginLeft:
-                        Platform.OS === "web" && width >= 1024 ? "45%" : "",
-                    }}
-                  >
-                    Tamilarasan
-                  </Text>
-                  <View className="absolute right-10 mt-12  pt-3">
-                    <Pressable onPress={share}>
-                      <FontAwesome name="share" size={30} color="gray" />
-                    </Pressable>
-                  </View>
-                </View>
+//                 {/* Name and Share Icon */}
+//                 <View className="flex flex-row mt-3 ">
+//                   <Text
+//                     className={`text-xl mt-3 ms-6 mb-3 `}
+//                     style={{
+//                       marginLeft:
+//                         Platform.OS === "web" && width >= 1024 ? "45%" : "",
+//                     }}
+//                   >
+//                     Tamilarasan
+//                   </Text>
+//                   <View className="absolute right-10 mt-12  pt-3">
+//                     <Pressable onPress={share}>
+//                       <FontAwesome name="share" size={30} color="gray" />
+//                     </Pressable>
+//                   </View>
+//                 </View>
 
-                {/* Machine Name */}
-                <View>
-                  <Text
-                    className="text-2xl font-bold  ms-6 pt-3"
-                    style={[
-                      {
-                        marginLeft:
-                          Platform.OS === "web" && width >= 1024 ? "45%" : "",
-                      },
-                      { zIndex: -1 },
-                    ]}
-                  >
-                    Machine Name
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: isScreen ? "row" : "column",
-                  marginTop: 20,
-                  justifyContent: "center",
-                  alignItems: isScreen ? "flex-start" : "center",
-                  zIndex: -1,
-                }}
-              >
-                {/* Sticky Image Section */}
-                <View
-                  className=""
-                  style={{
-                    width: isScreen ? "35%" : "90%",
-                    marginLeft: isScreen ? 100 : 0,
-                    position: isScreen ? "sticky" : "relative",
-                    top: 0,
-                    height: isScreen ? "70vh" : "auto",
-                    zIndex: 10,
-                    borderRadius: 10,
-                    alignItems: "center",
-                  }}
-                >
-                  {media[currentIndex].length === 24 ? (
-                    <View
-                      style={{
-                        width: "100%",
-                        height: Platform.OS === "web" ? "400px" : 300,
-                      }}
-                    >
-                      <VideoGridItem videoId={media[currentIndex]} />
-                    </View>
-                  ) : (
-                    // <Text className="text-center">video</Text>
-                    <Image
-                      className="rounded-sm"
-                      source={
-                        {
-                          uri: `data:image/jpeg;base64,${media[currentIndex]}`,
-                        }
-                        // Provide a local placeholder image if needed
-                      }
-                      style={{
-                        width: "100%",
-                        height: Platform.OS === "web" ? "400px" : 300,
-                      }}
-                    />
-                  )}
+//                 {/* Machine Name */}
+//                 <View>
+//                   <Text
+//                     className="text-2xl font-bold  ms-6 pt-3"
+//                     style={[
+//                       {
+//                         marginLeft:
+//                           Platform.OS === "web" && width >= 1024 ? "45%" : "",
+//                       },
+//                       { zIndex: -1 },
+//                     ]}
+//                   >
+//                     Machine Name
+//                   </Text>
+//                 </View>
+//               </View>
+//               <View
+//                 style={{
+//                   flexDirection: isScreen ? "row" : "column",
+//                   marginTop: 20,
+//                   justifyContent: "center",
+//                   alignItems: isScreen ? "flex-start" : "center",
+//                   zIndex: -1,
+//                 }}
+//               >
+//                 {/* Sticky Image Section */}
+//                 <View
+//                   className=""
+//                   style={{
+//                     width: isScreen ? "35%" : "90%",
+//                     marginLeft: isScreen ? 100 : 0,
+//                     position: isScreen ? "sticky" : "relative",
+//                     top: 0,
+//                     height: isScreen ? "70vh" : "auto",
+//                     zIndex: 10,
+//                     borderRadius: 10,
+//                     alignItems: "center",
+//                   }}
+//                 >
+//                   {media[currentIndex].length === 24 ? (
+//                     <View
+//                       style={{
+//                         width: "100%",
+//                         height: Platform.OS === "web" ? "400px" : 300,
+//                       }}
+//                     >
+//                       <VideoGridItem videoId={media[currentIndex]} />
+//                     </View>
+//                   ) : (
+//                     // <Text className="text-center">video</Text>
+//                     <Image
+//                       className="rounded-sm"
+//                       source={
+//                         {
+//                           uri: `data:image/jpeg;base64,${media[currentIndex]}`,
+//                         }
+//                         // Provide a local placeholder image if needed
+//                       }
+//                       style={{
+//                         width: "100%",
+//                         height: Platform.OS === "web" ? "400px" : 300,
+//                       }}
+//                     />
+//                   )}
 
-                  <View className=" absolute top-2 left-2 p-2 w-[100px] bg-yellow-500 rounded-sm justify-center items-center">
-                    <Text className=" text-base font-bold">
-                      {product.priceType || "Negotiable"}
-                    </Text>
-                  </View>
+//                   <View className=" absolute top-2 left-2 p-2 w-[100px] bg-yellow-500 rounded-sm justify-center items-center">
+//                     <Text className=" text-base font-bold">
+//                       {product.priceType || "Negotiable"}
+//                     </Text>
+//                   </View>
 
-                  <ScrollView
-                    horizontal={true}
-                    style={{
-                      height: 80,
-                      marginTop: 16,
-                      maxWidth: "100%",
+//                   <ScrollView
+//                     horizontal={true}
+//                     style={{
+//                       height: 80,
+//                       marginTop: 16,
+//                       maxWidth: "100%",
 
-                      paddingTop: 30,
-                    }}
-                  >
-                    {media.map((item, index) => {
-                      const isVideo = item.length === 24;
-                      return (
-                        <Pressable
-                          onPress={() => slideNavigator(index)}
-                          key={index}
-                          style={{
-                            width: 80,
-                            height: 80,
-                            borderRadius: 6,
-                            overflow: "hidden",
-                            marginRight: 8, // spacing between thumbnails
-                          }}
-                        >
-                          {!isVideo ? (
-                            <Image
-                              source={{ uri: `data:image/jpeg;base64,${item}` }}
-                              style={{ width: 80, height: 80, borderRadius: 6 }}
-                              resizeMode="cover"
-                            />
-                          ) : (
-                            <View
-                              style={{
-                                width: 80,
-                                height: 80,
-                                backgroundColor: "#D1D5DB",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                borderRadius: 6,
-                              }}
-                            >
-                              <Octicons name="video" size={36} color="red" />
-                            </View>
-                          )}
-                        </Pressable>
-                      );
-                    })}
-                  </ScrollView>
-                </View>
+//                       paddingTop: 30,
+//                     }}
+//                   >
+//                     {media.map((item, index) => {
+//                       const isVideo = item.length === 24;
+//                       return (
+//                         <Pressable
+//                           onPress={() => slideNavigator(index)}
+//                           key={index}
+//                           style={{
+//                             width: 80,
+//                             height: 80,
+//                             borderRadius: 6,
+//                             overflow: "hidden",
+//                             marginRight: 8, // spacing between thumbnails
+//                           }}
+//                         >
+//                           {!isVideo ? (
+//                             <Image
+//                               source={{ uri: `data:image/jpeg;base64,${item}` }}
+//                               style={{ width: 80, height: 80, borderRadius: 6 }}
+//                               resizeMode="cover"
+//                             />
+//                           ) : (
+//                             <View
+//                               style={{
+//                                 width: 80,
+//                                 height: 80,
+//                                 backgroundColor: "#D1D5DB",
+//                                 justifyContent: "center",
+//                                 alignItems: "center",
+//                                 borderRadius: 6,
+//                               }}
+//                             >
+//                               <Octicons name="video" size={36} color="red" />
+//                             </View>
+//                           )}
+//                         </Pressable>
+//                       );
+//                     })}
+//                   </ScrollView>
+//                 </View>
 
-                {/* Product Details Section */}
-                <View
-                  style={{
-                    flex: 1,
-                    // marginLeft: isScreen ? 0 : 0,
-                    paddingBottom: 20,
-                    width: isScreen ? 500 : "100%",
-                    marginTop: Platform.OS === "web" ? "-40px" : -20,
-                  }}
-                >
-                  <View className="mt-5 bg-gray-100 rounded-sm p-5">
-                    <View className="bg-gray-100">
-                      <View className="flex flex-row">
-                        <Pressable
-                          onPress={async () => {
-                            setSelectedConversation(product?.userId);
-                            await AsyncStorage.setItem(
-                              "selectedConversation",
-                              String(product?.userId)
-                            );
-                            if (Platform.OS === "web") {
-                              router.push("/Chat");
-                            } else {
-                              router.push("/RightPart/Right");
-                            }
-                          }}
-                        >
-                          <View className="mt-12 h-12 ms-5 mr-auto w-[150px] bg-TealGreen rounded-sm justify-center items-center">
-                            <Text className="text-white text-lg">Chat</Text>
-                          </View>
-                        </Pressable>
-                        {Platform.OS !== "web" ? (
-                          <Pressable
-                            className="mt-12 h-12 ms-5 w-[150px] bg-TealGreen rounded-sm justify-center items-center absolute right-6"
-                            onPress={openDailer}
-                          >
-                            <Text className="text-white text-lg">Call</Text>
-                          </Pressable>
-                        ) : null}
-                      </View>
+//                 {/* Product Details Section */}
+//                 <View
+//                   style={{
+//                     flex: 1,
+//                     // marginLeft: isScreen ? 0 : 0,
+//                     paddingBottom: 20,
+//                     width: isScreen ? 500 : "100%",
+//                     marginTop: Platform.OS === "web" ? "-40px" : -20,
+//                   }}
+//                 >
+//                   <View className="mt-5 bg-gray-100 rounded-sm p-5">
+//                     <View className="bg-gray-100">
+//                       <View className="flex flex-row">
+//                         <Pressable
+//                           onPress={async () => {
+//                             setSelectedConversation(product?.userId);
+//                             await AsyncStorage.setItem(
+//                               "selectedConversation",
+//                               String(product?.userId)
+//                             );
+//                             if (Platform.OS === "web") {
+//                               router.push("/Chat");
+//                             } else {
+//                               router.push("/RightPart/Right");
+//                             }
+//                           }}
+//                         >
+//                           <View className="mt-12 h-12 ms-5 mr-auto w-[150px] bg-TealGreen rounded-sm justify-center items-center">
+//                             <Text className="text-white text-lg">Chat</Text>
+//                           </View>
+//                         </Pressable>
+//                         {Platform.OS !== "web" ? (
+//                           <Pressable
+//                             className="mt-12 h-12 ms-5 w-[150px] bg-TealGreen rounded-sm justify-center items-center absolute right-6"
+//                             onPress={openDailer}
+//                           >
+//                             <Text className="text-white text-lg">Call</Text>
+//                           </Pressable>
+//                         ) : null}
+//                       </View>
 
-                      <View className="flex flex-row mt-8 ">
-                        <View className="mt-2 h-10 ms-5 w-[100px] bg-TealGreen rounded-sm justify-center items-center">
-                          <Text className="text-white text-lg">
-                            $ {product.price}
-                          </Text>
-                        </View>
-                        <View className=" absolute right-10 mt-2 p-2 w-[100px] bg-yellow-500 rounded-sm justify-center items-center">
-                          <Text className=" text-base font-bold">
-                            {product.priceType || "Negotiable"}
-                          </Text>
-                        </View>
-                      </View>
+//                       <View className="flex flex-row mt-8 ">
+//                         <View className="mt-2 h-10 ms-5 w-[100px] bg-TealGreen rounded-sm justify-center items-center">
+//                           <Text className="text-white text-lg">
+//                             $ {product.price}
+//                           </Text>
+//                         </View>
+//                         <View className=" absolute right-10 mt-2 p-2 w-[100px] bg-yellow-500 rounded-sm justify-center items-center">
+//                           <Text className=" text-base font-bold">
+//                             {product.priceType || "Negotiable"}
+//                           </Text>
+//                         </View>
+//                       </View>
 
-                      <ProductDetails product={product} />
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </>
-          ) : (
-            ""
-          )}
+//                       <ProductDetails product={product} />
+//                     </View>
+//                   </View>
+//                 </View>
+//               </View>
+//             </>
+//           ) : (
+//             ""
+//           )}
 
-          <Recommeded />
-          {Platform.OS === "web" && <Footer />}
-        </View>
-      </SafeAreaView>
-    </ScrollView>
-  );
-}
+//           <Recommeded />
+//           {Platform.OS === "web" && <Footer />}
+//         </View>
+//       </SafeAreaView>
+//     </ScrollView>
+//   );
+// }
