@@ -149,8 +149,7 @@ const EditProfile = ({
 
     setMechanicDetails(updatedDetails);
     setModalVisible(false);
-    setStep(2);
-    formSubmit();
+    setStep(1);
 
     if (page === "profile") {
       try {

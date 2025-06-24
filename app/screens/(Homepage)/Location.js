@@ -36,6 +36,7 @@ const Location = ({ location, setLocation }) => {
   const fetchIndustries = useCallback(async () => {
     try {
       const data = await getJsonApi("CategoryPage");
+
       const fetchedRegions = data?.data?.states[0]?.states || [];
       const fetchedDistricts = data?.data?.states[1]?.districts || [];
 
