@@ -14,6 +14,7 @@ import App from "./App";
 import UsernameScreen from "./screens/(auth)/(SignIn)/UsernameScreen";
 import MechanicList_2 from "./mechanicApp/MechanicList_2";
 import Filter from "./mechanicApp/Filter";
+import App2 from "./App2";
 
 export default function Index() {
   const [role, setRole] = useState(null);
@@ -43,6 +44,7 @@ export default function Index() {
 
   return role === "admin" ? <HomePageAdmin /> : <BottomNavBar />;
 
-  // return <Filter />;
+  // return <App />;
+
   // return <MechanicList_2 />;
 }

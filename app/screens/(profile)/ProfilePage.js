@@ -38,7 +38,6 @@ import { useNavigation } from "expo-router";
 const { width } = Dimensions.get("window");
 
 const ProfilePage = ({}) => {
-  console.log("profile rendered ");
   const [editModal, setEditModal] = useState(false);
   const { width } = useWindowDimensions();
   const { id, page } = useLocalSearchParams();
@@ -230,7 +229,6 @@ const ProfilePage = ({}) => {
         `mechanicList/getComments/${postId}`,
         token
       );
-      // console.log("comments :", result);
       if (result.status === 200) setComments(result.data);
     } catch (err) {
       console.log(err);
@@ -241,11 +239,7 @@ const ProfilePage = ({}) => {
     const checkProfile = async () => {
       try {
         const storedToken = await AsyncStorage.getItem("userToken");
-        console.log("profile :", storedToken);
         const role = await AsyncStorage.getItem("role");
-        // console.log("stroed token", storedToken);
-
-        // If not logged in, redirect to login (only on web)
         if (!storedToken) {
           if (Platform.OS === "web") {
             router.replace("/screens/Login");

@@ -54,10 +54,6 @@ const MechanicList_2 = () => {
     qr,
     setQr,
   } = GetMechanic();
-  // console.log("mechanics :", mechanics);
-  // useEffect(() => {
-  //   setMechanics();
-  // }, []);
   const isSmallScreen = width < 768;
   const isMediumScreen = width >= 768 && width < 1024;
   const isLargeScreen = width > 1024;
@@ -70,7 +66,6 @@ const MechanicList_2 = () => {
   const [searchBar, setSearchBar] = useState("");
   const [authUser] = useContext(AuthContext);
   const [expandedMechanicId, setExpandedMechanicId] = useState(null);
-  // console.log("expa", expandedMechanicId);
   const [viewMoreModalVisible, setViewMoreModalVisible] = useState(false);
   // filter options
 
@@ -132,12 +127,9 @@ const MechanicList_2 = () => {
     useCallback(() => {
       const authcheck = async () => {
         const token = await AsyncStorage.getItem("userToken");
-        console.log("token :", !token);
-
         setStoreToken(token);
         const usersRole = await AsyncStorage.getItem("role");
         setUserRole(usersRole);
-        // console.log("userRole", usersRole); // use usersRole, not userRole from state (which is async)
 
         if (!token) {
           if (Platform.OS === "web") {
@@ -147,7 +139,6 @@ const MechanicList_2 = () => {
           }
         }
       };
-      console.log("auth called");
       authcheck();
     }, [])
   );
@@ -281,14 +272,18 @@ const MechanicList_2 = () => {
         setSearchBar={setSearchBar}
         page="mechanic"
       />
-      <Pressable onPress={() => setIsOpen(true)} className="mt-4 ml-3">
-        <Icon name="filter-list" size={40} color="#000" />
-      </Pressable>
+      {width <= 1024 && (
+        <Pressable onPress={() => setIsOpen(true)} className="mt-4 ml-3">
+          <Icon name="filter-list" size={40} color="#000" />
+        </Pressable>
+      )}
 
       {/* <App setIsOpen={setIsOpen} isOpen={isOpen} /> */}
-      <View className="flex-row flex-1">
+      <View className="flex-row flex-1 ">
         {(width > 1024 || isOpen) && (
-          <View className={`${width <= 1024 ? "absolute z-50 w-[80%]" : ""} `}>
+          <View
+            className={`${width <= 1024 ? "absolute z-50 w-[80%]" : ""} mt-4 `}
+          >
             <FilterComponent
               page="mech"
               industries={industries}
@@ -326,9 +321,9 @@ const MechanicList_2 = () => {
           {!qr && userRole === "mechanic" && (
             <QrModal visible={!qr} onClose={() => setQr(true)} />
           )}
-          <View className=" min-h-screen flex flex-rrow  px-2 pb-6 mt-5 ">
+          <View className=" min-h-screen flex flex-rrow  px-2 pb-6 m ">
             <View
-              className={`flex flex-row rounded-sm mt-5 min-h-screen  gap-2 mb-24 `}
+              className={`flex flex-row rounded-sm  min-h-screen  gap-2 mb-24 `}
               // style={{ zIndex: -1 }}
               style={{
                 marginBottom:
@@ -510,7 +505,7 @@ const MechanicList_2 = () => {
                             }}
                           >
                             <View
-                              className="overflow-hidden rounded-xl bg-white shadow mb-10 "
+                              className="overflow-hidden rounded-xl bg-white shadow "
                               style={{
                                 flexDirection: isSmallScreen ? "column" : "row",
                                 height: isSmallScreen ? undefined : 400,
@@ -767,41 +762,43 @@ const MechanicList_2 = () => {
                   )}
                 </>
 
-                <View
-                  className="flex flex-row justify-between  items-center "
-                  style={{
-                    marginTop: Platform.OS === "web" ? isSmallScreen : "-80px",
-                  }}
-                >
-                  <View>
-                    <Text className="font-bold">
-                      Page {page} of {totalPages}
-                    </Text>
-                  </View>
-                  <View className="flex flex-row gap-8">
-                    <Pressable
-                      className="px-8 py-4 bg-TealGreen rounded-md"
-                      disabled={page === totalPages}
-                      onPress={() => {
-                        // console.log("triggered");
-                        setPage(page + 1);
-                      }}
-                    >
-                      <Text className="font-semibold cursor-pointer text-white">
-                        Next
+                {mechanics.length > 49 && (
+                  <View
+                    className="flex flex-row justify-between  items-center "
+                    style={{
+                      marginTop:
+                        Platform.OS === "web" ? isSmallScreen : "-80px",
+                    }}
+                  >
+                    <View>
+                      <Text className="font-bold">
+                        Page {page} of {totalPages}
                       </Text>
-                    </Pressable>
-                    <Pressable
-                      className="px-8 py-4 bg-TealGreen rounded-md"
-                      disabled={page === 1}
-                      onPress={() => setPage(page - 1)}
-                    >
-                      <Text className="font-semibold cursor-pointer text-white">
-                        Prev
-                      </Text>
-                    </Pressable>
+                    </View>
+                    <View className="flex flex-row gap-8">
+                      <Pressable
+                        className="px-8 py-4 bg-TealGreen rounded-md"
+                        disabled={page === totalPages}
+                        onPress={() => {
+                          setPage(page + 1);
+                        }}
+                      >
+                        <Text className="font-semibold cursor-pointer text-white">
+                          Next
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        className="px-8 py-4 bg-TealGreen rounded-md"
+                        disabled={page === 1}
+                        onPress={() => setPage(page - 1)}
+                      >
+                        <Text className="font-semibold cursor-pointer text-white">
+                          Prev
+                        </Text>
+                      </Pressable>
+                    </View>
                   </View>
-                </View>
+                )}
               </View>
 
               {reviewModal && (
