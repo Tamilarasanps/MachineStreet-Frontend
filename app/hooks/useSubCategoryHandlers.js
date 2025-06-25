@@ -10,8 +10,10 @@ export default function useSubCategoryHandlers(subCategories, setSubCategories) 
   }, [subCategories]);
 
   const handleAddBrand = useCallback((subIndex) => {
+    console.log('subIndex :', subIndex)
     const newSubs = [...subCategories];
     newSubs[subIndex].services.push("");
+    console.log('newSubs :', newSubs)
     setSubCategories(newSubs);
   }, [subCategories]);
 

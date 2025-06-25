@@ -19,7 +19,8 @@ import useApi from "../hooks/useApi";
 import useSubCategoryHandlers from "../hooks/useSubCategoryHandlers";
 import Mobile from "../screens/(auth)/(SignIn)/Mobile";
 import Location from "../screens/(Homepage)/Location";
-import { KeyboardAvoidingView } from "react-native";
+import { Animated } from "react-native";
+import { useRef } from "react";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -100,6 +101,7 @@ const EditProfile = ({
         const data = await getJsonApi(
           `CategoryPage/subCategoryPage/${mechanicDetails.subcategory[index].name}/sell`
         );
+        console.log('setSubCategorySuggestion :',data)
 
         setSubCategorySuggestion(data.data);
       }
@@ -149,8 +151,7 @@ const EditProfile = ({
 
     setMechanicDetails(updatedDetails);
     setModalVisible(false);
-    setStep(2);
-    formSubmit();
+    setStep(1);
 
     if (page === "profile") {
       try {
@@ -205,6 +206,30 @@ const EditProfile = ({
     }
   };
   // console.log(mechanicDetails);
+
+  const slideAnim = useRef(new Animated.Value(-20)).current; // start above the view
+  const opacityAnim = useRef(new Animated.Value(0)).current; // optional: fade in too
+
+  useEffect(() => {
+    if (mechanicDetails.industry) {
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      slideAnim.setValue(-20); // reset position
+      opacityAnim.setValue(0); // reset opacity
+    }
+  }, [mechanicDetails.industry]);
+
   return (
     <Modal
       animationType="slide"
@@ -273,33 +298,45 @@ const EditProfile = ({
               onChangeText={(value) => handleChange("organization", value)}
             />
 
-            <View className="z-50">
-              <IndustyLineup
-                handleChange={handleChange}
-                data={industrySuggetion}
-                label="Industry"
-                value={mechanicDetails.industry}
-                onChange={(value) => handleChange("industry", value)}
-              />
-            </View>
+            <View className=" mt-4 rounded-md p-4 z-50 bg-gray-100">
+              {/* <View className="bg-gray-100 p-4 mt-4 rounded-md z-50">  */}
+              <View className="z-50">
+                <IndustyLineup
+                  handleChange={handleChange}
+                  data={industrySuggetion}
+                  label="Industry"
+                  value={mechanicDetails.industry}
+                  onChange={(value) => handleChange("industry", value)}
+                />
+              </View>
 
-            <View className="z-10 mt-2 ">
-              <SubCategory
-                labels={["category", "services"]}
-                subCategories={subCategories}
-                setSubCategories={setSubCategories}
-                handleAddSubCategory={handleAddSubCategory}
-                handleDeleteSubCategory={handleDeleteSubCategory}
-                handleAddBrand={handleAddBrand}
-                handleDeleteBrand={handleDeleteBrand}
-                handleSubCategoryChange={handleSubCategoryChange}
-                handleBrandChange={handleBrandChange}
-                getCategory={getCategory}
-                getSubCategory={getSubCategory}
-                categorySuggetion={categorySuggetion}
-                subcategorySuggetion={subcategorySuggetion}
-              />
+              {mechanicDetails.industry && (
+                <Animated.View
+                  style={{
+                    transform: [{ translateY: slideAnim }],
+                    opacity: opacityAnim,
+                  }}
+                  className="z-50 mt-2"
+                >
+                  <SubCategory
+                    labels={["category", "services"]}
+                    subCategories={subCategories}
+                    setSubCategories={setSubCategories}
+                    handleAddSubCategory={handleAddSubCategory}
+                    handleDeleteSubCategory={handleDeleteSubCategory}
+                    handleAddBrand={handleAddBrand}
+                    handleDeleteBrand={handleDeleteBrand}
+                    handleSubCategoryChange={handleSubCategoryChange}
+                    handleBrandChange={handleBrandChange}
+                    getCategory={getCategory}
+                    getSubCategory={getSubCategory}
+                    categorySuggetion={categorySuggetion}
+                    subcategorySuggetion={subcategorySuggetion}
+                  />
+                </Animated.View>
+              )}
             </View>
+            {/* </View> */}
 
             {/* Services Section */}
             <Text className="text-lg font-semibold text-teal-600 mt-6">
@@ -320,9 +357,9 @@ const EditProfile = ({
                 onKeyPress={handleKeyPress}
               />
               <TouchableOpacity
+              className="px-4"
                 style={{
                   backgroundColor: "#111827",
-                  padding: 10,
                   borderRadius: 8,
                   height: "100%",
                   justifyContent: "center",
@@ -330,7 +367,7 @@ const EditProfile = ({
                 }}
                 onPress={handleAddService}
               >
-                <Text style={{ color: "#fff" }}>Add</Text>
+                <Text className="text-xs" style={{ color: "#fff" }}>Add</Text>
               </TouchableOpacity>
             </View>
             {mechanicDetails.services.length > 0 && (
@@ -359,7 +396,7 @@ const EditProfile = ({
               </View>
             )}
 
-            <View className="z-50 w-full ">
+            <View className="z-40 w-full ">
               <Text className="text-lg font-semibold text-teal-600 mt-6">
                 Contact
               </Text>

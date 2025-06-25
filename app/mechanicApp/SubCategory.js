@@ -79,161 +79,100 @@ export default function SubCategory({
     }
   }, [selectIndex]);
 
+  console.log("object :", subcategorySuggetion);
+
   return (
     <View>
-      <Text className="text-lg font-semibold mb-2 text-teal-700">
-        {labels[0]} and {labels[1]}
-      </Text>
-
-      {subCategories?.map((sub, subIndex) => (
-        <View
-          key={subIndex}
-          className="p-4 border border-gray-200  rounded-lg z-50"
-          style={{ marginBottom: 50 }}
+      <View className="flex flex-row justify-end items-center   py-3 rounded-md">
+        <TouchableOpacity
+          onPress={handleAddSubCategory}
+          className="bg-black rounded-lg px-3 py-2 z-10"
         >
-          <View className="w-full flex justify-end items-end ">
-            <MaterialIcons
-              name="delete"
-              size={24}
-              color="#EF4444"
-              onPress={() => handleDeleteSubCategory(subIndex)}
-            />
-          </View>
-          {/* Category Input */}
-          <View className="z-50 mt-2">
-            <TextInput
-              value={sub.name}
-              onChangeText={(text) => {
-                handleSubCategoryChange(subIndex, text); // update actual state
-                setCategoryInput(text); // still update filter input for suggestions
-                setSelectIndex(-1);
-              }}
-              onKeyPress={handleKeyPress}
-              onFocus={() => {
-                if (getCategory) getCategory();
-                setActiveSubIndex(subIndex);
-                setActiveBrandIndex(null);
-                setIsFocused(true); // Set focused state to true
-                setShowCategoryDropdown(true);
-              }}
-              // onBlur={() => {
-              //   setTimeout(() => setIsFocused(false), 100); // Delay to let onPress run first
-              // }}
-              placeholder={`Enter ${labels[0]} Name`}
-              placeholderTextColor="#94A3B8"
-              className="border border-gray-300 focus:border-teal-500 focus:ring-1 focus:ring-teal-300 rounded-lg p-3 mb-2 bg-white"
-              // onChangeText={(text) => setCategoryInput(text)} // Set category input value
-            />
+          <Text className="text-white font-semibold text-xs">
+            + Add Category
+          </Text>
+        </TouchableOpacity>
+      </View>
 
-            {/* Category Suggestions */}
-            {getCategory &&
-              filteredCategorySuggestions?.length > 0 &&
-              isFocused && // Show dropdown only if input is focused
-              activeSubIndex === subIndex &&
-              showCategoryDropdown && (
-                <View className="border border-teal-500 bg-white mt-12 rounded-md max-h-[250px] absolute overflow-hidden shadow-lg w-[90%] mx-auto left-0 right-0 z-50">
-                  <FlatList
-                    ref={flatListRef}
-                    data={filteredCategorySuggestions}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item, index }) => (
-                      <Pressable
-                        onPress={() => {
-                          const newSubs = [...subCategories];
-                          newSubs[subIndex].name = item;
-                          setSubCategories(newSubs);
-                          setCategoryInput(""); // Reset input filter
-                          setShowCategoryDropdown(false);
-                          setSelectIndex(-1);
-                        }}
-                        onHoverIn={() => setHighlightedCategoryIndex(index)}
-                        onHoverOut={() => setHighlightedCategoryIndex(null)}
-                        className={`p-3 ${
-                          highlightedCategoryIndex === index
-                            ? "bg-teal-100"
-                            : "bg-white"
-                        }`}
-                      >
-                        <Text className="text-[16px] text-gray-600">
-                          {item}
-                        </Text>
-                      </Pressable>
-                    )}
-                  />
-                </View>
-              )}
+      {[...subCategories]?.reverse().map((sub, index) => {
+        const subIndex = subCategories.length - 1 - index;
+        const isActiveSub = activeSubIndex === subIndex;
 
-            {/* Brand Input Fields */}
-            {sub?.services?.map((brand, brandIndex) => (
-              <View
-                key={brandIndex}
-                className="relative mb-2 ml-2"
-                style={{
-                  zIndex: activeBrandIndex === brandIndex ? 50 : 10,
-                }}
-              >
-                <View className="flex-row items-center z-10">
-                  <TextInput
-                    value={brand}
-                    onChangeText={(text) => {
-                      handleBrandChange(subIndex, brandIndex, text); // update actual state
-                      setSubcategoryInput(text); // for dropdown filter
-                    }}
-                    onFocus={() => {
-                      if (getSubCategory) getSubCategory(brandIndex);
-                      setActiveSubIndex(subIndex);
-                      setActiveBrandIndex(brandIndex);
-                      setIsFocused(true); // Set focused state to true for brand input
-                      setShowSubcategoryDropdown(true);
-                    }}
-                    // onBlur={() => {
-                    //   setTimeout(() => setIsFocused(false), 100); // Delay to let onPress run first
-                    // }}
-                    placeholder={`Enter ${labels[1]} Name`}
-                    placeholderTextColor="#94A3B8"
-                    className="flex-1 border border-gray-300 focus:border-teal-500 focus:ring-1 focus:ring-teal-300 rounded-lg p-3 bg-white"
-                    // onChangeText={(text) => setSubcategoryInput(text)} // Set subcategory input value
-                  />
-                  <TouchableOpacity
-                    onPress={() => handleDeleteBrand(subIndex, brandIndex)}
-                    className="ml-2 bg-red-500 rounded-full w-8 h-8 justify-center items-center"
-                  >
-                    <Text className="text-white font-bold">×</Text>
-                  </TouchableOpacity>
+        return (
+          <View key={subIndex} style={{ zIndex: isActiveSub ? 100 : 10 }}>
+            <Text className="text-lg text-teal-600 font-semibold mb-2">
+              {`${labels[0]} ${subIndex + 1}`}
+            </Text>
+
+            <View
+              className="p-4 border border-gray-200 rounded-lg"
+              style={{ marginBottom: 50 }}
+            >
+              {/* Subcategory Input Field */}
+              <View className="mt-2">
+                <View className="relative w-full mb-4">
+                  <View className="flex-row items-center border border-gray-300 focus-within:border-teal-500 rounded-lg bg-white">
+                    <TextInput
+                      value={sub.name}
+                      onChangeText={(text) => {
+                        handleSubCategoryChange(subIndex, text);
+                        setCategoryInput(text);
+                        setSelectIndex(-1);
+                      }}
+                      onKeyPress={handleKeyPress}
+                      onFocus={() => {
+                        if (getCategory) getCategory();
+                        setActiveSubIndex(subIndex);
+                        setActiveBrandIndex(null);
+                        setIsFocused(true);
+                        setShowCategoryDropdown(true);
+                      }}
+                      placeholder={`Enter ${labels[0]} Name`}
+                      placeholderTextColor="#94A3B8"
+                      className="flex-1 p-3 text-black outline-none w-[80%]"
+                    />
+                    <TouchableOpacity
+                      onPress={() => handleDeleteSubCategory(subIndex)}
+                      className="pr-3"
+                    >
+                      <Text className="text-red-500 text-xl font-bold">×</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
 
-                {getSubCategory &&
-                  filteredSubcategorySuggestions?.length > 0 &&
-                  isFocused && // Show dropdown only if input is focused
-                  activeSubIndex === subIndex &&
-                  activeBrandIndex === brandIndex &&
-                  showSubcategoryDropdown && (
-                    <View className="absolute left-0 right-0 w-[90%] mx-auto mt-12 border border-teal-500 bg-white rounded-md max-h-[250px] overflow-hidden shadow-lg z-50">
+                {/* Category Suggestions Dropdown */}
+                {getCategory &&
+                  filteredCategorySuggestions?.length > 0 &&
+                  isFocused &&
+                  isActiveSub &&
+                  showCategoryDropdown && (
+                    <View
+                      className="border border-teal-500 bg-white mt-12 rounded-md max-h-[250px] absolute overflow-hidden shadow-lg w-full mx-auto left-0 right-0"
+                      style={{ zIndex: 200 }}
+                    >
                       <FlatList
-                        data={filteredSubcategorySuggestions}
-                        keyExtractor={(item, index) => index.toString()}
+                        ref={flatListRef}
+                        data={filteredCategorySuggestions}
+                        keyExtractor={(item, idx) => idx.toString()}
                         renderItem={({ item, index }) => (
                           <Pressable
                             onPress={() => {
-                              const newSubs = [...subCategories];
-                              newSubs[subIndex].services[brandIndex] = item;
-                              setSubCategories(newSubs);
-                              setSubcategoryInput(""); // Reset input filter
-                              setShowSubcategoryDropdown(false);
+                              const updated = [...subCategories];
+                              updated[subIndex].name = item;
+                              setSubCategories(updated);
+                              setCategoryInput("");
+                              setShowCategoryDropdown(false);
+                              setSelectIndex(-1);
                             }}
-                            onHoverIn={() =>
-                              setHighlightedSubcategoryIndex(index)
-                            }
-                            onHoverOut={() =>
-                              setHighlightedSubcategoryIndex(null)
-                            }
-                            className={`p-2 ${
-                              highlightedSubcategoryIndex === index
+                            onHoverIn={() => setHighlightedCategoryIndex(index)}
+                            onHoverOut={() => setHighlightedCategoryIndex(null)}
+                            className={`p-3 ${
+                              highlightedCategoryIndex === index
                                 ? "bg-teal-100"
                                 : "bg-white"
                             }`}
                           >
-                            <Text className="text-[16px] text-gray-700">
+                            <Text className="text-[16px] text-gray-600">
                               {item}
                             </Text>
                           </Pressable>
@@ -241,31 +180,123 @@ export default function SubCategory({
                       />
                     </View>
                   )}
+
+                {/* Add Brand Button */}
+                {sub.name.length > 0 && (
+                  <View className="flex flex-row items-center justify-between py-2 rounded-md">
+                    <Text className="md:text-lg sm:text-md font-semibold text-teal-600">
+                      {labels[1]}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        handleAddBrand(subIndex);
+                      }}
+                      className="bg-black rounded-lg px-3 py-2"
+                    >
+                      <Text className="text-white font-medium text-xs ">
+                        + Add {labels[1]==='services' ? 'service' : 'brand'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+
+                {/* Brand Inputs */}
+                {sub.name.length > 0 &&
+                  [...sub.services]?.reverse().map((brand, brandIdx) => {
+                    const brandIndex = sub.services.length - 1 - brandIdx;
+                    const isActiveBrand =
+                      activeSubIndex === subIndex &&
+                      activeBrandIndex === brandIndex;
+
+                    return (
+                      <View
+                        key={brandIndex}
+                        className="relative mb-2 mt-2"
+                        style={{ zIndex: isActiveBrand ? 200 : 10 }}
+                      >
+                        <View className="w-full">
+                          <View className="flex-row items-center border border-gray-300 focus-within:border-teal-500 focus-within:ring-1 focus-within:ring-teal-300 rounded-lg bg-white">
+                            <TextInput
+                              value={brand}
+                              onChangeText={(text) => {
+                                handleBrandChange(subIndex, brandIndex, text);
+                                setSubcategoryInput(text);
+                              }}
+                              onFocus={() => {
+                                if (getSubCategory) getSubCategory(brandIndex);
+                                setActiveSubIndex(subIndex);
+                                setActiveBrandIndex(brandIndex);
+                                setIsFocused(true);
+                                setShowSubcategoryDropdown(true);
+                              }}
+                              placeholder={`Enter ${labels[1]} Name`}
+                              placeholderTextColor="#94A3B8"
+                              className="flex-1 p-3 text-black outline-none w-[80%]"
+                            />
+                            <TouchableOpacity
+                              onPress={() =>
+                                handleDeleteBrand(subIndex, brandIndex)
+                              }
+                              className="pr-3"
+                            >
+                              <Text className="text-red-500 text-xl font-bold">
+                                ×
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+
+                        {/* Brand Suggestions Dropdown */}
+                        {getSubCategory &&
+                          filteredSubcategorySuggestions?.length > 0 &&
+                          isFocused &&
+                          isActiveBrand &&
+                          showSubcategoryDropdown && (
+                            <View
+                              className="absolute left-0 right-0 w-full mx-auto mt-12 border border-teal-500 bg-white rounded-md max-h-[250px] overflow-hidden shadow-lg"
+                              style={{ zIndex: 300 }}
+                            >
+                              <FlatList
+                                data={filteredSubcategorySuggestions}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={({ item, index }) => (
+                                  <Pressable
+                                    onPress={() => {
+                                      const updated = [...subCategories];
+                                      updated[subIndex].services[brandIndex] =
+                                        item;
+                                      setSubCategories(updated);
+                                      setSubcategoryInput("");
+                                      setShowSubcategoryDropdown(false);
+                                    }}
+                                    onHoverIn={() =>
+                                      setHighlightedSubcategoryIndex(index)
+                                    }
+                                    onHoverOut={() =>
+                                      setHighlightedSubcategoryIndex(null)
+                                    }
+                                    className={`p-2 ${
+                                      highlightedSubcategoryIndex === index
+                                        ? "bg-teal-100"
+                                        : "bg-white"
+                                    }`}
+                                  >
+                                    <Text className="text-[16px] text-gray-700">
+                                      {item}
+                                    </Text>
+                                  </Pressable>
+                                )}
+                              />
+                            </View>
+                          )}
+                      </View>
+                    );
+                  })}
               </View>
-            ))}
+            </View>
           </View>
-
-          <View className="z-10">
-            {/* Add Brand Button */}
-            <TouchableOpacity
-              onPress={() => handleAddBrand(subIndex)}
-              className="bg-teal-600 rounded-lg p-2 mt-2 ml-2 "
-            >
-              <Text className="text-white text-center">+ Add {labels[1]}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      ))}
-
-      {/* Add Another Subcategory */}
-      <TouchableOpacity
-        onPress={handleAddSubCategory}
-        className="bg-teal-700 rounded-lg p-3 mb-6 z-10"
-      >
-        <Text className="text-white text-center font-semibold">
-          + Add Another {labels[0]}
-        </Text>
-      </TouchableOpacity>
+        );
+      })}
     </View>
   );
 }
