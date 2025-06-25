@@ -72,7 +72,7 @@ function IndustyLineup({
       className="flex-1"
     >
       <View className="relative">
-        <Text className="text-lg font-semibold text-teal-600 mt-6">
+        <Text className="text-lg font-semibold mt-6 text-teal-600">
           {label}
         </Text>
 
