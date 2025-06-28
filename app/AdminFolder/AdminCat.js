@@ -30,8 +30,8 @@ export default function AdminCat({
   } = useSubCategoryHandlers(subCategories, setSubCategories);
 
   return (
-    <SafeAreaView className="flex-1 bg-white mx-auto shadow-md w-full max-w-[700px] p-2">
-      <ScrollView className="flex-1 p-4 mt-2">
+    <SafeAreaView className="flex-1 rounded-md bg-white mx-auto shadow-md w-full max-w-[700px] p-2">
+      <View className="flex-1 p-4 mt-2">
         <Toast />
 
         <Text className="text-lg font-semibold mb-2 text-teal-700">
@@ -57,7 +57,7 @@ export default function AdminCat({
         />
 
         <SubCategory
-           labels={["subCategories", "brands"]}
+          labels={["subCategories", "brands"]}
           subCategories={subCategories}
           setSubCategories={setSubCategories}
           handleAddSubCategory={handleAddSubCategory}
@@ -74,7 +74,7 @@ export default function AdminCat({
         >
           <Text className="text-white text-center font-semibold">Submit</Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

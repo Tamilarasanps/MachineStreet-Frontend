@@ -218,21 +218,23 @@ export default function HomePageAdmin() {
       <View
         style={{
           backgroundColor: "#f7fafc",
-          minHeight: "100%",
+          // minHeight: "100%",
           flex: 1,
           marginLeft: width >= 1024 ? "20%" : 0,
           width: width >= 1024 ? "80%" : "100%",
           paddingBottom: 30,
         }}
       >
-        <ScrollView
+        <View
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 30 }}
           showsVerticalScrollIndicator={false}
         >
-          <View style={{ marginTop: 120, paddingHorizontal: 16 }}>
+          <View 
+          style={{ marginTop: 80, paddingHorizontal: 16 }}
+          >
             {renderSelectedPage()}
           </View>
-        </ScrollView>
+        </View>
 
         {/* Menu Toggle Button for Mobile (only when menu is closed) */}
         {width < 1024 && !isMenuVisible && (

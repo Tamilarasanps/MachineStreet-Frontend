@@ -43,7 +43,7 @@ const ProfilePage = ({}) => {
   const { id, page } = useLocalSearchParams();
   const { pickMedia, selectedMedia, setSelectedMedia } = useContext(FileUpload);
   const [userProfile, setUserProfile] = useState(null);
-  // console.log("userProfile :", userProfile);
+  // console.log("userProfile :", userProfile.profileImage);
   const [fileUpload, setFileUpload] = useState(false);
   const [posts, setPosts] = useState(false);
   const { getJsonApi, postJsonApi, deleteApi } = useApi();

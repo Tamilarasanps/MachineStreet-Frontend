@@ -49,7 +49,7 @@ const Mobile = ({
           value={phoneNumber}
           onChangeText={setPhoneNumber}
           returnKeyType="done"
-          onSubmitEditing={() => formSubmit()}
+          // onSubmitEditing={() => formSubmit()}
         />
       </View>
 

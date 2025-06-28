@@ -3,7 +3,8 @@ import { useVideoPlayer, VideoView } from "expo-video";
 
 const VideoGridItem = ({ videoId, onPostPress, index }) => {
   const player = useVideoPlayer(
-    `http://192.168.1.9:4000/video/${videoId}`,
+    `https://api.machinestreets.com/video/${videoId}`,
+    // `http://192.168.1.9:4000/video/${videoId}`,
     (player) => {
       player.loop = true;
       player.play();

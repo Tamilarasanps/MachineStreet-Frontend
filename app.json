@@ -14,7 +14,8 @@
       "userInterfaceStyle": "light",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Your app needs access to your location to provide better services.",
-        "NSLocationAlwaysUsageDescription": "Your app needs access to your location in the background."
+        "NSLocationAlwaysUsageDescription": "Your app needs access to your location in the background.",
+        "NSPhotoLibraryAddUsageDescription": "This app needs access to your photo library to save posters."
       }
     },
     "android": {

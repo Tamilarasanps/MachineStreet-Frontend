@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Platform, useWindowDimensions, View } from "react-native";
+import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import OperationSwitcher from "./OperationSwitcher";
 import { useState } from "react";
@@ -150,15 +150,18 @@ const CategoryManager = () => {
   };
 
   return (
-    <SafeAreaView>
+    <View>
       {/* Toast */}
       <View className="z-50">
         <Toast />
       </View>
 
-      <View className=" flex h-screen mb-24">
+      <View
+        className="bg-gray-200 rounded-md"
+        style={{ height: width <= 1024 ? 600 : 680 }}
+      >
         {/* Swicher */}
-        <View className="h-[10%] ">
+        <View>
           <OperationSwitcher
             setIndustry={setIndustry}
             setCategory={setCategory}
@@ -169,44 +172,47 @@ const CategoryManager = () => {
           />
         </View>
 
-        <View
-          className={`${
-            Platform.OS === "web" && width >= 1024
-              ? "flex-row"
-              : selected === "add"
-              ? "flex-col max-h-[50%]"
-              : ""
-          } flex-1 flex gap-2 p-2 mt-8`}
-        >
-          {selected === "add" || (selected === "edit" && selectedCategory) ? (
-            <>
-              <AdminCat
-                industry={industry}
-                handleSubmit={handleSubmit}
-                setIndustry={setIndustry}
-                category={category}
-                setCategory={setCategory}
-                subCategories={subCategories}
-                setSubCategories={setSubCategories}
+        <ScrollView>
+          <View
+            className={`${
+              Platform.OS === "web" && width >= 1024
+                ? "flex-row"
+                : selected === "add"
+                ? "flex-col max-h-[150%]"
+                : ""
+            } flex-1 flex gap-2 p-2 mt-8`}
+            style={{ height: 600 }}
+          >
+            {selected === "add" || (selected === "edit" && selectedCategory) ? (
+              <>
+                <AdminCat
+                  industry={industry}
+                  handleSubmit={handleSubmit}
+                  setIndustry={setIndustry}
+                  category={category}
+                  setCategory={setCategory}
+                  subCategories={subCategories}
+                  setSubCategories={setSubCategories}
+                />
+              </>
+            ) : (
+              <EditCategory
+                getCategory={getCategory}
+                categoryList={categoryList}
+                setCategoryList={setCategoryList}
+                Toast={Toast}
+                showToast={showToast}
+                setSelected={setSelected}
+                setSelectedCategory={setSelectedCategory}
+                selectedIndustry={selectedIndustry}
+                setSelectedIndustry={setSelectedIndustry}
+                industryList={indutryList}
               />
-            </>
-          ) : (
-            <EditCategory
-              getCategory={getCategory}
-              categoryList={categoryList}
-              setCategoryList={setCategoryList}
-              Toast={Toast}
-              showToast={showToast}
-              setSelected={setSelected}
-              setSelectedCategory={setSelectedCategory}
-              selectedIndustry={selectedIndustry}
-              setSelectedIndustry={setSelectedIndustry}
-              industryList={indutryList}
-            />
-          )}
-        </View>
+            )}
+          </View>
+        </ScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

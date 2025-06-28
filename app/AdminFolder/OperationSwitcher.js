@@ -24,7 +24,7 @@ const OperationSwitcher = ({
         }}
       >
         <Text
-          className={`text-xl font-bold text-center px-2 ${
+          className={`md:text-xl text-md font-bold text-center px-2 ${
             selected === "add" ? "text-teal-600" : "text-gray-600"
           }`}
         >
@@ -45,7 +45,7 @@ const OperationSwitcher = ({
         }}
       >
         <Text
-          className={`text-xl font-bold text-center px-2 ${
+          className={`md:text-xl text-md font-bold text-center px-2 ${
             selected === "edit" ? "text-teal-600" : "text-gray-600"
           }`}
         >

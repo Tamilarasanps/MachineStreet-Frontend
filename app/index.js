@@ -4,7 +4,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import HomePageAdmin from "./AdminFolder/HomePageAdmin";
 import LandingPage from "./screens/LandingPage";
 import BottomNavBar from "./navigation/(navigationBar)/BottomNavBar";
-
+import AdminQrPage from "./AdminFolder/Qr/AdminQrPage";
+import QrPosterMobile from "./AdminFolder/Qr/AdminQrPageMobile";
+import QrPage from "./AdminFolder/QrPage";
 
 export default function Index() {
   const [role, setRole] = useState(null);
@@ -28,4 +30,8 @@ export default function Index() {
   if (role === "admin") return <HomePageAdmin />;
 
   return Platform.OS === "web" ? <LandingPage /> : <BottomNavBar />;
+  // return <HomePageAdmin />;
+  // return <AdminQrPage />;
+  // return <QrPosterMobile />;
+  // return <QrPage />;
 }
