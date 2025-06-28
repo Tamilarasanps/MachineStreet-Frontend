@@ -76,6 +76,7 @@ const VideoGridItem = ({ videoId, onPostPress, index }) => {
       <View className="h-full w-full">
         <VideoView
           player={player}
+          crossOrigin="anonymous" // this is important
           style={{ width: "100%", height: "100%" }}
           controls={false}
           allowsFullscreen={false}

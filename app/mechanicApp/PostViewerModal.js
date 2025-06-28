@@ -189,7 +189,7 @@ const PostViewerModal = ({
     });
   };
   const share = useCallback(async () => {
-    // console.log(posts); 
+    // console.log(posts);
     const id = posts.map((id) => id._id);
     const bio =
       typeof posts === "string"
@@ -519,6 +519,7 @@ const VideoGridItem = ({ videoId, onPostPress, index }) => {
       <View>
         <VideoView
           player={player}
+          crossOrigin="anonymous" // this is important
           style={{ width: "100%", height: "100%" }}
           controls={false}
           allowsFullscreen={false}

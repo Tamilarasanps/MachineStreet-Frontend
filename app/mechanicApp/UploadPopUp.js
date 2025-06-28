@@ -34,33 +34,29 @@ const UploadPopUp = ({
       // console.log("object:", selectedMedia)
       formdata.append("bio", description);
       selectedMedia.forEach((media) => {
-      if(Platform.OS === 'web'){
-        formdata.append(
-          `${type === "image" ? "images" : "videos"}`,
-          media.file
-        );
-      }
-      else{
-        //  if (Platform.OS === "web") {
-        //         result.assets.forEach((asset) => {
-        //           formdata.append("images", asset.file);
-        //         });
-        //       } else {
-        //         result.assets.forEach((asset) => {
-        //           formdata.append("images", {
-                    
-        //           });
-        //         });
-        //       }
-        formdata.append(
-          `${type === "image" ? "images" : "videos"}`,
-         {
-          uri: media.uri,
-          type: media.mimeType || "image/jpeg", // use default if mimeType is missing
-          name: media.fileName || `upload_${Date.now()}.jpg`, // fallback name
-          }
-        );
-      }
+        if (Platform.OS === "web") {
+          formdata.append(
+            `${type === "image" ? "images" : "videos"}`,
+            media.file
+          );
+        } else {
+          //  if (Platform.OS === "web") {
+          //         result.assets.forEach((asset) => {
+          //           formdata.append("images", asset.file);
+          //         });
+          //       } else {
+          //         result.assets.forEach((asset) => {
+          //           formdata.append("images", {
+
+          //           });
+          //         });
+          //       }
+          formdata.append(`${type === "image" ? "images" : "videos"}`, {
+            uri: media.uri,
+            type: media.mimeType || "image/jpeg", // use default if mimeType is missing
+            name: media.fileName || `upload_${Date.now()}.jpg`, // fallback name
+          });
+        }
       });
 
       const token = await AsyncStorage.getItem("userToken");
@@ -69,6 +65,7 @@ const UploadPopUp = ({
         formdata,
         token
       );
+      console.log(result);
       if (result.status === 200) {
         setFileUpload(false);
         setSelectedMedia([]);
