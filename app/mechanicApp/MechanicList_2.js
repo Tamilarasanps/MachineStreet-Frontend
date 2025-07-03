@@ -26,14 +26,12 @@ import { useContext } from "react";
 import { useNavigation } from "expo-router";
 import Header from "../component/(header)/Header";
 import { Modal } from "react-native";
-import Octicons from "@expo/vector-icons/Octicons";
 import { BlurView } from "expo-blur";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import QrModal from "./QrModal";
 import { useFocusEffect } from "@react-navigation/native";
-import App from "../App";
 
 const MechanicList_2 = () => {
   const { width } = useWindowDimensions();
@@ -95,34 +93,6 @@ const MechanicList_2 = () => {
 
   const [userRole, setUserRole] = useState("mechanic");
   // console.log(userRole, "userROles");
-
-  // async function authcheck() {
-  //   const token = await AsyncStorage.getItem("userToken");
-  //   const userRole = await AsyncStorage.getItem("role");
-
-  //   if (!token || !userRole) {
-  //     // Not authenticated or no role
-  //     if (Platform.OS === "web") {
-  //       router.push("/screens/Login");
-  //     }
-  //     return;
-  //   }
-
-  //   // Authenticated and has role
-  //   if (Platform.OS === "web") {
-  //     if (userRole === "admin") {
-  //       router.push("/AdminFolder/HomePageAdmin");
-  //     } else {
-  //       router.push("/mechanicApp/MechanicList_2");
-  //     }
-  //   } else {
-  //     if (userRole === "admin") {
-  //       router.push("/AdminFolder/HomePageAdmin");
-  //     } else {
-  //       navigation.navigate("MechanicProfiles");
-  //     }
-  //   }
-  // }
   useFocusEffect(
     useCallback(() => {
       const authcheck = async () => {

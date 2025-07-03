@@ -4,17 +4,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import HomePageAdmin from "./AdminFolder/HomePageAdmin";
 import LandingPage from "./screens/LandingPage";
 import BottomNavBar from "./navigation/(navigationBar)/BottomNavBar";
-import AdminQrPage from "./AdminFolder/Qr/AdminQrPage";
-import QrPosterMobile from "./AdminFolder/Qr/AdminQrPageMobile";
-import QrPage from "./AdminFolder/QrPage";
+import MechanicList_2 from "./mechanicApp/MechanicList_2";
 
 export default function Index() {
   const [role, setRole] = useState(null);
+  const [token, setToken] = useState(null);
+  console.log("token 99", token);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchRole = async () => {
       try {
+        const token = await AsyncStorage.getItem("userToken");
+        setToken(token);
+        console.log("token :", token);
         const storedRole = await AsyncStorage.getItem("role");
         setRole(storedRole);
       } catch (error) {
@@ -29,9 +32,13 @@ export default function Index() {
 
   if (role === "admin") return <HomePageAdmin />;
 
-  return Platform.OS === "web" ? <LandingPage /> : <BottomNavBar />;
-  // return <HomePageAdmin />;
-  // return <AdminQrPage />;
-  // return <QrPosterMobile />;
-  // return <QrPage />;
+  return Platform.OS === "web" ? (
+    token ? (
+      <MechanicList_2 />
+    ) : (
+      <LandingPage />
+    )
+  ) : (
+    <BottomNavBar />
+  );
 }
