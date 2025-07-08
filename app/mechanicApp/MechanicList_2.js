@@ -175,11 +175,17 @@ const MechanicList_2 = () => {
       : true;
 
     const matchesCategory = selectedCategory
-      ? mechanic.category === selectedCategory
+      ? mechanic.subcategory?.some((sub) => sub.name === selectedCategory)
       : true;
 
-    const matchesSubCategory = selectedSubCategory
-      ? mechanic.subcategory === selectedSubCategory
+    const matchesSubCategory = selectedSubCategory.length
+      ? mechanic.subcategory?.some(
+          (sub) =>
+            sub.name === selectedCategory &&
+            sub.services?.some((service) =>
+              selectedSubCategory.includes(service)
+            )
+        )
       : true;
 
     const matchesServices = selectedServices
@@ -378,52 +384,150 @@ const MechanicList_2 = () => {
                   </BlurView>
                 </Modal>
 
-                <>
-                  <View className="w-full  mb-4">
-                    <ScrollView horizontal>
-                      {selectedRating ? (
-                        <View className="flex-row border-2 p-2 rounded-md items-center mr-2">
-                          <Text className="text-lg">
-                            {selectedRating}{" "}
-                            <Icon name="star-rate" size={18} color="#F59E0B" />
+                <View className="relative ">
+                  <View className="w-full  mb-4 mt-4 ">
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{ alignItems: "center" }} // align all to center
+                    >
+                      {/* Rating Tag */}
+                      {selectedRating && (
+                        <View className="h-12 flex-row items-center bg-yellow-100 border border-yellow-400 px-3 py-1 rounded-lg mr-2 shadow-sm">
+                          <Text className="text-yellow-800 font-medium text-sm mr-1">
+                            {selectedRating}
                           </Text>
+                          <Icon name="star-rate" size={16} color="#F59E0B" />
                           <MaterialIcons
                             name="cancel"
-                            size={20}
-                            color="red"
-                            style={{ marginLeft: 8 }}
+                            size={18}
+                            color="#CA8A04"
+                            style={{ marginLeft: 6 }}
                             onPress={() => setSelectedRating("")}
                           />
                         </View>
-                      ) : null}
+                      )}
 
-                      {selectedIndustry ? (
-                        <View className="flex-row border-2 p-2 rounded-md items-center mr-2">
-                          <Text className="text-lg">
-                            {selectedIndustry.charAt(0).toUpperCase() +
-                              selectedIndustry.slice(1)}
-                          </Text>
-                          <MaterialIcons
-                            name="cancel"
-                            size={20}
-                            color="red"
-                            style={{ marginLeft: 8 }}
-                            onPress={() => setSelectedIndustry("")}
-                          />
+                      {/* Industry Tag */}
+                      {selectedIndustry && (
+                        <View className="flex-row items-center bg-indigo-100 border border-indigo-400 px-3 py-2 rounded-full mr-2 shadow-sm flex-wrap h-auto min-h-[48px]">
+                          {/* Industry */}
+                          <View className="flex-row items-center mr-2">
+                            <Text className="text-indigo-800 font-semibold text-sm">
+                              {selectedIndustry.charAt(0).toUpperCase() +
+                                selectedIndustry.slice(1)}
+                            </Text>
+                            {selectedCategory && (
+                              <Text className="text-indigo-800 font-semibold text-sm">
+                                {" "}
+                                ➝{" "}
+                              </Text>
+                            )}
+                          </View>
+
+                          {/* Category */}
+                          {selectedCategory && (
+                            <View className="flex-row items-center mr-2">
+                              <Text className="text-indigo-800 font-semibold text-sm">
+                                {selectedCategory}
+                              </Text>
+                              {selectedSubCategory?.length > 0 && (
+                                <Text className="text-indigo-800 font-semibold text-sm">
+                                  {" "}
+                                  ➝{" "}
+                                </Text>
+                              )}
+                            </View>
+                          )}
+
+                          {/* Subcategories with individual X */}
+                          {selectedSubCategory?.length > 0 &&
+                            selectedSubCategory.map((sub, index) => (
+                              <View
+                                key={index}
+                                className="flex-row items-center bg-white border border-indigo-400 px-3 py-1 rounded-full mr-2 mb-1 shadow-sm"
+                              >
+                                <Text className="text-indigo-800 text-sm font-medium">
+                                  {sub}
+                                </Text>
+                                <MaterialIcons
+                                  name="cancel"
+                                  size={16}
+                                  color="#4F46E5"
+                                  style={{ marginLeft: 4 }}
+                                  onPress={() =>
+                                    setSelectedSubCategory((prev) =>
+                                      prev.filter((s) => s !== sub)
+                                    )
+                                  }
+                                />
+                              </View>
+                            ))}
+
+                          {/* Common X button */}
+                          <Pressable
+                            className="ml-1"
+                            onPress={() => {
+                              setSelectedIndustry("");
+                              setSelectedCategory("");
+                              setSelectedSubCategory("");
+                            }}
+                          >
+                            <MaterialIcons
+                              name="cancel"
+                              size={20}
+                              color="#4F46E5"
+                            />
+                          </Pressable>
                         </View>
-                      ) : null}
-                      {selectedDistrict?.length > 0 ? (
-                        <View className="flex-row border-2 p-2 rounded-md items-center mr-2">
-                          <Text className="text-lg">{selectedDistrict}</Text>
-                          <MaterialIcons
-                            name="cancel"
-                            size={20}
-                            color="red"
-                            style={{ marginLeft: 8 }}
-                            onPress={() => setSelectedDistrict("")}
-                          />
+                      )}
+
+                      {/* District + State */}
+                      {selectedState && selectedDistrict?.length > 0 && (
+                        <View className="h-12 flex-row items-center bg-green-100 border border-green-400 rounded-xl px-3 shadow-sm">
+                          <View className="flex-row items-center mr-2">
+                            <MaterialIcons
+                              name="place"
+                              size={18}
+                              color="#15803D"
+                            />
+                            <Text className="text-green-800 font-semibold text-sm ml-1">
+                              {selectedState}
+                            </Text>
+                            <Text className="text-green-700 font-medium ml-1">
+                              ➝
+                            </Text>
+                          </View>
+
+                          <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                          >
+                            {selectedDistrict.map((district, index) => (
+                              <View
+                                key={index}
+                                className="flex-row items-center bg-white border border-green-400 px-3 py-1 rounded-full mr-2"
+                              >
+                                <Text className="text-green-800 font-medium text-sm">
+                                  {district}
+                                </Text>
+                                <MaterialIcons
+                                  name="cancel"
+                                  size={18}
+                                  color="#16A34A"
+                                  style={{ marginLeft: 6 }}
+                                  onPress={() => {
+                                    const updated = selectedDistrict.filter(
+                                      (d) => d !== district
+                                    );
+                                    setSelectedDistrict(updated);
+                                  }}
+                                />
+                              </View>
+                            ))}
+                          </ScrollView>
                         </View>
-                      ) : null}
+                      )}
                     </ScrollView>
                   </View>
                   {loading ? (
@@ -730,7 +834,7 @@ const MechanicList_2 = () => {
                       )}
                     </Pressable>
                   )}
-                </>
+                </View>
 
                 {mechanics.length > 49 && (
                   <View

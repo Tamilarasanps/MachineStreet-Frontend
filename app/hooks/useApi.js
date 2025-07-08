@@ -2,8 +2,8 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 
 const useApi = () => {
-  // const API_URL = "https://api.machinestreets.com";
-  const API_URL = "http://192.168.1.9:5000";
+  const API_URL = "https://api.machinestreets.com";
+  // const API_URL = "http://192.168.1.9:5000";
 
   const handleRequest = async (request, path, token) => {
     try {
@@ -61,13 +61,19 @@ const useApi = () => {
       token
     );
 
-  const POSTAPI = async (path, data, token) =>
-    await handleRequest(
+  const POSTAPI = async (path, data, token, onUploadProgress) => {
+    return await handleRequest(
       () =>
-        axios.post(`${API_URL}/${path}`, data, { headers: jsonHeader(token) }),
+        axios.post(`${API_URL}/${path}`, data, {
+          headers: jsonHeader(token),
+          timeout: 5 * 60 * 1000,
+          onUploadProgress, // optional, make sure this is defined somewhere
+          // withCredentials: true, // Uncomment if needed for cookies
+        }),
       path,
       token
     );
+  };
 
   const DELETEAPI = async (path, data, token) =>
     await handleRequest(
@@ -82,7 +88,8 @@ const useApi = () => {
 
   return {
     getJsonApi: (path, token) => GETAPI(path, token),
-    postJsonApi: (path, data, token) => POSTAPI(path, data, token),
+    postJsonApi: (path, data, token, onUploadProgress) =>
+      POSTAPI(path, data, token, onUploadProgress),
     pathchApi: (path, data, token) => PATCHAPI(path, data, token),
     deleteApi: (path, data, token) => DELETEAPI(path, data, token),
   };

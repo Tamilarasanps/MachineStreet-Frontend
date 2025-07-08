@@ -79,8 +79,6 @@ export default function SubCategory({
     }
   }, [selectIndex]);
 
-  console.log("object :", subcategorySuggetion);
-
   return (
     <View>
       <View className="flex flex-row justify-end items-center   py-3 rounded-md">
@@ -194,7 +192,7 @@ export default function SubCategory({
                       className="bg-black rounded-lg px-3 py-2"
                     >
                       <Text className="text-white font-medium text-xs ">
-                        + Add {labels[1]==='services' ? 'service' : 'brand'}
+                        + Add {labels[1] === "services" ? "service" : "brand"}
                       </Text>
                     </TouchableOpacity>
                   </View>

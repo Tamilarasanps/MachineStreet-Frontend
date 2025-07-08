@@ -9,7 +9,7 @@ import MechanicList_2 from "./mechanicApp/MechanicList_2";
 export default function Index() {
   const [role, setRole] = useState(null);
   const [token, setToken] = useState(null);
-  console.log("token 99", token);
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function Index() {
       try {
         const token = await AsyncStorage.getItem("userToken");
         setToken(token);
-        console.log("token :", token);
+
         const storedRole = await AsyncStorage.getItem("role");
         setRole(storedRole);
       } catch (error) {

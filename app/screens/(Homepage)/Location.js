@@ -22,12 +22,6 @@ const Location = ({ location, setLocation }) => {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
 
-  useEffect(() => {
-    if (location.district) {
-      setSelectedDistrict(location.district);
-    }
-  }, [location.district]);
-
   const inputFields = [
     { key: "country", label: "Country" },
     { key: "region", label: "Region" },
@@ -103,7 +97,13 @@ const Location = ({ location, setLocation }) => {
     if (location.region) {
       setSelectedRegion(location.region);
     }
-  }, [location.region]);
+  }, [location.region, districtsWithStates]);
+
+  useEffect(() => {
+    if (location.district) {
+      setSelectedDistrict(location.district);
+    }
+  }, [location.district, districtsWithStates]);
 
   useEffect(() => {
     fetchIndustries();

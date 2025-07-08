@@ -48,15 +48,12 @@ const EditProfile = ({
   const [selectedCode, setSelectedCode] = useState(
     mechanicDetails?.contact?.countryCode
   );
-
   const [location, setLocation] = useState({
     coords: "",
-    country: "India",
-    region: "",
-    district: "",
+    country: mechanicDetails?.country || "India",
+    region: mechanicDetails?.region || "",
+    district: mechanicDetails?.district || "",
   });
-
-  const [serviceInput, setServiceInput] = useState(""); // New
 
   const {
     handleAddSubCategory,
@@ -101,7 +98,7 @@ const EditProfile = ({
         const data = await getJsonApi(
           `CategoryPage/subCategoryPage/${mechanicDetails.subcategory[index].name}/sell`
         );
-        console.log('setSubCategorySuggestion :',data)
+        console.log("setSubCategorySuggestion :", data);
 
         setSubCategorySuggestion(data.data);
       }
@@ -151,7 +148,9 @@ const EditProfile = ({
 
     setMechanicDetails(updatedDetails);
     setModalVisible(false);
-    setStep(1);
+    if(page!=="profile"){
+      setStep(1);
+    }
 
     if (page === "profile") {
       try {
@@ -161,7 +160,7 @@ const EditProfile = ({
           updatedDetails,
           token
         );
-        // console.log("Profile updated:", result);
+        console.log("Profile updated:", result);
         Toast.show({
           type: "success",
           text1: "Profile updated!",
@@ -182,29 +181,12 @@ const EditProfile = ({
     }
   };
 
-  const handleAddService = () => {
-    if (serviceInput.trim()) {
-      setMechanicDetails((prev) => ({
-        ...prev,
-        services: [...prev.services, serviceInput.trim()],
-      }));
-      setServiceInput("");
-    }
-  };
-
-  const handleRemoveService = (serviceToRemove) => {
-    setMechanicDetails((prev) => ({
-      ...prev,
-      services: prev.services.filter((s) => s !== serviceToRemove),
-    }));
-  };
-
-  const handleKeyPress = (e) => {
-    if (Platform.OS === "web" && e.key === "Enter") {
-      handleAddService();
-      // nextref?.current?.focus();
-    }
-  };
+  // const handleKeyPress = (e) => {
+  //   if (Platform.OS === "web" && e.key === "Enter") {
+  //     handleAddServiceInput();
+  //     // nextref?.current?.focus();
+  //   }
+  // };
   // console.log(mechanicDetails);
 
   const slideAnim = useRef(new Animated.Value(-20)).current; // start above the view
@@ -258,22 +240,7 @@ const EditProfile = ({
             className="h-screen mb-10"
           >
             {/* <Toast /> */}
-            {mechanicDetails.hasOwnProperty("username" && "bio") && (
-              <>
-                <Text className="text-lg font-bold mb-4 text-gray-800">
-                  Personal Information
-                </Text>
-
-                <TextInput
-                  placeholder="Username"
-                  className="w-full h-12 border border-gray-300 rounded-md px-3 mb-4"
-                />
-                <TextInput
-                  placeholder="Bio"
-                  className="w-full h-12 border border-gray-300 rounded-md px-3 mb-8"
-                />
-              </>
-            )}
+            
 
             <Text className="text-lg font-bold mb-3 text-gray-800">
               Professional Information
@@ -342,59 +309,89 @@ const EditProfile = ({
             <Text className="text-lg font-semibold text-teal-600 mt-6">
               Specialization / Services
             </Text>
-            <View
-              style={{ flexDirection: "row", marginBottom: 8 }}
-              className="mt-4 w-full flex items-center justify-center mx-auto h-12"
-            >
-              <TextInput
-                style={[
-                  styles.input,
-                  { flex: 1, marginRight: 8, height: "100%" },
-                ]}
-                placeholder="Enter service"
-                value={serviceInput}
-                onChangeText={setServiceInput}
-                onKeyPress={handleKeyPress}
-              />
-              <TouchableOpacity
-              className="px-4"
-                style={{
-                  backgroundColor: "#111827",
-                  borderRadius: 8,
-                  height: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                onPress={handleAddService}
-              >
-                <Text className="text-xs" style={{ color: "#fff" }}>Add</Text>
-              </TouchableOpacity>
-            </View>
-            {mechanicDetails.services.length > 0 && (
-              <View style={{ marginBottom: 12 }}>
-                {mechanicDetails.services.map((service, index) => (
-                  <View
-                    key={index}
+            <View className="w-full mt-4">
+              {/* Add Button */}
+              <View className="flex items-end mb-2">
+                <TouchableOpacity
+                  onPress={() =>
+                    setMechanicDetails((prev) => ({
+                      ...prev,
+                      services: ["", ...prev.services],
+                    }))
+                  }
+                  style={{
+                    backgroundColor: "#111827",
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 6,
+                  }}
+                >
+                  <Text style={{ color: "white", fontSize: 12 }}>+ Add</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Editable Service Inputs */}
+              {mechanicDetails.services.map((service, index) => (
+                <View
+                  key={index}
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    marginBottom: 8,
+                    height: 48,
+                  }}
+                >
+                  <TextInput
+                    style={[
+                      styles.input,
+                      {
+                        width: "100%",
+                        height: "100%",
+                        paddingRight: 40,
+                        paddingLeft: 12,
+                      },
+                    ]}
+                    placeholder="Enter service"
+                    value={service}
+                    onChangeText={(text) =>
+                      setMechanicDetails((prev) => {
+                        const updated = [...prev.services];
+                        updated[index] = text;
+                        return { ...prev, services: updated };
+                      })
+                    }
+                  />
+
+                  <TouchableOpacity
+                    onPress={() =>
+                      setMechanicDetails((prev) => ({
+                        ...prev,
+                        services: prev.services.filter((_, i) => i !== index),
+                      }))
+                    }
                     style={{
-                      flexDirection: "row",
+                      position: "absolute",
+                      right: 8,
+                      top: 0,
+                      bottom: 0,
+                      justifyContent: "center",
                       alignItems: "center",
-                      justifyContent: "space-between",
-                      backgroundColor: "#F3F4F6",
-                      padding: 10,
-                      borderRadius: 8,
-                      marginBottom: 6,
+                      width: 32,
                     }}
                   >
-                    <Text>{service}</Text>
-                    <TouchableOpacity
-                      onPress={() => handleRemoveService(service)}
+                    <Text
+                      style={{
+                        color: "#EF4444",
+                        fontSize: 18,
+                        fontWeight: "bold",
+                      }}
                     >
-                      <Icon name="close" size={20} color="red" />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </View>
-            )}
+                      ×
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
 
             <View className="z-40 w-full ">
               <Text className="text-lg font-semibold text-teal-600 mt-6">
@@ -426,6 +423,7 @@ const EditProfile = ({
           </ScrollView>
         </View>
       </View>
+      <Toast />
     </Modal>
   );
 };

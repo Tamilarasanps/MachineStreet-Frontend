@@ -189,7 +189,7 @@ const PostViewerModal = ({
     });
   };
   const share = useCallback(async () => {
-    // console.log(posts); 
+    // console.log(posts);
     const id = posts.map((id) => id._id);
     const bio =
       typeof posts === "string"
@@ -505,6 +505,7 @@ const PostViewerModal = ({
 const VideoGridItem = ({ videoId, onPostPress, index }) => {
   const player = useVideoPlayer(
     `https://api.machinestreets.com/video/${videoId}`,
+    // `http://192.168.1.9:5000/video/${videoId}`,
     (player) => {
       player.loop = true;
       player.play();
@@ -519,6 +520,7 @@ const VideoGridItem = ({ videoId, onPostPress, index }) => {
       <View>
         <VideoView
           player={player}
+          crossOrigin="anonymous" // this is important
           style={{ width: "100%", height: "100%" }}
           controls={false}
           allowsFullscreen={false}

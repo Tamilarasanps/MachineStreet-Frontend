@@ -33,6 +33,7 @@ import { TextInput } from "react-native-paper";
 import Password from "../(auth)/(SignIn)/Password";
 import { BlurView } from "expo-blur";
 import { useNavigation } from "expo-router";
+import Toast from "react-native-toast-message";
 // import { useSocketContext } from "./context/SocketContext";
 
 const { width } = Dimensions.get("window");
@@ -264,6 +265,7 @@ const ProfilePage = ({}) => {
 
         // CASE 2: Logged-in user's own profile
         const response = await getJsonApi("profile", storedToken);
+
         const data = response.data;
 
         setUserProfile(data);
@@ -332,11 +334,12 @@ const ProfilePage = ({}) => {
     setModalVisible(false);
     setViewMode("main");
   };
+
   return (
     <>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
+        className="flex-1   "
       >
         <ScrollView className="flex-1 ">
           {/* Back Icon */}
@@ -518,16 +521,17 @@ const ProfilePage = ({}) => {
             ))}
 
           {/* Posts Grid */}
-
-          <PostGrid
-            userProfile={userProfile}
-            posts={posts}
-            onPostPress={(index) => {
-              setActivePostIndex(index);
-            }}
-            width={width}
-            // loading={isLoading}
-          />
+          
+            <PostGrid
+              userProfile={userProfile}
+              posts={posts}
+              onPostPress={(index) => {
+                setActivePostIndex(index);
+              }}
+              width={width}
+              // loading={isLoading}
+            />
+          
         </ScrollView>
         {/* edit modal */}
 
@@ -572,7 +576,12 @@ const ProfilePage = ({}) => {
             deleteApi={deleteApi}
           />
         )}
-        <Modal transparent animationType="slide" visible={modalVisible}>
+        <Modal
+          transparent
+          animationType="slide"
+          visible={modalVisible}
+          style={{ zIndex: -1 }}
+        >
           <BlurView intensity={50} tint="light" style={{ flex: 1 }}>
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -746,6 +755,7 @@ const ProfilePage = ({}) => {
                   </View>
                 )}
               </View>
+              <Toast />
             </KeyboardAvoidingView>
           </BlurView>
         </Modal>

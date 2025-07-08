@@ -60,6 +60,7 @@ const UploadPopUp = ({
           const percent = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
           );
+
           setProgress(percent);
         }
       );

@@ -24,7 +24,7 @@ const PostGrid = ({ posts, onPostPress, width, userProfile }) => {
   }
 
   return (
-    <View style={{ flexWrap: "wrap", flexDirection: "row", padding: 16 }}>
+    <View style={{ flexWrap: "wrap", flexDirection: "row", padding: 16 }} className="h-screen">
       {posts?.length > 0 &&
         posts.map((item, index) => {
           const isVideo = item.media.length === 24;
@@ -62,6 +62,7 @@ const PostGrid = ({ posts, onPostPress, width, userProfile }) => {
 const VideoGridItem = ({ videoId, onPostPress, index }) => {
   const player = useVideoPlayer(
     `https://api.machinestreets.com/video/${videoId}`,
+    // `http://192.168.1.9:5000/video/${videoId}`,
     (player) => {
       player.loop = true;
       player.play();
@@ -71,11 +72,12 @@ const VideoGridItem = ({ videoId, onPostPress, index }) => {
   return (
     <Pressable
       onPress={() => onPostPress(index)}
-      className="flex justify-center items-center h-full w-full"
+      className="flex justify-center items-center h-full w-full "
     >
       <View className="h-full w-full">
         <VideoView
           player={player}
+          crossOrigin="anonymous" // this is important
           style={{ width: "100%", height: "100%" }}
           controls={false}
           allowsFullscreen={false}

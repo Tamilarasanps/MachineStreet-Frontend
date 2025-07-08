@@ -79,11 +79,12 @@ export default function FilterComponent({
 
   const handleDistrictClick = (district) => {
     // If the district is already selected, deselect it
-    if (selectedDistrict === district) {
-      setSelectedDistrict("");
+    if (selectedDistrict.includes(district)) {
+      setSelectedDistrict(() =>
+        selectedDistrict.filter((dis) => dis !== district)
+      );
     } else {
-      setSelectedDistrict("");
-      setSelectedDistrict(district);
+      setSelectedDistrict((prev) => [...prev, district]);
     }
   };
 
@@ -95,28 +96,28 @@ export default function FilterComponent({
       setSelectedRating(rating);
     }
   };
+
   return (
     <View>
       <ScrollView
-        className={`bg-gray-100  ml-2 rounded-md p-2 shadow-md  ${
-          width <= 1024 ? " z-50 flex-col pb-20 max-w-[100vw]  " : "flex-row "
+        className={`bg-gray-100 ml-2 rounded-md p-3 shadow-md ${
+          width <= 1024 ? "z-50 flex-col pb-24 max-w-[100vw]" : "flex-row"
         }`}
-        // className="bg-gray-200"
         style={{ height: width <= 1024 ? 550 : 600 }}
       >
+        {/* Close icon on mobile */}
         {width <= 1024 && (
-          <View className="w-full items-end ">
+          <View className="w-full items-end mb-2">
             <MaterialIcons
               name="cancel"
               size={24}
               color="red"
-              // onPress={() => setII(console.log("pressed by into icon"),fals)}
               onPress={() => setIsOpen(false)}
             />
           </View>
         )}
 
-        {/* Left Tabs */}
+        {/* Left filter tabs */}
         <View
           className={`mb-4 ${
             width <= 1024 ? "w-full flex-row flex-wrap" : "w-[150px]"
@@ -126,13 +127,13 @@ export default function FilterComponent({
             <Pressable
               key={filter}
               onPress={() => toggleFilter(filter)}
-              className={`p-2 mb-2 rounded-sm mr-2 ${
+              className={`px-3 py-2 mb-2 rounded-md mr-2 ${
                 activeFilter === filter ? "bg-red-500" : "bg-gray-200"
               }`}
             >
               <Text
-                className={`font-semibold ${
-                  activeFilter === filter ? "text-white" : "text-black"
+                className={`font-semibold text-sm ${
+                  activeFilter === filter ? "text-white" : "text-gray-800"
                 }`}
               >
                 {filter}
@@ -140,27 +141,19 @@ export default function FilterComponent({
             </Pressable>
           ))}
         </View>
-        {/* Right Filter Details */}
+
+        {/* Right filter panel */}
         <View
-          className={`pl-4  ${
-            width <= 1024 ? "w-full flex-1 overflow-scroll " : "w-[272px]"
-          }`}
+          className={`pl-4 ${width <= 1024 ? "w-full flex-1" : "w-[272px]"}`}
         >
-          <ScrollView className=" mb-4">
+          <ScrollView className="mb-4">
+            {/* Location Filter */}
             {activeFilter === "Location" && (
-              // location
-              <ScrollView className="bg-gray-200 rounded-md  ">
-                <View
-                  className={`flex w-full mb-4 rounded-md ${
-                    width < 1024
-                      ? "flex-col space-y-2 items-start"
-                      : "flex-row items-center justify-between"
-                  }`}
-                >
-                  <Text className="font-semibold text-xl md:text-md lg:text-lg text-gray-900 p-2">
+              <View className="bg-gray-200 rounded-md p-3 space-y-3">
+                <View className="flex-row  items-center justify-between mb-4">
+                  <Text className="font-semibold text-md text-gray-900 ">
                     Select State
                   </Text>
-
                   <Pressable
                     className="flex-row items-center space-x-2"
                     onPress={() => setOtherThanIndia(!otherThanIndia)}
@@ -169,140 +162,120 @@ export default function FilterComponent({
                       status={otherThanIndia ? "checked" : "unchecked"}
                       color="#EF4444"
                     />
-                    <Text className="font-semibold text-lg md:text-md lg:text-lg text-gray-900">
+                    <Text className="font-medium text-gray-800 text-sm">
                       Other than India
                     </Text>
                   </Pressable>
                 </View>
 
-                {/* {!otherThanIndia && ( */}
-                <View className="p-2 flex-1">
-                  {/* State Selector */}
-                  <ScrollView
-                    style={{ maxHeight: 250 }}
-                    nestedScrollEnabled
-                    contentContainerStyle={{ paddingBottom: 10 }}
-                  >
-                    {/* {Array.from({ length: 30 }).map((_, i) => (
-                      <View key={i} className="mb-2 p-3 bg-gray-100 rounded">
-                        <Text>Filter Option {i + 1}</Text>
-                      </View>
-                    ))} */}
-                    {selectedState ? (
+                <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled>
+                  {selectedState ? (
+                    <Pressable
+                      onPress={() => {
+                        setSelectedState("");
+                        setSelectedDistricts([]);
+                      }}
+                      className="p-2 bg-gray-300 rounded-md mb-2"
+                    >
+                      <Text className="text-base font-bold">
+                        {selectedState}
+                      </Text>
+                      <Text className="text-sm font-semibold text-red-500 underline">
+                        ← Change State
+                      </Text>
+                    </Pressable>
+                  ) : (
+                    Object.keys(dataToMap || {}).map((state) => (
                       <Pressable
-                        onPress={() => {
-                          setSelectedState("");
-                          setSelectedDistricts([]);
-                        }}
-                        className="p-2 rounded-sm mb-1 bg-gray-300 "
+                        key={state}
+                        onPress={() => handleStateClick(state)}
+                        className={`p-2 rounded-md mb-2 ${
+                          selectedState === state
+                            ? "bg-gray-300"
+                            : "bg-gray-100"
+                        }`}
                       >
-                        <Text className="text-lg font-bold">
-                          {selectedState}
-                        </Text>
-
-                        <Text className="text-md font-semibold text-red-500 underline">
-                          ← Change State
-                        </Text>
+                        <Text className="text-base">{state}</Text>
                       </Pressable>
-                    ) : (
-                      dataToMap &&
-                      Object.keys(dataToMap).map((state) => (
+                    ))
+                  )}
+                </ScrollView>
+
+                {selectedDistricts?.length > 0 && (
+                  <>
+                    <Divider className="my-2" />
+                    <Text className="font-semibold text-base text-gray-800 mb-1">
+                      Districts in {selectedState}
+                    </Text>
+                    <ScrollView nestedScrollEnabled>
+                      {selectedDistricts.map((district) => (
                         <Pressable
-                          key={state}
-                          onPress={() => handleStateClick(state)}
-                          className={`p-2 rounded-sm mb-1  items-cente ${
-                            selectedState === state
+                          key={district}
+                          onPress={() => handleDistrictClick(district)}
+                          className={`p-2 rounded-md mb-1 ${
+                            selectedDistrict.includes(district)
                               ? "bg-gray-300"
                               : "bg-gray-100"
-                          } ${width < 1024 ? "" : "w-[300px]"}`}
+                          }`}
                         >
-                          <Text className="text-lg items-center ">{state}</Text>
+                          <Text className="text-sm">{district}</Text>
                         </Pressable>
-                      ))
-                    )}
-                  </ScrollView>
-
-                  {selectedDistricts?.length > 0 && (
-                    <>
-                      <Divider className="my-3" />
-
-                      <Text className="font-semibold text-lg text-gray-800">
-                        Districts in {selectedState}
-                      </Text>
-
-                      <ScrollView nestedScrollEnabled>
-                        {selectedDistricts.map((district) => (
-                          <Pressable
-                            key={district}
-                            onPress={() => handleDistrictClick(district)}
-                            className={`p-2 rounded-sm mb-1 ${
-                              selectedDistrict === district
-                                ? "bg-gray-300"
-                                : "bg-gray-100"
-                            } ${width < 1024 ? "" : "w-[300px]"}`}
-                          >
-                            <Text className="text-base">{district}</Text>
-                          </Pressable>
-                        ))}
-                      </ScrollView>
-                    </>
-                  )}
-                </View>
-
-                {/* )} */}
-              </ScrollView>
-            )}
-
-            {activeFilter === "Price" && (
-              <View>
-                <Text className="font-semibold text-lg text-red-500 mb-2">
-                  Price Range
-                </Text>
-                <View className="flex flex-col gap-4 mb-3">
-                  <TextInput
-                    value={price.fromPrice}
-                    onChange={(e) =>
-                      setPrice((prev) => ({
-                        ...prev,
-                        fromPrice: e.nativeEvent.text,
-                      }))
-                    }
-                    placeholder="From"
-                    keyboardType="numeric"
-                    className="border-2 w-full h-10 rounded-sm px-3 border-gray-300"
-                  />
-
-                  <TextInput
-                    value={price.toPrice}
-                    onChange={(e) =>
-                      setPrice((prev) => ({
-                        ...prev,
-                        toPrice: e.nativeEvent.text,
-                      }))
-                    }
-                    placeholder="To"
-                    keyboardType="numeric"
-                    className="border-2 w-full h-10 rounded-sm px-3 border-gray-300"
-                  />
-                </View>
+                      ))}
+                    </ScrollView>
+                  </>
+                )}
               </View>
             )}
 
+            {/* Price Filter */}
+            {activeFilter === "Price" && (
+              <View className="mt-2">
+                <Text className="font-semibold text-red-500 mb-2 text-lg">
+                  Price Range
+                </Text>
+                <TextInput
+                  value={price.fromPrice}
+                  onChange={(e) =>
+                    setPrice((prev) => ({
+                      ...prev,
+                      fromPrice: e.nativeEvent.text,
+                    }))
+                  }
+                  placeholder="From"
+                  keyboardType="numeric"
+                  className="border-2 w-full h-10 rounded-md px-3 border-gray-300 mb-2"
+                />
+                <TextInput
+                  value={price.toPrice}
+                  onChange={(e) =>
+                    setPrice((prev) => ({
+                      ...prev,
+                      toPrice: e.nativeEvent.text,
+                    }))
+                  }
+                  placeholder="To"
+                  keyboardType="numeric"
+                  className="border-2 w-full h-10 rounded-md px-3 border-gray-300"
+                />
+              </View>
+            )}
+
+            {/* Ratings Filter */}
             {activeFilter === "Ratings" && (
               <View>
-                <Text className="font-semibold text-lg text-gray-800 mb-2">
+                <Text className="font-semibold text-gray-800 mb-2 text-lg">
                   Select Rating
                 </Text>
-                <View className="flex-row flex-wrap gap-2 mt-2">
+                <View className="flex-row flex-wrap gap-2">
                   {[5, 4, 3, 2, 1].map((rating) => (
                     <Pressable
                       key={rating}
                       onPress={() => handleRatingClick(rating)}
-                      className={`flex-row items-center ${
+                      className={`flex-row items-center px-3 py-1 rounded-md ${
                         selectedRating === rating
                           ? "bg-gray-500"
                           : "bg-gray-200"
-                      } px-3 py-1 rounded-md`}
+                      }`}
                     >
                       <Icon name="star-rate" size={18} color="#F59E0B" />
                       <Text className="ml-1 text-base">{rating}</Text>
@@ -312,6 +285,7 @@ export default function FilterComponent({
               </View>
             )}
 
+            {/* Price Type Filter */}
             {activeFilter === "Price Type" && (
               <View>
                 <Text className="font-semibold text-lg text-red-500 mb-2">
@@ -325,6 +299,8 @@ export default function FilterComponent({
                 />
               </View>
             )}
+
+            {/* Brand Filter */}
             {activeFilter === "Brand" && (
               <View>
                 <Text className="font-semibold text-lg text-red-500 mb-2">
@@ -335,11 +311,12 @@ export default function FilterComponent({
                   contentContainerStyle={{
                     flexDirection: "row",
                     flexWrap: "wrap",
-                    gap: 8, // if gap supported in your setup, else use margin
+                    gap: 8,
                   }}
                 >
                   {makes.map((make, index) => (
                     <Pressable
+                      key={index}
                       onPress={() =>
                         setSelectedMakes((prev) =>
                           prev.includes(make)
@@ -347,18 +324,11 @@ export default function FilterComponent({
                             : [...prev, make]
                         )
                       }
-                      key={index}
-                      className={`cursor-pointer ${
+                      className={`px-3 py-1 rounded-md mb-1 ${
                         selectedMakes?.includes(make)
                           ? "bg-red-100"
                           : "bg-gray-100"
                       }`}
-                      style={{
-                        // backgroundColor: "#e5e7eb",
-                        paddingHorizontal: 8,
-                        paddingVertical: 4,
-                        margin: 4,
-                      }}
                     >
                       <Text>{make}</Text>
                     </Pressable>
@@ -367,20 +337,20 @@ export default function FilterComponent({
               </View>
             )}
 
+            {/* Industry Filter */}
             {activeFilter === "Industry" && (
-              <ScrollView className="h-96 bg-gray-200 p-2">
-                <Text className="font-semibold text-xl text-gray-800 mb-2">
+              <ScrollView className="h-96 bg-gray-200 p-3 rounded-md">
+                <Text className="font-semibold text-lg text-gray-800 mb-3">
                   Select Industry
                 </Text>
-
                 {!selectedIndustry &&
                   Object.keys(industries).map((ind) => (
                     <Pressable
                       key={ind}
                       onPress={() => setSelectedIndustry(ind)}
-                      className="p-2 mb-2 rounded-sm bg-gray-100"
+                      className="p-2 mb-2 rounded-md bg-gray-100"
                     >
-                      <Text className="text-lg">
+                      <Text className="text-base">
                         {ind.charAt(0).toUpperCase() + ind.slice(1)}
                       </Text>
                     </Pressable>
@@ -396,11 +366,11 @@ export default function FilterComponent({
                       }}
                       className="mb-2"
                     >
-                      <Text className=" text-sm underline text-red-600">
+                      <Text className="text-sm underline text-red-600">
                         ← Back to Industries
                       </Text>
                     </Pressable>
-                    <Text className="font-semibold text-lg text-gray-800 mb-2">
+                    <Text className="font-semibold text-base mb-2">
                       Categories in{" "}
                       {selectedIndustry.charAt(0).toUpperCase() +
                         selectedIndustry.slice(1)}
@@ -409,7 +379,7 @@ export default function FilterComponent({
                       <Pressable
                         key={cat}
                         onPress={() => setSelectedCategory(cat)}
-                        className="p-2 mb-2  rounded-sm bg-gray-100"
+                        className="p-2 mb-2 rounded-md bg-gray-100"
                       >
                         <Text className="text-base">{cat}</Text>
                       </Pressable>
@@ -417,7 +387,7 @@ export default function FilterComponent({
                   </>
                 )}
 
-                {selectedIndustry && selectedCategory && (
+                {selectedCategory && (
                   <>
                     <Pressable
                       onPress={() => {
@@ -426,28 +396,31 @@ export default function FilterComponent({
                       }}
                       className="mb-2"
                     >
-                      <Text className=" text-sm underline">
+                      <Text className="text-sm underline text-gray-800">
                         ← Back to Categories
                       </Text>
                     </Pressable>
-                    <Text className="font-semibold text-md text-gray-800 mb-2">
+                    <Text className="font-semibold mb-2 text-base">
                       Subcategories in {selectedCategory}
                     </Text>
                     {categories[selectedCategory]?.map((sub) => (
                       <Pressable
                         key={sub}
                         onPress={() =>
-                          setSelectedSubCategory((prev) =>
-                            prev === sub ? "" : sub
+                          setSelectedSubCategory(
+                            (prev) =>
+                              prev.includes(sub)
+                                ? prev.filter((item) => item !== sub) // remove if already selected
+                                : [...prev, sub] // add if not present
                           )
                         }
-                        className={`p-2 mb-2 rounded-sm ${
-                          selectedSubCategory === sub
+                        className={`p-2 mb-2 rounded-md ${
+                          selectedSubCategory?.includes(sub)
                             ? "bg-gray-300"
                             : "bg-gray-100"
                         }`}
                       >
-                        <Text className="text-">{sub}</Text>
+                        <Text>{sub}</Text>
                       </Pressable>
                     ))}
                     <Pressable
@@ -459,9 +432,9 @@ export default function FilterComponent({
                         setSelectedDistricts([]);
                         setSelectedRating("");
                       }}
-                      className="mt-2 "
+                      className="mt-2"
                     >
-                      <Text className="text-gray-900  font-semibold underline text-sm">
+                      <Text className="text-gray-900 font-semibold underline text-sm">
                         Deselect All
                       </Text>
                     </Pressable>
@@ -470,33 +443,31 @@ export default function FilterComponent({
               </ScrollView>
             )}
           </ScrollView>
+
+          {/* Deselect All Button */}
+          <Pressable
+            className="bg-gray-200 py-3 px-4 rounded-md mb-6 mt-2 items-center"
+            onPress={() => {
+              if (page === "mech") {
+                setSelectedIndustry("");
+                setSelectedCategory("");
+                setSelectedSubCategory("");
+                setSelectedRating("");
+              } else {
+                setSelectedPriceType("");
+                setPrice({ fromPrice: "", toPrice: "" });
+                setSelectedMakes([]);
+              }
+              setSelectedState("");
+              setSelectedDistrict([]);
+              setSelectedDistricts([]);
+              setOtherThanIndia(false);
+              dataToMap = location;
+            }}
+          >
+            <Text className="text-red-500 font-bold text-sm">Deselect All</Text>
+          </Pressable>
         </View>
-        <Pressable
-          className=" bg-gray-200 p-4 mb-6 items-center"
-          onPress={() => {
-            if (page === "mech") {
-              setSelectedIndustry("");
-              setSelectedCategory("");
-              setSelectedSubCategory("");
-              setSelectedRating("");
-            } else {
-              setSelectedPriceType("");
-              setPrice({
-                fromPrice: "",
-                toPrice: "",
-              });
-              setSelectedMakes([]);
-            }
-            setSelectedState("");
-            setSelectedDistricts([]);
-            setSelectedDistrict([]);
-            setOtherThanIndia(false);
-            dataToMap = location;
-            // console.log(dataToMap);
-          }}
-        >
-          <Text className="text-red-500 text-md  font-bold">Deselect All</Text>
-        </Pressable>
       </ScrollView>
     </View>
   );

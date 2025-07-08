@@ -9,6 +9,7 @@ import { FileUploadProvider } from "./context/FileUpload";
 import { FormatTimeProvider } from "./context/FormatTime";
 import Toast from "react-native-toast-message";
 import SplashScreen from "./screens/SplashScreen";
+import { View } from "react-native";
 
 const Layout = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -33,6 +34,7 @@ const Layout = () => {
                 ) : (
                   <>
                     <Stack screenOptions={{ headerShown: false }} />
+
                     <Toast />
                   </>
                 )}
