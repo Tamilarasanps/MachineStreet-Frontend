@@ -31,7 +31,7 @@ export default function SplashScreen() {
           style={{ width: 120, height: 120 }}
         />
       </Animated.View>
-      <Text className=" text-xl font-bold" style={{ color: "#FFBF00" }}>
+      <Text style={{ fontSize: 20, fontWeight: "bold", color: "#FFBF00" }}>
         MachineStreet
       </Text>
     </View>
