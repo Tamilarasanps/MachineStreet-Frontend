@@ -3,12 +3,12 @@ import Toast from "react-native-toast-message";
 
 const useApi = () => {
   const API_URL = "https://api.machinestreets.com";
-  // const API_URL = "http://192.168.1.9:5000";
+  // const API_URL = "http://192.168.1.8:5000";
 
   const handleRequest = async (request, path, token) => {
     try {
       const response = await request();
-
+console.log(response)
       const successMessage =
         response?.data?.message || response?.data || "Request successful";
       if (typeof successMessage === "string") {

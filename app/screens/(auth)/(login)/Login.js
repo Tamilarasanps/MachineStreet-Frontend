@@ -49,10 +49,12 @@ const Login = () => {
       });
 
       if (response && response.status === 200) {
+        console.log('response :', response)
         const userRole = response.data.role;
         console.log("userRole :", userRole);
         await AsyncStorage.setItem("userToken", response.data.token);
         await AsyncStorage.setItem("role", userRole);
+        await AsyncStorage.setItem("userId", response.data.userId);
 
         if (userRole === "admin") {
           router.push("/AdminFolder/HomePageAdmin");

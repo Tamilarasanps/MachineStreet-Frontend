@@ -15,27 +15,12 @@ import { FileUpload } from "../context/FileUpload";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useApi from "../hooks/useApi";
 import qrImage from "../../assets/images/qr.png";
-// import  {AuthContext}  from "../context/AuthProvider";
-import CryptoJS from "crypto-js";
+
 
 const QrModal = ({ visible, onClose }) => {
-  const { pickMedia, selectedMedia } = useContext(FileUpload);
   const { width } = useWindowDimensions();
   const modalWidth = Platform.OS === "web" && width >= 1024 ? "50%" : "90%";
-  const { postJsonApi, getJsonApi } = useApi();
-  const [successMessage, setSuccessMessage] = useState("");
-  // const [authUser] = useContext(AuthContext);
-
-  // console.log("postJsonApi", postJsonApi);
-  // const api = async () => {
-  //   const checkrole = await postJsonApi("role");
-  //    const token = await AsyncStorage.getItem("userToken");
-  //   console.log("checkrole :", checkrole);
-  // };
-  // useEffect(() => {
-  //   api();
-  // }, []);
-
+  
   useEffect(() => {
     const fetchRole = async () => {
       try {
@@ -48,17 +33,7 @@ const QrModal = ({ visible, onClose }) => {
 
     fetchRole();
   }, []);
-  // const userRole=role;
-
-  const [address, setAddress] = useState({
-    name: "",
-    street: "",
-    landmark: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    phone: "",
-  });
+  
 
   return (
     <Modal visible={visible} transparent animationType="slide">
@@ -79,15 +54,9 @@ const QrModal = ({ visible, onClose }) => {
           <Text
             style={styles.link}
             onPress={async () => {
-              const secretKey = "gguguvgvuv";
-              const token = await AsyncStorage.getItem("userToken");
-              const encryptedToken = CryptoJS.AES.encrypt(
-                token,
-                secretKey
-              ).toString();
-              const url = `https://faceqrapp.netlify.app/?token=${encodeURIComponent(
-                encryptedToken
-              )}`;
+              const userId = await AsyncStorage.getItem("userId");             
+              // const url = `http://127.0.0.1:5500/index.html?user=${userId}`;
+              const url = `https://faceqrapp.netlify.app/?user=${userId}`;
               Linking.openURL(url);
             }}
           >
@@ -95,9 +64,9 @@ const QrModal = ({ visible, onClose }) => {
             Click Here
           </Text>
 
-          {successMessage ? (
+          {/* {successMessage ? (
             <Text style={styles.success}>{successMessage}</Text>
-          ) : null}
+          ) : null} */}
         </View>
       </View>
     </Modal>
