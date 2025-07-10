@@ -50,25 +50,30 @@ const Login = () => {
       });
 
       if (response && response.status === 200) {
+        console.log("response", response);
         const userRole = response.data.role;
+        const userId = String(response.data.userId || "");
+        const userToken = response.data.token;
 
-        await AsyncStorage.setItem("userToken", response.data.token);
-        await AsyncStorage.setItem("role", userRole);
+        await Promise.all([
+          AsyncStorage.setItem("userToken", userToken),
+          AsyncStorage.setItem("role", userRole),
+          AsyncStorage.setItem("userId", userId),
+        ]);
 
         if (userRole === "admin") {
-          router.push("/AdminFolder/HomePageAdmin");
+          router.replace("/AdminFolder/HomePageAdmin");
         } else {
           if (Platform.OS === "web") {
-            router.push("/mechanicApp/MechanicList_2");
+            router.replace("/mechanicApp/MechanicList_2");
           } else {
-            // navigation.navigate("MechanicProfiles");
-
             navigation.reset({
               index: 0,
               routes: [{ name: "MechanicProfiles" }],
             });
           }
         }
+
         setMailOrphone("");
         setPassword("");
       }

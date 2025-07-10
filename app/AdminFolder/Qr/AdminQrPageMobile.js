@@ -62,7 +62,7 @@ const QrPosterMobile = () => {
       Alert.alert("Error", "Failed to download the poster.");
     }
   };
-  console.log("render");
+  // console.log("render");
   return (
     <ScrollView className="min-h-screen w-full bg-gradient-to-br from-purple-50 to-blue-100 px-4 py-6 space-y-10">
       {qr?.map((qrItem, index) => {
