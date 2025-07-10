@@ -23,7 +23,7 @@
       "windowSoftInputMode": "adjustResize",
       "package": "com.tamilarasanps.frontend",
       "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
-      "versionCode": 6,
+      "versionCode": 7,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

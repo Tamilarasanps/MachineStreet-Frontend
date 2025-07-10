@@ -6,6 +6,7 @@ import {
   Platform,
   SafeAreaView,
   useWindowDimensions,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { FloatingLabelInput } from "react-native-floating-label-input";
@@ -50,7 +51,7 @@ const Login = () => {
 
       if (response && response.status === 200) {
         const userRole = response.data.role;
-        console.log("userRole :", userRole);
+
         await AsyncStorage.setItem("userToken", response.data.token);
         await AsyncStorage.setItem("role", userRole);
 
@@ -60,7 +61,12 @@ const Login = () => {
           if (Platform.OS === "web") {
             router.push("/mechanicApp/MechanicList_2");
           } else {
-            navigation.navigate("MechanicProfiles");
+            // navigation.navigate("MechanicProfiles");
+
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "MechanicProfiles" }],
+            });
           }
         }
         setMailOrphone("");
