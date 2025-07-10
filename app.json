@@ -3,7 +3,7 @@
     "name": "Machinestreet",
     "jsEngine": "hermes",
     "slug": "frontend",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/images/AppLogo.png",
     "scheme": "myapp",
