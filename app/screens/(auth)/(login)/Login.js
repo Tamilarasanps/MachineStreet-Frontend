@@ -50,9 +50,9 @@ const Login = () => {
       });
 
       if (response && response.status === 200) {
-        console.log("response", response);
         const userRole = response.data.role;
-        const userId = String(response.data.userId || "");
+        const userId = response.data.userId;
+
         const userToken = response.data.token;
 
         await Promise.all([
