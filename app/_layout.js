@@ -29,15 +29,15 @@ const Layout = () => {
           <LoadingProvider>
             <FileUploadProvider>
               <FormatTimeProvider>
-                {showSplash ? (
+                {/* {showSplash ? (
                   <SplashScreen />
-                ) : (
+                ) : ( */}
                   <>
                     <Stack screenOptions={{ headerShown: false }} />
 
                     <Toast />
                   </>
-                )}
+                {/* )} */}
               </FormatTimeProvider>
             </FileUploadProvider>
           </LoadingProvider>

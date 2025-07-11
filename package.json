@@ -65,10 +65,10 @@
     "react-native-paper": "^5.14.0",
     "react-native-progress": "^5.0.1",
     "react-native-radio-buttons-group": "^3.1.0",
-    "react-native-reanimated": "~3.17.4",
     "react-native-responsive-dimensions": "^3.1.1",
     "react-native-safe-area-context": "^5.4.0",
     "react-native-screens": "~4.11.1",
+    "react-native-svg": "15.11.2",
     "react-native-toast-message": "^2.3.0",
     "react-native-toast-notifications": "^3.4.0",
     "react-native-vector-icons": "^10.2.0",
@@ -78,7 +78,7 @@
     "socket.io-client": "^4.8.1",
     "tailwindcss": "^3.4.17",
     "zustand": "^5.0.3",
-    "react-native-svg": "15.11.2"
+    "react-native-reanimated": "~3.17.4"
   },
   "expo": {
     "doctor": {

@@ -5,7 +5,7 @@
     "slug": "frontend",
     "version": "1.0.4",
     "orientation": "portrait",
-    "icon": "./assets/images/AppLogo.png",
+    "icon": "./assets/images/logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -40,6 +40,17 @@
       "backgroundColor": "#ffffff"
     },
     "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo.png",
+          "backgroundColor": "#051829",
+          "resizeMode": "contain",
+          "dark": {
+            "image": "./assets/images/logo.png"
+          }
+        }
+      ],
       "expo-router",
       [
         "expo-video",
