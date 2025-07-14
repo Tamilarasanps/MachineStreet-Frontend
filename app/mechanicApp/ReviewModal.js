@@ -14,6 +14,9 @@ import ReviewPopup from "./ReviewPopUp";
 import { FormatTime } from "../context/FormatTime";
 import { useContext } from "react";
 import { useSocketContext } from "../context/SocketContext";
+import Toast from "react-native-toast-message";
+import QrScan from "./QrScan";
+import { router } from "expo-router";
 
 const ReviewModal = ({
   visible,
@@ -39,17 +42,17 @@ const ReviewModal = ({
     const handleReviewsUpdate = (data) => {
       // console.log('data :', data)
       setReviews((prev) => [...prev, data.review]);
-        setMechanics((prev) =>
-          prev.map((mech) =>
-            mech._id === selectedMech
-              ? {
-                  ...mech,
-                  averageRating: data.mechanic.averageRating,
-                  reviews: data.mechanic.reviews,
-                }
-              : mech
-          )
-        );
+      setMechanics((prev) =>
+        prev.map((mech) =>
+          mech._id === selectedMech
+            ? {
+                ...mech,
+                averageRating: data.mechanic.averageRating,
+                reviews: data.mechanic.reviews,
+              }
+            : mech
+        )
+      );
     };
 
     if (socket) {
@@ -89,7 +92,7 @@ const ReviewModal = ({
             {
               width: width >= 1024 ? 500 : "90%",
               height: height * 0.75,
-              marginBottom: 20,
+              marginBottom: width >= 1024 ? 20 : 120,
             }, // Added marginBottom for gap
           ]}
         >
@@ -99,6 +102,7 @@ const ReviewModal = ({
           </Pressable>
 
           {/* Comments Area (scrollable) */}
+
           <ScrollView style={styles.reviewsContainer}>
             {reviews && reviews.length > 0 ? (
               [...reviews].reverse().map((item) => (
@@ -114,7 +118,6 @@ const ReviewModal = ({
                       <Text style={styles.username}>{item.user.username}</Text>
                       <Text
                         style={{
-                          // marginLeft: 50,
                           alignSelf: "center",
                           color: "#888",
                           fontSize: 12,
@@ -156,6 +159,7 @@ const ReviewModal = ({
             </Text>
           </Pressable>
         </View>
+        <Toast />
       </BlurView>
       {reviewPopUp && (
         <ReviewPopup

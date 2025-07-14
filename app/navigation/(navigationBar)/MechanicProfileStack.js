@@ -20,7 +20,7 @@ export default function MechanicProfileStack() {
       const checkToken = async () => {
         try {
           const storedToken = await AsyncStorage.getItem("userToken");
-          console.log("Stored Token:", storedToken);
+
           setIsLogin(!!storedToken);
         } catch (error) {
           console.error("Error reading token:", error);

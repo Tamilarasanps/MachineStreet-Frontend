@@ -31,11 +31,10 @@ const SignUp = () => {
 
   useEffect(() => {
     checkToken();
-  },[]);
+  }, []);
 
   const checkToken = async () => {
     const storedToken = await AsyncStorage.getItem("userToken");
-    console.log("storedTokenin sign up pages :", storedToken);
   };
 
   const navigation = useNavigation();
@@ -116,13 +115,13 @@ const SignUp = () => {
 
     try {
       // Dynamically generate the signup URL
-      console.log("function triggered ");
+      // console.log("function triggered ");
       const response = await postJsonApi(getSignupUrl(step), api_Data);
 
-      console.log("response :", response);
+      // console.log("response :", response);
 
       if (response && response.status === 200) {
-        console.log("step :", step);
+        // console.log("step :", step);
         if (step == 2) {
           Toast.show({
             type: "success",
@@ -140,7 +139,7 @@ const SignUp = () => {
           setConfirmPass("");
           // toast.show("Registration successfully!", { type: "success" }
 
-          console.log(Platform.OS === "web");
+          // console.log(Platform.OS === "web");
           if (Platform.OS === "web") {
             router.push("/screens/Login");
           } else {

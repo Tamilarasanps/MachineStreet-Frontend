@@ -24,7 +24,7 @@ const PostGrid = ({ posts, onPostPress, width, userProfile }) => {
   }
 
   return (
-    <View style={{ flexWrap: "wrap", flexDirection: "row", padding: 16 }} className="h-screen">
+    <View style={{ flexWrap: "wrap", flexDirection: "row", padding: 16 ,marginBottom:120}}>
       {posts?.length > 0 &&
         posts.map((item, index) => {
           const isVideo = item.media.length === 24;

@@ -27,7 +27,7 @@ const UsernameScreen = ({
   const { width } = useWindowDimensions();
   const isScreen = width > 768;
   const navigation = useNavigation();
-  console.log("username :", username);
+  // console.log("username :", username);
   const { isLoading, startLoading, stopLoading } = useContext(LoadingContext);
   
   const handleNextPress = async () => {

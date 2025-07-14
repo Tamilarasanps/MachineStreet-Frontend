@@ -34,6 +34,7 @@ import Password from "../(auth)/(SignIn)/Password";
 import { BlurView } from "expo-blur";
 import { useNavigation } from "expo-router";
 import Toast from "react-native-toast-message";
+import QrScan from "@/app/mechanicApp/QrScan";
 // import { useSocketContext } from "./context/SocketContext";
 
 const { width } = Dimensions.get("window");
@@ -128,6 +129,7 @@ const ProfilePage = ({}) => {
         { password },
         token
       );
+
       // handle response if needed
     } catch (error) {
       console.error(error.message, "error");
@@ -240,6 +242,7 @@ const ProfilePage = ({}) => {
     const checkProfile = async () => {
       try {
         const storedToken = await AsyncStorage.getItem("userToken");
+
         const role = await AsyncStorage.getItem("role");
         if (!storedToken) {
           if (Platform.OS === "web") {
@@ -253,6 +256,7 @@ const ProfilePage = ({}) => {
         // CASE 1: Visiting another mechanic's profile
         if (page === "uservisit" && id) {
           const selectedMechanic = mechanics.find((mech) => mech._id === id);
+
           if (selectedMechanic) {
             setUserProfile(selectedMechanic);
             setPhoneNumber(selectedMechanic.contact?.number || "");
@@ -264,6 +268,7 @@ const ProfilePage = ({}) => {
         }
 
         // CASE 2: Logged-in user's own profile
+        // const respon = await getJsonApi("profile");
         const response = await getJsonApi("profile", storedToken);
 
         const data = response.data;
@@ -334,6 +339,9 @@ const ProfilePage = ({}) => {
     setModalVisible(false);
     setViewMode("main");
   };
+
+  const [activeaTab, setActiveTab] = useState("posts");
+  const [postIndex, setPostIndex] = useState(null);
 
   return (
     <>
@@ -490,48 +498,97 @@ const ProfilePage = ({}) => {
             )}
           </View>
 
+          {page === "uservisit" && (
+            <View className="flex-row justify-between items-center px-4 mt-2">
+              <TouchableOpacity
+                className={`flex-1 mr-1 py-2 rounded ${
+                  activeaTab === "posts" ? "bg-gray-500" : "bg-gray-200"
+                }`}
+                onPress={() => {
+                  setActiveTab("posts");
+                  setPostIndex(null);
+                }}
+              >
+                <Text
+                  className={`text-center font-medium text-sm ${
+                    activeaTab === "posts" ? "text-white" : "text-black"
+                  }`}
+                >
+                  Posts
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className={`flex-1 mr-1 py-2 rounded ${
+                  activeaTab === "userDetails" ? "bg-gray-500" : "bg-gray-200"
+                }`}
+                onPress={() => {
+                  setActiveTab("userDetails");
+                  setPostIndex(null);
+                }}
+              >
+                <Text
+                  className={`text-center font-medium text-sm ${
+                    activeaTab === "userDetails" ? "text-white" : "text-black"
+                  }`}
+                >
+                  UserDetails
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
           {/* Buttons */}
 
-          {(page !== "uservisit" && userProfile?.role !== "mechanic") ||
-            (page !== "uservisit" && (
-              <View className="flex-row justify-between items-center px-4 mt-2">
-                <TouchableOpacity
-                  onPress={() => setEditModal(true)}
-                  className="flex-1 mr-1 py-2 bg-gray-200 rounded"
-                >
-                  <Text className="text-center font-medium text-sm">
-                    Edit Profile
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={async () => {
-                    const result = await pickMedia();
-                    if (
-                      !result.canceled &&
-                      result.assets &&
-                      result.assets.length > 0
-                    )
-                      setFileUpload(true);
-                  }}
-                  className="flex-1 p-2 bg-gray-200 rounded"
-                >
-                  <Text className="text-center font-semibold">Create Post</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+          <View>
+            {activeaTab === "posts" ? (
+              <View>
+                {(page !== "uservisit" && userProfile?.role !== "mechanic") ||
+                  (page !== "uservisit" && (
+                    <View className="flex-row justify-between items-center px-4 mt-2">
+                      <TouchableOpacity
+                        onPress={() => setEditModal(true)}
+                        className="flex-1 mr-1 py-2 bg-gray-200 rounded"
+                      >
+                        <Text className="text-center font-medium text-sm">
+                          Edit Profile
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={async () => {
+                          const result = await pickMedia();
+                          if (
+                            !result.canceled &&
+                            result.assets &&
+                            result.assets.length > 0
+                          )
+                            setFileUpload(true);
+                        }}
+                        className="flex-1 p-2 bg-gray-200 rounded"
+                      >
+                        <Text className="text-center font-semibold">
+                          Create Post
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                {/* Posts Grid */}
 
-          {/* Posts Grid */}
-          
-            <PostGrid
-              userProfile={userProfile}
-              posts={posts}
-              onPostPress={(index) => {
-                setActivePostIndex(index);
-              }}
-              width={width}
-              // loading={isLoading}
-            />
-          
+                <PostGrid
+                  userProfile={userProfile}
+                  posts={posts}
+                  onPostPress={(index) => {
+                    setActivePostIndex(index);
+                  }}
+                  width={width}
+                  // loading={isLoading}
+                />
+              </View>
+            ) : (
+              <View className="mt-10">
+                <QrScan userProfile={userProfile} />
+              </View>
+            )}
+          </View>
         </ScrollView>
         {/* edit modal */}
 

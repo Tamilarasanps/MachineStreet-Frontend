@@ -148,7 +148,6 @@ const Password = ({
       <Pressable
         disabled={password !== confirmpass}
         onPress={() => {
-          console.log("buttton clicked");
           startLoading();
           formSubmit({ password, confirmpass });
           stopLoading();

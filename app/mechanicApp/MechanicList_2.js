@@ -32,6 +32,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import QrModal from "./QrModal";
 import { useFocusEffect } from "@react-navigation/native";
+import QrScan from "./QrScan";
 
 const MechanicList_2 = () => {
   const { width } = useWindowDimensions();
@@ -61,6 +62,7 @@ const MechanicList_2 = () => {
   // const [showServiceModal, setShowServiceModal] = useState(false);
   // const [showServiceModalId, setShowServiceModalId] = useState(null);
   const [mechanicSearchResults, setMechanicSearchResults] = useState([]);
+
   const [searchBar, setSearchBar] = useState("");
   const [authUser] = useContext(AuthContext);
   const [expandedMechanicId, setExpandedMechanicId] = useState(null);
@@ -88,11 +90,10 @@ const MechanicList_2 = () => {
   const [otherThanIndia, setOtherThanIndia] = useState(false);
   let dataToMap = otherThanIndia ? otherThanIndiaLocation : location;
 
-  // sumbit reviews
   const navigation = useNavigation();
 
   const [userRole, setUserRole] = useState("mechanic");
-  // console.log(userRole, "userROles");
+
   useFocusEffect(
     useCallback(() => {
       const authcheck = async () => {
@@ -125,6 +126,7 @@ const MechanicList_2 = () => {
         userReview,
         token
       );
+
       if (result.status === 200) {
         setRating(0);
         setReviewText("");
@@ -141,11 +143,13 @@ const MechanicList_2 = () => {
 
   async function fectchReviews() {
     try {
-      const token = AsyncStorage.getItem("userToken"); // Missing await
+      const token = await AsyncStorage.getItem("userToken");
+
       const result = await getJsonApi(
         `mechanicList/getReviews/${selectedMech}`,
         token
       );
+
       if (result.status === 200) setReviews(result.data);
     } catch (err) {
       console.log(err);
@@ -169,7 +173,7 @@ const MechanicList_2 = () => {
     }
   }
 
-  const filteredMechanics = mechanics.filter((mechanic) => {
+  const filteredMechanics = mechanics?.filter((mechanic) => {
     const matchesIndustry = selectedIndustry
       ? mechanic.industry === selectedIndustry
       : true;
@@ -219,6 +223,8 @@ const MechanicList_2 = () => {
       matchesRating
     );
   });
+
+
 
   const handleProfileNavigation = async (id) => {
     const token = await AsyncStorage.getItem("userToken");
@@ -332,7 +338,7 @@ const MechanicList_2 = () => {
                         <ScrollView>
                           {mechanicSearchResults
                             ?.concat(filteredMechanics)
-                            .find((mech) => mech._id === expandedMechanicId)
+                            .find((mech) => mech?._id === expandedMechanicId)
                             ?.subcategory?.map((sub, subIndex) => (
                               <View key={subIndex} className="mb-4">
                                 <Text className="font-bold text-lg mb-1">
@@ -360,7 +366,7 @@ const MechanicList_2 = () => {
                           <View className="flex-row flex-wrap gap-2 mt-2">
                             {mechanicSearchResults
                               .concat(filteredMechanics)
-                              .find((mech) => mech._id === expandedMechanicId)
+                              .find((mech) => mech?._id === expandedMechanicId)
                               ?.services?.map((service, index) => (
                                 <Text
                                   key={index}
@@ -558,16 +564,16 @@ const MechanicList_2 = () => {
                           </Text>
                         </View>
                       ) : (
-                        (mechanicSearchResults.length > 0 &&
-                        searchBar.length > 0
+                        (mechanicSearchResults?.length > 0 &&
+                        searchBar?.length > 0
                           ? mechanicSearchResults
                           : filteredMechanics
-                        ).map((mechanic) => (
+                        )?.map((mechanic) => (
                           <Pressable
                             onPress={() => {
-                              handleProfileNavigation(mechanic._id);
+                              handleProfileNavigation(mechanic?._id);
                             }}
-                            key={mechanic._id}
+                            key={mechanic?._id}
                             className="items-center mb-6"
                             style={{
                               width: isSmallScreen
@@ -604,10 +610,10 @@ const MechanicList_2 = () => {
                               >
                                 <View className="h-full w-full items-center justify-center md:flex-col  ">
                                   <View className="bg-gray-200 rounded-full overflow-hidden shadow-md z-10 w-[150px] h-[150px] items-center justify-center">
-                                    {mechanic.profileImage ? (
+                                    {mechanic?.profileImage ? (
                                       <Image
                                         source={{
-                                          uri: `data:image/jpeg;base64,${mechanic.profileImage}`,
+                                          uri: `data:image/jpeg;base64,${mechanic?.profileImage}`,
                                         }}
                                         resizeMode="cover"
                                         style={{
@@ -627,10 +633,10 @@ const MechanicList_2 = () => {
 
                                   <View className="flex-row md:flex-col items-center md:items-start space-x-4 md:space-x-0 md:space-y-2 mt-8">
                                     <Text className="text-lg font-extrabold text-gray-600 text-center md:text-left">
-                                      {mechanic.username
+                                      {mechanic?.username
                                         .charAt(0)
                                         .toUpperCase() +
-                                        mechanic.username.slice(1)}
+                                        mechanic?.username.slice(1)}
                                     </Text>
 
                                     <View className="flex-row items-center">
@@ -640,7 +646,7 @@ const MechanicList_2 = () => {
                                         color="black"
                                       />
                                       <Text className="ml-2 font-semibold">
-                                        {mechanic.posts.length}
+                                        {mechanic?.posts?.length}
                                       </Text>
                                     </View>
                                   </View>
@@ -836,7 +842,7 @@ const MechanicList_2 = () => {
                   )}
                 </View>
 
-                {mechanics.length > 49 && (
+                {mechanics?.length > 49 && (
                   <View
                     className="flex flex-row justify-between  items-center "
                     style={{
