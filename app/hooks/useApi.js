@@ -1,58 +1,77 @@
 import axios from "axios";
 import Toast from "react-native-toast-message";
+import { router } from "expo-router";
 
 const useApi = () => {
   const API_URL = "https://api.machinestreets.com";
-  // const API_URL = "http://192.168.1.9:5000";
+  // const API_URL = "http://192.168.1.7:5000";
 
   const handleRequest = async (request, path, token) => {
     try {
       const response = await request();
-      
-
+      console.log("response :", response);
       const successMessage =
         response?.data?.message || response?.data || "Request successful";
+
       if (typeof successMessage === "string") {
         Toast.show({
           type: "success",
           text1: "Success!",
-          text2: successMessage, // Your dynamic message here
-          position: "top", // not "placement"
-          visibilityTime: 2000, // instead of "duration"
+          text2: successMessage,
+          position: "top",
+          visibilityTime: 2000,
         });
       }
 
       return response;
     } catch (err) {
-      // console.log('err :', err)
-      const errorMessage =
-        err.response?.data?.message ||
-        err.response?.data ||
-        err.message ||
-        "An error occurred";
+      console.log("err :", err);
+      let message = "An error occurred";
 
-      if (typeof errorMessage === "string") {
-        // Toast.show(errorMessage, {
-        //   type: "danger",
-        //   placement: "top",
-        //   duration: 3000,
-        // });
-        Toast.show({
-          type: "error", //
-          text1: errorMessage,
-          position: "top",
-          visibilityTime: 2000,
-          animation: "slide",
-        });
+      if (err.code === "ECONNABORTED") {
+        message = "Request timed out";
+      } else if (!err.response) {
+        message = "Network Error";
+      } else {
+        console.log("err?.response?.status :", err?.response?.status);
+        const status = err?.status || err?.response?.status;
+        console.log("status :", status);
+        const errorText = err.response?.data?.error || "";
+
+        message =
+          err.response?.data?.message ||
+          errorText ||
+          err.message ||
+          "Something went wrong";
+
+        if (status === 401) {
+          message = "Unauthorized. Please login again.";
+
+          router.replace("../screens/(auth)/(login)/Login");
+        } else if (status === 403) {
+          message = "Access denied.";
+        } else if (status === 404) {
+          message = "Resource not found.";
+        } else if (status === 500) {
+          message = "Server error. Try again later.";
+        }
       }
 
-      throw err;
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: message,
+        position: "top",
+        visibilityTime: 2000,
+      });
+
+      return null;
     }
   };
 
   const jsonHeader = (token) => ({
-    "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
+    "Content-Type": "application/json",
   });
 
   const GETAPI = async (path, token) =>
@@ -62,19 +81,31 @@ const useApi = () => {
       token
     );
 
-  const POSTAPI = async (path, data, token, onUploadProgress) => {
-    return await handleRequest(
+  const POSTAPI = async (path, data, token, onUploadProgress) =>
+    await handleRequest(
       () =>
         axios.post(`${API_URL}/${path}`, data, {
-          headers: jsonHeader(token),
+          headers: {
+            ...(data instanceof FormData
+              ? { Authorization: `Bearer ${token}` } // let browser set Content-Type
+              : jsonHeader(token)), // JSON default
+          },
           timeout: 5 * 60 * 1000,
-          onUploadProgress, // optional, make sure this is defined somewhere
-          // withCredentials: true, // Uncomment if needed for cookies
+          onUploadProgress,
         }),
       path,
       token
     );
-  };
+
+  const PATCHAPI = async (path, data, token) =>
+    await handleRequest(
+      () =>
+        axios.patch(`${API_URL}/${path}`, data, {
+          headers: jsonHeader(token),
+        }),
+      path,
+      token
+    );
 
   const DELETEAPI = async (path, data, token) =>
     await handleRequest(

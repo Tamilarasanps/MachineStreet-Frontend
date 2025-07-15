@@ -144,44 +144,6 @@ const QrScan = ({ userProfile }) => {
             </View>
           </View>
 
-          <Paragraph>Coimbatore</Paragraph>
-
-          {/* Info Section */}
-          {/* <View style={styles.infoSection}>
-            {[
-              {
-                title: "Spinning Machines",
-                items: ["Ring Spinning Machine", "Rotor Spinning Machine"],
-              },
-              {
-                title: "Weaving Machines",
-                items: ["Rotor Spinning Machine", "Water Jet Loom"],
-              },
-              {
-                title: "Specialization / Services",
-                items: ["Machine", "Motors", "General Services"],
-              },
-              {
-                title: "Contact",
-                items: [" +91 9878654312"],
-              },
-            ].map((cat, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.category,
-                  { width: isSmallScreen ? "100%" : "48%" },
-                ]}
-              >
-                <Text style={styles.section}>{cat.title}</Text>
-                {cat.items.map((item, idx) => (
-                  <Text key={idx} style={styles.item}>
-                    • {item}
-                  </Text>
-                ))}
-              </View>
-            ))}
-          </View> */}
 
           <Divider style={styles.divider} />
 

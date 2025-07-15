@@ -9,6 +9,7 @@ import {
   Modal,
   Platform,
   KeyboardAvoidingView,
+  ActivityIndicator,
   Alert,
   ScrollView,
 } from "react-native";
@@ -342,6 +343,14 @@ const ProfilePage = ({}) => {
 
   const [activeaTab, setActiveTab] = useState("posts");
   const [postIndex, setPostIndex] = useState(null);
+
+  if (!userProfile) {
+    return (
+      <View className="flex-1 flex justify-center items-center">
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
 
   return (
     <>
