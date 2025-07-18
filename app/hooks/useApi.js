@@ -1,16 +1,23 @@
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
+import { Platform } from "react-native";
+
+import { useNavigation } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const useApi = () => {
   const API_URL = "https://api.machinestreets.com";
-  // const API_URL = "http://192.168.250.41:5000";
+  // const API_URL = "http://10.32.48.158:5000";
+
+  const navigation = useNavigation();
 
   const handleRequest = async (request, path, token) => {
     try {
       const response = await request();
       console.log("response :", response);
-      const successMessage = response?.data?.message;
+      const successMessage =
+        response?.data?.message || response?.data || "Request successful";
 
       if (typeof successMessage === "string") {
         Toast.show({
@@ -45,22 +52,13 @@ const useApi = () => {
 
         if (status === 401) {
           message = "Unauthorized. Please login again.";
-
-          router.replace("../screens/(auth)/(login)/Login");
+          AsyncStorage.removeItem("userToken");
+          AsyncStorage.removeItem("role");
+          AsyncStorage.removeItem("userId");
         } else if (status === 403) {
           message = "Access denied.";
         } else if (status === 404) {
-          // Delay the message for 3 seconds
-          setTimeout(() => {
-            Toast.show({
-              type: "error",
-              text1: "Error",
-              text2: "Resource not found.",
-              position: "top",
-              visibilityTime: 2000,
-            });
-          }, 3000);
-          return;
+          message = "Resource not found.";
         } else if (status === 500) {
           message = "Server error. Try again later.";
         }
@@ -79,8 +77,8 @@ const useApi = () => {
   };
 
   const jsonHeader = (token) => ({
-    ...(token && { Authorization: `Bearer ${token}` }),
     "Content-Type": "application/json",
+    ...(token && { Authorization: `Bearer ${token}` }),
   });
 
   const GETAPI = async (path, token) =>
@@ -94,11 +92,7 @@ const useApi = () => {
     await handleRequest(
       () =>
         axios.post(`${API_URL}/${path}`, data, {
-          headers: {
-            ...(data instanceof FormData
-              ? { Authorization: `Bearer ${token}` } // let browser set Content-Type
-              : jsonHeader(token)), // JSON default
-          },
+          headers: jsonHeader(token),
           timeout: 5 * 60 * 1000,
           onUploadProgress,
         }),
