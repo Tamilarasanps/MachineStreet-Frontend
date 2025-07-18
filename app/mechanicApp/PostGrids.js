@@ -16,7 +16,7 @@ const PostGrid = ({ posts, onPostPress, width, userProfile }) => {
   if (userProfile?.role === "mechanic") {
     if (!posts) {
       return (
-        <View className="flex-1 justify-center items-center">
+        <View className="flex-1 mt-8 flex justify-center items-center">
           <ActivityIndicator size="large" color="blue" />
         </View>
       );
@@ -62,7 +62,7 @@ const PostGrid = ({ posts, onPostPress, width, userProfile }) => {
 const VideoGridItem = ({ videoId, onPostPress, index }) => {
   const player = useVideoPlayer(
     `https://api.machinestreets.com/video/${videoId}`,
-    // `http://192.168.1.9:5000/video/${videoId}`,
+    // `http://192.168.250.41:5000/video/${videoId}`,
     (player) => {
       player.loop = true;
       player.play();

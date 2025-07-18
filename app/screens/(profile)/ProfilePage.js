@@ -26,8 +26,7 @@ import UploadPopUp from "@/app/mechanicApp/UploadPopUp";
 import useApi from "@/app/hooks/useApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import PostViewerModal from "@/app/mechanicApp/PostViewerModal";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { FontAwesome } from "@expo/vector-icons";
+// import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Mobile from "../(auth)/(SignIn)/Mobile";
 import { allCountries } from "country-telephone-data";
 import { TextInput } from "react-native-paper";
@@ -37,6 +36,7 @@ import { useNavigation } from "expo-router";
 import Toast from "react-native-toast-message";
 import QrScan from "@/app/mechanicApp/QrScan";
 // import { useSocketContext } from "./context/SocketContext";
+import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 
@@ -92,11 +92,13 @@ const ProfilePage = ({}) => {
         },
         token
       );
-      const updated = userProfile;
-      updated.username = response.data.userProfile.username;
-      updated.email = response.data.userProfile.email;
-      setPhoneNumber(response.data.userProfile.mobile.number);
-      setSelectedCode(response.data.userProfile.mobile.countryCode);
+      if (response.status === 200) {
+        const updated = userProfile;
+        updated.username = response.data.userProfile.username;
+        updated.email = response.data.userProfile.email;
+        setPhoneNumber(response.data.userProfile.mobile.number);
+        setSelectedCode(response.data.userProfile.mobile.countryCode);
+      }
     } catch (error) {
       console.error(error.message, "error");
     }
@@ -255,9 +257,9 @@ const ProfilePage = ({}) => {
         }
 
         // CASE 1: Visiting another mechanic's profile
+        console.log("run");
         if (page === "uservisit" && id) {
           const selectedMechanic = mechanics.find((mech) => mech._id === id);
-
           if (selectedMechanic) {
             setUserProfile(selectedMechanic);
             setPhoneNumber(selectedMechanic.contact?.number || "");
@@ -273,6 +275,7 @@ const ProfilePage = ({}) => {
         const response = await getJsonApi("profile", storedToken);
 
         const data = response.data;
+        console.log("data", data);
 
         setUserProfile(data);
         setPhoneNumber(data.mobile?.number || "");
@@ -487,8 +490,8 @@ const ProfilePage = ({}) => {
           <View className="w-full mt-24 flex items-center justify-center p-4 gap-2">
             {/* Name */}
             <Text className="text-lg font-bold">
-              {userProfile?.username.charAt(0).toUpperCase() +
-                userProfile?.username.slice(1)}
+              {userProfile?.username?.charAt(0).toUpperCase() +
+                userProfile?.username?.slice(1)}
             </Text>
 
             {/* Bio */}
@@ -507,6 +510,7 @@ const ProfilePage = ({}) => {
             )}
           </View>
 
+          {/* userDetails */}
           {page === "uservisit" && (
             <View className="flex-row justify-between items-center px-4 mt-2">
               <TouchableOpacity
@@ -523,7 +527,7 @@ const ProfilePage = ({}) => {
                     activeaTab === "posts" ? "text-white" : "text-black"
                   }`}
                 >
-                  Posts
+                  <Feather name="grid" size={24} />
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -540,63 +544,92 @@ const ProfilePage = ({}) => {
                     activeaTab === "userDetails" ? "text-white" : "text-black"
                   }`}
                 >
-                  UserDetails
+                  <Feather name="user" size={24} />
                 </Text>
               </TouchableOpacity>
             </View>
           )}
-
-          {/* Buttons */}
-
+          {/* Buttons mechanic bio */}
           <View>
-            {activeaTab === "posts" ? (
-              <View>
-                {(page !== "uservisit" && userProfile?.role !== "mechanic") ||
-                  (page !== "uservisit" && (
-                    <View className="flex-row justify-between items-center px-4 mt-2">
-                      <TouchableOpacity
-                        onPress={() => setEditModal(true)}
-                        className="flex-1 mr-1 py-2 bg-gray-200 rounded"
-                      >
-                        <Text className="text-center font-medium text-sm">
-                          Edit Profile
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={async () => {
-                          const result = await pickMedia();
-                          if (
-                            !result.canceled &&
-                            result.assets &&
-                            result.assets.length > 0
-                          )
-                            setFileUpload(true);
-                        }}
-                        className="flex-1 p-2 bg-gray-200 rounded"
-                      >
-                        <Text className="text-center font-semibold">
-                          Create Post
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                {/* Posts Grid */}
+            {/* Always show the top action buttons */}
+            {(page !== "uservisit" && userProfile?.role !== "mechanic") ||
+              (page !== "uservisit" && (
+                <View className="flex-row justify-between items-center px-4 mt-2">
+                  <TouchableOpacity
+                    onPress={async () => {
+                      const result = await pickMedia();
+                      if (!result.canceled && result.assets?.length > 0) {
+                        setFileUpload(true);
+                      }
+                    }}
+                    className="flex-1 mr-1 p-2 bg-gray-200 rounded"
+                  >
+                    <Text className="text-center font-semibold">
+                      <Feather name="plus-square" size={24} />
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    className={`flex-1 mr-1 py-2 rounded ${
+                      activeaTab === "posts" ? "bg-gray-500" : "bg-gray-200"
+                    }`}
+                    onPress={() => {
+                      setActiveTab("posts");
+                      setPostIndex(null);
+                    }}
+                  >
+                    <Text
+                      className={`text-center font-medium text-sm ${
+                        activeaTab === "posts" ? "text-white" : "text-black"
+                      }`}
+                    >
+                      <Feather name="grid" size={24} />
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    className={`flex-1 mr-1 py-2 rounded ${
+                      activeaTab === "userDetails"
+                        ? "bg-gray-500"
+                        : "bg-gray-200"
+                    }`}
+                    onPress={() => {
+                      setActiveTab("userDetails");
+                      setPostIndex(null);
+                    }}
+                  >
+                    <Text
+                      className={`text-center font-medium text-sm ${
+                        activeaTab === "userDetails"
+                          ? "text-white"
+                          : "text-black"
+                      }`}
+                    >
+                      <Feather name="user" size={24} />
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setEditModal(true)}
+                    className="flex-1 mr-1 py-2 bg-gray-200 rounded"
+                  >
+                    <Text className="text-center font-medium text-sm">
+                      <Feather name="edit-2" size={24} />
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
 
+            {/* Main content area: switch between PostGrid and QrScan */}
+            <View className="mt-5">
+              {activeaTab === "posts" ? (
                 <PostGrid
                   userProfile={userProfile}
                   posts={posts}
-                  onPostPress={(index) => {
-                    setActivePostIndex(index);
-                  }}
+                  onPostPress={(index) => setActivePostIndex(index)}
                   width={width}
-                  // loading={isLoading}
                 />
-              </View>
-            ) : (
-              <View className="mt-10">
-                <QrScan userProfile={userProfile} />
-              </View>
-            )}
+              ) : (
+                <QrScan userProfile={userProfile} page={page}/>
+              )}
+            </View>
           </View>
         </ScrollView>
         {/* edit modal */}

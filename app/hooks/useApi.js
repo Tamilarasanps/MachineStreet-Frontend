@@ -4,14 +4,13 @@ import { router } from "expo-router";
 
 const useApi = () => {
   const API_URL = "https://api.machinestreets.com";
-  // const API_URL = "http://192.168.1.7:5000";
+  // const API_URL = "http://192.168.250.41:5000";
 
   const handleRequest = async (request, path, token) => {
     try {
       const response = await request();
       console.log("response :", response);
-      const successMessage =
-        response?.data?.message || response?.data || "Request successful";
+      const successMessage = response?.data?.message;
 
       if (typeof successMessage === "string") {
         Toast.show({
@@ -51,7 +50,17 @@ const useApi = () => {
         } else if (status === 403) {
           message = "Access denied.";
         } else if (status === 404) {
-          message = "Resource not found.";
+          // Delay the message for 3 seconds
+          setTimeout(() => {
+            Toast.show({
+              type: "error",
+              text1: "Error",
+              text2: "Resource not found.",
+              position: "top",
+              visibilityTime: 2000,
+            });
+          }, 3000);
+          return;
         } else if (status === 500) {
           message = "Server error. Try again later.";
         }

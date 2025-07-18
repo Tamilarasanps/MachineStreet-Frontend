@@ -7,6 +7,7 @@ import {
   Text,
   Image,
   Dimensions,
+  ActivityIndicator,
   ScrollView, // Import ScrollView
 } from "react-native";
 import { BlurView } from "expo-blur";
@@ -101,53 +102,59 @@ const ReviewModal = ({
             <Text style={styles.closeText}>✕</Text>
           </Pressable>
 
-          {/* Comments Area (scrollable) */}
-
-          <ScrollView style={styles.reviewsContainer}>
-            {reviews && reviews.length > 0 ? (
-              [...reviews].reverse().map((item) => (
-                <View key={item._id} className="mb-6">
-                  <View style={styles.userRow}>
-                    <Image
-                      source={{
-                        uri: `data:image/jpeg;base64,${item.user.profileImage}`,
-                      }}
-                      style={styles.profileImage}
-                    />
-                    <View className="flex flex-row items-center gap-4">
-                      <Text style={styles.username}>{item.user.username}</Text>
-                      <Text
-                        style={{
-                          alignSelf: "center",
-                          color: "#888",
-                          fontSize: 12,
-                          marginTop: 2,
-                        }}
-                      >
-                        {formatTime(item.createdAt)}
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={styles.starsRow}>
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Text
-                        key={i}
-                        style={
-                          i < item.stars ? styles.filledStar : styles.emptyStar
-                        }
-                      >
-                        ★
-                      </Text>
-                    ))}
-                  </View>
-
-                  <Text style={styles.reviewText}>{item.reviewText}</Text>
-                </View>
-              ))
+          <View className="flex-1">
+            {reviews === null || reviews === undefined ? (
+              <View className="flex-1 mt-8 justify-center items-center">
+                <ActivityIndicator size="large" color="blue" />
+              </View>
             ) : (
-              <Text style={styles.commentsText}>No reviews yet.</Text>
+              <ScrollView style={styles.reviewsContainer}>
+                {reviews.length > 0 &&
+                  [...reviews].reverse().map((item) => (
+                    <View key={item._id} className="mb-6">
+                      <View style={styles.userRow}>
+                        <Image
+                          source={{
+                            uri: `data:image/jpeg;base64,${item.user.profileImage}`,
+                          }}
+                          style={styles.profileImage}
+                        />
+                        <View className="flex flex-row items-center gap-4">
+                          <Text style={styles.username}>
+                            {item.user.username}
+                          </Text>
+                          <Text
+                            style={{
+                              alignSelf: "center",
+                              color: "#888",
+                              fontSize: 12,
+                              marginTop: 2,
+                            }}
+                          >
+                            {formatTime(item.createdAt)}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={styles.starsRow}>
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Text
+                            key={i}
+                            style={
+                              i < item.stars
+                                ? styles.filledStar
+                                : styles.emptyStar
+                            }
+                          >
+                            ★
+                          </Text>
+                        ))}
+                      </View>
+                      <Text style={styles.reviewText}>{item.reviewText}</Text>
+                    </View>
+                  ))}
+              </ScrollView>
             )}
-          </ScrollView>
+          </View>
 
           {/* Comment Input */}
           <Pressable

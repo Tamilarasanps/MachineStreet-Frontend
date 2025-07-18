@@ -353,12 +353,14 @@ const Login = () => {
           setViewMode("main");
         }}
       >
+        <Toast />
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
           enabled
         >
           <View className="flex-1 justify-center items-center bg-black/50 px-4">
+          <Toast/>
             {viewMode !== "reset" && (
               <View className="bg-white w-full max-w-md p-6 rounded-2xl shadow-2xl border border-gray-200">
                 <Text className="text-2xl font-bold mb-2 text-center text-TealGreen">

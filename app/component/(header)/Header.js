@@ -6,6 +6,7 @@ import {
   Pressable,
   useWindowDimensions,
   Platform,
+  Image,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
@@ -14,9 +15,13 @@ import useApi from "@/app/hooks/useApi";
 import Icon from "react-native-vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 
 export default function Header({
+  mechanics,
   page,
+  pagecheck,
+  mech,
   setMechanicSearchResults,
   searchBar,
   setSearchBar,
@@ -26,10 +31,28 @@ export default function Header({
   const isDesktop = width > 1024;
   // const [searchBar, setSearchBar] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [profileImage, setProfileImage] = useState("");
+  console.log("profileImage", profileImage);
   const [showResults, setShowResults] = useState(false);
   const searchRef = useRef(null);
   const { getJsonApi } = useApi();
   const navigation = useNavigation();
+
+  console.log("header");
+
+  useEffect(() => {
+    const checkData = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem("userToken");
+        const response = await getJsonApi("profile", storedToken);
+        setProfileImage(response.data);
+        console.log("response header", response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    checkData();
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -42,7 +65,7 @@ export default function Header({
       const data = await getJsonApi(
         `searchResult/search?searchTerms=${searchBar}&page=${page}`
       );
-      // console.log(data);
+      console.log("data from header", data);
 
       if (page === "mechanic" && data.status === 200) {
         // console.log("reached mmm");
@@ -53,7 +76,7 @@ export default function Header({
         setSearchResults(data.data.users || []);
       }
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     }
   };
 
@@ -119,15 +142,62 @@ export default function Header({
             </Pressable>
           </Link>
         </View>
-        <Pressable
-          onPress={() => {
-            Platform.OS === "web"
-              ? router.push("/screens/ProfilePage")
-              : navigation.navigate("Profile");
+        {/* {mechanicProfileImg && mechanicProfileImg.length > 0 && (
+          <View>
+            <Image
+              source={{
+                uri: `data:image/jpeg;base64,${mechanicProfileImg[0].profileImage}`,
+              }}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                backgroundColor: "white",
+              }}
+            />
+          </View>
+        )} */}
+        {/* <Image
+          source={{
+            uri: `data:image/jpeg;base64,${data.user?.profileImage}`,
           }}
-        >
-          <MaterialIcons name="account-circle" size={40} color="white" />
-        </Pressable>
+        /> */}
+
+        {profileImage.profileImage ? (
+          <Pressable
+            onPress={() => {
+              Platform.OS === "web"
+                ? router.push("/screens/ProfilePage")
+                : navigation.navigate("Profile");
+            }}
+            className="ml-2"
+          >
+            <Image
+              source={{
+                uri: `data:image/jpeg;base64,${profileImage.profileImage}`,
+              }}
+              style={{
+                width: isDesktop ? 50 : 40,
+                height: isDesktop ? 50 : 40, 
+                borderRadius: 30,
+                backgroundColor: "white",
+              }}
+            />
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={() => {
+              Platform.OS === "web"
+                ? router.push("/screens/ProfilePage")
+                : navigation.navigate("Profile");
+            }}
+          >
+            <MaterialIcons name="account-circle" size={40} color="white" />
+          </Pressable>
+        )}
+
+        <View></View>
+
         {/* <Pressable
           onPress={() => {
             if (Platform.OS === "web") {

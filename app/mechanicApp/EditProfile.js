@@ -65,10 +65,12 @@ const EditProfile = ({
   } = useSubCategoryHandlers(subCategories, setSubCategories);
 
   useEffect(() => {
+    console.log("plplll");
     fetchIndustries();
   }, []);
 
   async function fetchIndustries() {
+    console.log("triggered indus");
     try {
       const data = await getJsonApi(`CategoryPage`);
       if (data.status === 200)
@@ -79,6 +81,8 @@ const EditProfile = ({
   }
 
   const getCategory = async () => {
+    console.log("triggered cat");
+
     try {
       if (mechanicDetails.industry?.length > 0) {
         const data = await getJsonApi(
@@ -93,6 +97,8 @@ const EditProfile = ({
   };
 
   const getSubCategory = async (index) => {
+    console.log("triggered sub");
+
     try {
       if (mechanicDetails.subcategory[index]?.name.length > 0) {
         const data = await getJsonApi(
@@ -114,6 +120,7 @@ const EditProfile = ({
   // console.log('location :', location)
   // console.log('phoneNumber :', phoneNumber)
   // console.log('count :', selectedCode)
+
   const handleSubmit = async () => {
     if (
       !mechanicDetails.organization ||
@@ -135,20 +142,8 @@ const EditProfile = ({
       return; // stop further execution
     }
 
-    // Update mechanicDetails with location and contact
-    const updatedDetails = {
-      ...mechanicDetails,
-      location: JSON.stringify(location),
-      contact: {
-        number: phoneNumber,
-        countryCode: selectedCode,
-      },
-      subCategories: subCategories,
-    };
-
-    setMechanicDetails(updatedDetails);
     setModalVisible(false);
-    if(page!=="profile"){
+    if (page !== "profile") {
       setStep(1);
     }
 
@@ -157,17 +152,29 @@ const EditProfile = ({
         const token = await AsyncStorage.getItem("userToken");
         const result = await pathchApi(
           "mechanicList/editprofile",
-          updatedDetails,
+          {
+            organization: mechanicDetails.organization,
+            industry: mechanicDetails.industry,
+            services: mechanicDetails.services,
+            subCategories: subCategories,
+            location: location, // pass directly, don't stringify — let backend handle it
+            contact: {
+              number: phoneNumber,
+              countryCode: selectedCode,
+            },
+          },
           token
         );
-        console.log("Profile updated:", result);
-        Toast.show({
-          type: "success",
-          text1: "Profile updated!",
-          position: "top",
-          visibilityTime: 2000,
-          animation: "slide",
-        });
+        if (result.status === 200) {
+          console.log("Profile updated:", result);
+          Toast.show({
+            type: "success",
+            text1: "Profile updated!",
+            position: "top",
+            visibilityTime: 2000,
+            animation: "slide",
+          });
+        }
       } catch (err) {
         // console.error("Edit profile error:", err);
         Toast.show({
@@ -240,7 +247,6 @@ const EditProfile = ({
             className="h-screen mb-10"
           >
             {/* <Toast /> */}
-            
 
             <Text className="text-lg font-bold mb-3 text-gray-800">
               Professional Information

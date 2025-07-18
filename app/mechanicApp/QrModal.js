@@ -33,6 +33,8 @@ const QrModal = ({ visible, onClose }) => {
 
     fetchRole();
   }, []);
+
+  
   
 
   return (

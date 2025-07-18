@@ -64,6 +64,7 @@ const MechanicList_2 = () => {
   const [mechanicSearchResults, setMechanicSearchResults] = useState([]);
 
   const [searchBar, setSearchBar] = useState("");
+  console.log("searchBar", searchBar);
   const [authUser] = useContext(AuthContext);
   const [expandedMechanicId, setExpandedMechanicId] = useState(null);
   const [viewMoreModalVisible, setViewMoreModalVisible] = useState(false);
@@ -83,7 +84,7 @@ const MechanicList_2 = () => {
   // console.log("storeToken :", storeToken);
   const [reviewPopUp, setReviewPopup] = useState(false);
   const [reviewModal, setReviewModal] = useState(false);
-  const [reviews, setReviews] = useState([]); // Modal visibility state
+  const [reviews, setReviews] = useState(); // Modal visibility state
   const [rating, setRating] = useState(0); // Rating state
   const [reviewText, setReviewText] = useState(""); // Review text state
   const [selectedMech, setSelectedMech] = useState(null);
@@ -224,8 +225,6 @@ const MechanicList_2 = () => {
     );
   });
 
-
-
   const handleProfileNavigation = async (id) => {
     const token = await AsyncStorage.getItem("userToken");
 
@@ -253,6 +252,7 @@ const MechanicList_2 = () => {
         searchBar={searchBar}
         setSearchBar={setSearchBar}
         page="mechanic"
+        mechanics={mechanics}
       />
       {width <= 1024 && (
         <Pressable onPress={() => setIsOpen(true)} className="mt-4 ml-3">
@@ -891,7 +891,10 @@ const MechanicList_2 = () => {
                   rating={rating}
                   reviewText={reviewText}
                   reviews={reviews}
-                  onClose={() => setReviewModal(false)}
+                  onClose={() => {
+                    setReviewModal(false);
+                    setReviews();
+                  }}
                   setMechanics={setMechanics}
                   selectedMech={selectedMech}
                   setReviews={setReviews}
