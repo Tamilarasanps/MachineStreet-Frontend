@@ -116,10 +116,7 @@ const EditProfile = ({
   const handleChange = (key, value) => {
     setMechanicDetails((prev) => ({ ...prev, [key]: value }));
   };
-  // console.log('mechanicDetails :', mechanicDetails)
-  // console.log('location :', location)
-  // console.log('phoneNumber :', phoneNumber)
-  // console.log('count :', selectedCode)
+
 
   const handleSubmit = async () => {
     if (
@@ -155,7 +152,7 @@ const EditProfile = ({
       }));
       setStep(1);
     }
-    
+
     if (page === "profile") {
       try {
         const token = await AsyncStorage.getItem("userToken");
