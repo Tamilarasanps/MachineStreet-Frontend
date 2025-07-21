@@ -50,7 +50,7 @@ const SignUp = () => {
   const [mechanicDetails, setMechanicDetails] = useState({
     organization: "",
     industry: "",
-    services: [],
+    services: [''],
     subcategory: subCategories,
     contact: {
       number: "",

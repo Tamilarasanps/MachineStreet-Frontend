@@ -65,7 +65,7 @@ const EditProfile = ({
   } = useSubCategoryHandlers(subCategories, setSubCategories);
 
   useEffect(() => {
-    console.log("plplll");
+
     fetchIndustries();
   }, []);
 
@@ -144,9 +144,18 @@ const EditProfile = ({
 
     setModalVisible(false);
     if (page !== "profile") {
+      setMechanicDetails((prev) => ({
+        ...mechanicDetails,
+        subcategory: subCategories,
+        location: JSON.stringify(location), // ✅ stringify here
+        contact: {
+          number: phoneNumber,
+          countryCode: selectedCode,
+        }
+      }));
       setStep(1);
     }
-
+    
     if (page === "profile") {
       try {
         const token = await AsyncStorage.getItem("userToken");

@@ -8,7 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const useApi = () => {
   const API_URL = "https://api.machinestreets.com";
-  // const API_URL = "http://10.32.48.158:5000";
+  // const API_URL = "http://192.168.1.8:5000";
 
   const navigation = useNavigation();
 
