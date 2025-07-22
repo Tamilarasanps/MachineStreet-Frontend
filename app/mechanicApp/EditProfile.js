@@ -48,6 +48,7 @@ const EditProfile = ({
   const [selectedCode, setSelectedCode] = useState(
     mechanicDetails?.contact?.countryCode
   );
+  console.log('meh :', mechanicDetails)
   const [location, setLocation] = useState({
     coords: "",
     country: mechanicDetails?.country || "India",
@@ -418,7 +419,7 @@ const EditProfile = ({
             </View>
             {
               <View className="z-40">
-                <Location location={location} setLocation={setLocation} />
+                <Location location={location} setLocation={setLocation} page={page}/>
               </View>
             }
 

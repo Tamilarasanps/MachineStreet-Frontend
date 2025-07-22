@@ -88,17 +88,25 @@ const useApi = () => {
       token
     );
 
-  const POSTAPI = async (path, data, token, onUploadProgress) =>
-    await handleRequest(
+  const POSTAPI = async (path, data, token, onUploadProgress) => {
+    const isFormData = data instanceof FormData;
+
+    return await handleRequest(
       () =>
         axios.post(`${API_URL}/${path}`, data, {
-          headers: jsonHeader(token),
+          headers: {
+            ...(isFormData
+              ? { Authorization: `Bearer ${token}` } // ✅ Don't set Content-Type
+              : jsonHeader(token)), // ✅ Use JSON header for non-FormData
+          },
           timeout: 5 * 60 * 1000,
           onUploadProgress,
         }),
       path,
       token
     );
+  };
+
 
   const PATCHAPI = async (path, data, token) =>
     await handleRequest(

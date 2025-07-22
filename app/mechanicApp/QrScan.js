@@ -79,8 +79,7 @@ const QrScan = ({ userProfile, page }) => {
                 color="white"
                 className=""
               />{" "}
-              {userProfile?.district.charAt(0).toUpperCase() +
-                userProfile?.district.slice(1)}{" "}
+              {userProfile?.district || userProfile?.region || userProfile?.country.charAt(0).toUpperCase() + userProfile?.district.slice(1)}{" "} 
             </Text>
 
             <Text className="text-xl text-white font-bold ml-2 ">

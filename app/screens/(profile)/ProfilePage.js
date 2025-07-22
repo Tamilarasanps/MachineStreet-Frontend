@@ -302,6 +302,7 @@ const ProfilePage = ({}) => {
 
       // Append image files to formdata
       result.assets.forEach((asset) => {
+        console.log('asset :', asset)
         if (Platform.OS === "web") {
           formdata.append("images", asset.file);
         } else {

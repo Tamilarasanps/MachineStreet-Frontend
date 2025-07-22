@@ -5,7 +5,7 @@ import Checkbox from "expo-checkbox";
 import useApi from "@/app/hooks/useApi";
 import DropDownPicker from "react-native-dropdown-picker";
 
-const Location = ({ location, setLocation }) => {
+const Location = ({ location, setLocation, page }) => {
   const [india, setIndia] = useState(false);
   const [regions, setRegions] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -22,6 +22,8 @@ const Location = ({ location, setLocation }) => {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
 
+
+
   const inputFields = [
     { key: "country", label: "Country" },
     { key: "region", label: "Region" },
@@ -30,45 +32,86 @@ const Location = ({ location, setLocation }) => {
   const fetchIndustries = useCallback(async () => {
     try {
       const data = await getJsonApi("CategoryPage");
-
-      const fetchedRegions = data?.data?.states[0]?.states || [];
+  
+      // Fetching all regions and districts
+      const fetchedRegions = (data?.data?.states[0]?.states || []).sort((a, b) =>
+        a.localeCompare(b)
+      );
       const fetchedDistricts = data?.data?.states[1]?.districts || [];
-
+  
       setRegions(fetchedRegions);
       setDistrictsWithStates(fetchedDistricts);
-
-      if (!address?.state || !address?.country) return;
-
+  
+      // Normalize helper to compare strings ignoring case and internal spaces
+      const normalize = (str) => str?.toLowerCase().replace(/\s+/g, "");
+  
+      // 🟨 CASE: Foreign User in Profile Page
+      if (
+        page === "profile" &&
+        location?.country &&
+        normalize(location.country) !== "india"
+      ) {
+        console.log("Non-Indian profile user detected");
+  
+        setIndia(true); // Checkbox becomes true
+        setSelectedCountry(location.country);
+        setSelectedRegion(location.region); // Free-text input
+        return;
+      }
+  
+      // 🟩 CASE: Auto-select State & District for Signup/Profile (India)
+      let temp = null;
+      if (page === "signup" && address?.region) {
+        temp = address;
+      } else if (page === "profile" && location?.region) {
+        temp = location;
+      }
+  
+      if (!temp) return;
+  
+      console.log("Temp address/location:", temp);
+  
+      // ✅ Match Region
       const matchedRegion = fetchedRegions.find(
-        (r) => r.toLowerCase().trim() === address.state.toLowerCase().trim()
+        (r) => normalize(r) === normalize(temp.region)
       );
-
+  
+      console.log("Matched Region:", matchedRegion);
+  
+      // ✅ Match Districts under matched region
       const matchedDistricts = fetchedDistricts
         .filter(
           (state) =>
-            Object.keys(state)[0].toLowerCase().trim() ===
-            address.state.toLowerCase().trim()
+            normalize(Object.keys(state)[0]) === normalize(temp.region)
         )
-        .flatMap((state) => Object.values(state)[0]);
-
-      const matchedDistrict = matchedDistricts?.includes(address.district)
-        ? address.district
+        .flatMap((state) => Object.values(state)[0])
+        .sort((a, b) => a.localeCompare(b));
+  
+      const matchedDistrict = matchedDistricts.includes(temp.district)
+        ? temp.district
         : "";
-
+  
+      // ✅ Set States
       if (matchedRegion) {
-        setLocation({
-          coords: geoCoords || "",
-          country: address.country || "",
+        setSelectedRegion(matchedRegion);
+        setSelectedDistrict(matchedDistrict);
+        setDistricts(matchedDistricts);
+  
+        setLocation((prev) => ({
+          ...prev,
           region: matchedRegion,
-          district: matchedDistrict || "",
-        });
-
-        setDistricts(matchedDistricts || []);
+          district: matchedDistrict,
+          country: temp.country || "India",
+          coords: geoCoords || "",
+        }));
       }
     } catch (error) {
       console.error("Error fetching industries:", error);
     }
-  }, [address, geoCoords]); // memoized on deps
+  }, [page, address, location, geoCoords]);
+  
+
+
 
   useEffect(() => {
     const hasLocationPermission =
@@ -82,33 +125,10 @@ const Location = ({ location, setLocation }) => {
   }, [geoCoords, address]);
 
   useEffect(() => {
-    if (location.region && districtsWithStates.length > 0) {
-      const matchedDistricts =
-        districtsWithStates
-          .filter(
-            (state) =>
-              Object.keys(state)[0].toLowerCase().trim() ===
-              location.region.toLowerCase().trim()
-          )
-          .flatMap((state) => Object.values(state)[0]) || [];
-
-      setDistricts(matchedDistricts);
-    }
-    if (location.region) {
-      setSelectedRegion(location.region);
-    }
-  }, [location.region, districtsWithStates]);
-
-  useEffect(() => {
-    if (location.district) {
-      setSelectedDistrict(location.district);
-    }
-  }, [location.district, districtsWithStates]);
-
-  useEffect(() => {
     fetchIndustries();
   }, []);
-
+  console.log(india)
+  console.log('india :', selectedRegion)
   return (
     <View className="relative mt-10">
       {/* Checkbox */}
@@ -164,7 +184,7 @@ const Location = ({ location, setLocation }) => {
                   district: "",
                 }));
               }}
-              setItems={() => {}}
+              setItems={() => { }}
               placeholder="Select State"
               listMode="SCROLLVIEW"
               autoScroll={true}
@@ -209,7 +229,7 @@ const Location = ({ location, setLocation }) => {
                   district: newValue,
                 }));
               }}
-              setItems={() => {}}
+              setItems={() => { }}
               placeholder="Select District"
               disabled={!location.region}
               listMode="SCROLLVIEW"
@@ -241,7 +261,7 @@ const Location = ({ location, setLocation }) => {
               items={[{ label: "India", value: "India" }]}
               setOpen={setOpenCountry}
               setValue={setSelectedCountry}
-              setItems={() => {}}
+              setItems={() => { }}
               placeholder="Select Country"
               disabled={true}
               listMode="SCROLLVIEW"
