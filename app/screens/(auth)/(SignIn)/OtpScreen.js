@@ -55,6 +55,8 @@ const OtpScreen = ({ mailOrphone, otp, setOtp, formSubmit, setStep }) => {
     }
   };
 
+
+  // return
   return (
     <View
       className={`${
