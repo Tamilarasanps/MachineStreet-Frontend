@@ -12,6 +12,8 @@ const useApi = () => {
 
   const navigation = useNavigation();
 
+  // changes
+
   const handleRequest = async (request, path, token) => {
     try {
       const response = await request();
