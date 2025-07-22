@@ -1,18 +1,11 @@
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { router } from "expo-router";
-import { Platform } from "react-native";
 
-import { useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const useApi = () => {
   const API_URL = "https://api.machinestreets.com";
   // const API_URL = "http://192.168.1.8:5000";
-
-  const navigation = useNavigation();
-
-  // changes
 
   const handleRequest = async (request, path, token) => {
     try {
@@ -108,7 +101,6 @@ const useApi = () => {
       token
     );
   };
-
 
   const PATCHAPI = async (path, data, token) =>
     await handleRequest(
