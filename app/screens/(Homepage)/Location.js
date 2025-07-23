@@ -22,7 +22,7 @@ const Location = ({ location, setLocation, page }) => {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
 
-
+  console.log('district :', districts)
 
   const inputFields = [
     { key: "country", label: "Country" },
@@ -32,19 +32,19 @@ const Location = ({ location, setLocation, page }) => {
   const fetchIndustries = useCallback(async () => {
     try {
       const data = await getJsonApi("CategoryPage");
-  
+
       // Fetching all regions and districts
       const fetchedRegions = (data?.data?.states[0]?.states || []).sort((a, b) =>
         a.localeCompare(b)
       );
       const fetchedDistricts = data?.data?.states[1]?.districts || [];
-  
+
       setRegions(fetchedRegions);
       setDistrictsWithStates(fetchedDistricts);
-  
+
       // Normalize helper to compare strings ignoring case and internal spaces
       const normalize = (str) => str?.toLowerCase().replace(/\s+/g, "");
-  
+
       // 🟨 CASE: Foreign User in Profile Page
       if (
         page === "profile" &&
@@ -52,13 +52,13 @@ const Location = ({ location, setLocation, page }) => {
         normalize(location.country) !== "india"
       ) {
         console.log("Non-Indian profile user detected");
-  
+
         setIndia(true); // Checkbox becomes true
         setSelectedCountry(location.country);
         setSelectedRegion(location.region); // Free-text input
         return;
       }
-  
+
       // 🟩 CASE: Auto-select State & District for Signup/Profile (India)
       let temp = null;
       if (page === "signup" && address?.region) {
@@ -66,18 +66,15 @@ const Location = ({ location, setLocation, page }) => {
       } else if (page === "profile" && location?.region) {
         temp = location;
       }
-  
+
       if (!temp) return;
-  
-      console.log("Temp address/location:", temp);
-  
+
       // ✅ Match Region
       const matchedRegion = fetchedRegions.find(
         (r) => normalize(r) === normalize(temp.region)
       );
-  
-      console.log("Matched Region:", matchedRegion);
-  
+
+
       // ✅ Match Districts under matched region
       const matchedDistricts = fetchedDistricts
         .filter(
@@ -86,17 +83,17 @@ const Location = ({ location, setLocation, page }) => {
         )
         .flatMap((state) => Object.values(state)[0])
         .sort((a, b) => a.localeCompare(b));
-  
+
       const matchedDistrict = matchedDistricts.includes(temp.district)
         ? temp.district
         : "";
-  
+
       // ✅ Set States
       if (matchedRegion) {
         setSelectedRegion(matchedRegion);
         setSelectedDistrict(matchedDistrict);
         setDistricts(matchedDistricts);
-  
+
         setLocation((prev) => ({
           ...prev,
           region: matchedRegion,
@@ -109,7 +106,7 @@ const Location = ({ location, setLocation, page }) => {
       console.error("Error fetching industries:", error);
     }
   }, [page, address, location, geoCoords]);
-  
+
 
 
 
@@ -127,8 +124,23 @@ const Location = ({ location, setLocation, page }) => {
   useEffect(() => {
     fetchIndustries();
   }, []);
-  console.log(india)
-  console.log('india :', selectedRegion)
+
+  useEffect(() => {
+    if (!selectedRegion) return;
+
+    const normalize = (str) => str?.toLowerCase().replace(/\s+/g, "");
+
+    const matchedDistricts = districtsWithStates
+      .filter(
+        (state) =>
+          normalize(Object.keys(state)[0]) === normalize(selectedRegion)
+      )
+      .flatMap((state) => Object.values(state)[0])
+      .sort((a, b) => a.localeCompare(b));
+
+    setDistricts(matchedDistricts);
+  }, [selectedRegion, districtsWithStates]);
+
   return (
     <View className="relative mt-10">
       {/* Checkbox */}
