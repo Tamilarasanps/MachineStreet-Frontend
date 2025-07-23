@@ -9,8 +9,10 @@ const Location = ({ location, setLocation, page }) => {
   const [india, setIndia] = useState(false);
   const [regions, setRegions] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [countries] = useState(["India"]);
+  // const [countries] = useState(["India"]);
   const [districtsWithStates, setDistrictsWithStates] = useState([]);
+
+  const [hasFetchedIndustries, setHasFetchedIndustries] = useState(false);
 
   const { getJsonApi } = useApi();
   const { geoCoords, address } = useGeoLocation();
@@ -22,18 +24,17 @@ const Location = ({ location, setLocation, page }) => {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
 
-  console.log('district :', districts)
-
   const inputFields = [
     { key: "country", label: "Country" },
     { key: "region", label: "Region" },
   ];
 
   const fetchIndustries = useCallback(async () => {
+    if (hasFetchedIndustries) return;
+
     try {
       const data = await getJsonApi("CategoryPage");
 
-      // Fetching all regions and districts
       const fetchedRegions = (data?.data?.states[0]?.states || []).sort((a, b) =>
         a.localeCompare(b)
       );
@@ -42,24 +43,21 @@ const Location = ({ location, setLocation, page }) => {
       setRegions(fetchedRegions);
       setDistrictsWithStates(fetchedDistricts);
 
-      // Normalize helper to compare strings ignoring case and internal spaces
       const normalize = (str) => str?.toLowerCase().replace(/\s+/g, "");
 
-      // 🟨 CASE: Foreign User in Profile Page
+      // Profile page with foreign user
       if (
         page === "profile" &&
         location?.country &&
         normalize(location.country) !== "india"
       ) {
-        console.log("Non-Indian profile user detected");
-
-        setIndia(true); // Checkbox becomes true
+        setIndia(true);
         setSelectedCountry(location.country);
-        setSelectedRegion(location.region); // Free-text input
+        setSelectedRegion(location.region);
+        setHasFetchedIndustries(true);
         return;
       }
 
-      // 🟩 CASE: Auto-select State & District for Signup/Profile (India)
       let temp = null;
       if (page === "signup" && address?.region) {
         temp = address;
@@ -69,13 +67,10 @@ const Location = ({ location, setLocation, page }) => {
 
       if (!temp) return;
 
-      // ✅ Match Region
       const matchedRegion = fetchedRegions.find(
         (r) => normalize(r) === normalize(temp.region)
       );
 
-
-      // ✅ Match Districts under matched region
       const matchedDistricts = fetchedDistricts
         .filter(
           (state) =>
@@ -88,7 +83,6 @@ const Location = ({ location, setLocation, page }) => {
         ? temp.district
         : "";
 
-      // ✅ Set States
       if (matchedRegion) {
         setSelectedRegion(matchedRegion);
         setSelectedDistrict(matchedDistrict);
@@ -102,13 +96,12 @@ const Location = ({ location, setLocation, page }) => {
           coords: geoCoords || "",
         }));
       }
+
+      setHasFetchedIndustries(true);
     } catch (error) {
       console.error("Error fetching industries:", error);
     }
-  }, [page, address, location, geoCoords]);
-
-
-
+  }, [page, address, location, geoCoords, hasFetchedIndustries, getJsonApi]);
 
   useEffect(() => {
     const hasLocationPermission =
@@ -116,14 +109,16 @@ const Location = ({ location, setLocation, page }) => {
       address?.state &&
       address?.country;
 
-    if (hasLocationPermission) {
+    if (hasLocationPermission && !hasFetchedIndustries) {
       fetchIndustries();
     }
-  }, [geoCoords, address]);
+  }, [geoCoords, address, fetchIndustries, hasFetchedIndustries]);
 
   useEffect(() => {
-    fetchIndustries();
-  }, []);
+    if (!hasFetchedIndustries) {
+      fetchIndustries();
+    }
+  }, [fetchIndustries, hasFetchedIndustries]);
 
   useEffect(() => {
     if (!selectedRegion) return;
@@ -140,7 +135,7 @@ const Location = ({ location, setLocation, page }) => {
 
     setDistricts(matchedDistricts);
   }, [selectedRegion, districtsWithStates]);
-
+ 
   return (
     <View className="relative mt-10">
       {/* Checkbox */}
@@ -149,17 +144,16 @@ const Location = ({ location, setLocation, page }) => {
           <Checkbox
             value={india}
             onValueChange={() => {
-              if (!india) {
-                setLocation({
-                  coords: geoCoords,
-                  country: "",
-                  region: "",
-                  district: "",
-                });
-              } else {
-                fetchIndustries();
-              }
-              setIndia(!india);
+              setLocation({
+                coords: geoCoords,
+                country: india ? "India" : "",
+                region: "",
+                district: "",
+              });
+              setSelectedDistrict("")
+              setSelectedRegion("")
+
+              setIndia(!india); // ✅ No fetchIndustries call here
             }}
             className="w-5 h-5 border-gray-400 cursor-pointer"
             color={india ? "#008080" : undefined}
@@ -172,9 +166,7 @@ const Location = ({ location, setLocation, page }) => {
         <>
           {/* State Dropdown */}
           <View style={{ zIndex: openState ? 2000 : 1000, marginBottom: 20 }}>
-            <Text className="text-lg font-semibold text-teal-600 mb-4">
-              State
-            </Text>
+            <Text className="text-lg font-semibold text-teal-600 mb-4">State</Text>
             <DropDownPicker
               open={openState}
               value={selectedRegion}
@@ -218,9 +210,7 @@ const Location = ({ location, setLocation, page }) => {
 
           {/* District Dropdown */}
           <View style={{ zIndex: openDistrict ? 2000 : 1000 }}>
-            <Text className="text-lg font-semibold text-teal-600 mb-4">
-              District
-            </Text>
+            <Text className="text-lg font-semibold text-teal-600 mb-4">District</Text>
             <DropDownPicker
               open={openDistrict}
               value={selectedDistrict}
@@ -263,13 +253,11 @@ const Location = ({ location, setLocation, page }) => {
           </View>
 
           {/* Country (Fixed as India) */}
-          <Text className="text-lg font-semibold text-teal-600 mt-6 mb-4">
-            Country:
-          </Text>
+          <Text className="text-lg font-semibold text-teal-600 mt-6 mb-4">Country:</Text>
           <View style={{ zIndex: openCountry ? 3000 : 1000, marginBottom: 20 }}>
             <DropDownPicker
               open={openCountry}
-              value={selectedCountry}
+              value={"India"}
               items={[{ label: "India", value: "India" }]}
               setOpen={setOpenCountry}
               setValue={setSelectedCountry}
@@ -302,7 +290,9 @@ const Location = ({ location, setLocation, page }) => {
               className="border border-gray-300 h-[50] rounded-lg w-full p-3 focus:border-teal-600 outline-teal-600"
               placeholder={`Enter your ${label}`}
               value={location[key]}
-              onChangeText={(text) => setLocation({ ...location, [key]: text })}
+              onChangeText={(text) =>
+                setLocation({ ...location, [key]: text })
+              }
             />
           </View>
         ))

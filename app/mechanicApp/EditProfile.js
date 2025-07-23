@@ -155,6 +155,7 @@ const EditProfile = ({
     }
 
     if (page === "profile") {
+      console.log('location :', location)
       try {
         const token = await AsyncStorage.getItem("userToken");
         const result = await pathchApi(
@@ -174,6 +175,12 @@ const EditProfile = ({
         );
         if (result.status === 200) {
           console.log("Profile updated:", result);
+          setMechanicDetails(prev => ({
+            ...result?.data?.result?.data,
+            profileImage: prev.profileImage,
+            banner: prev.banner
+          }));
+
           Toast.show({
             type: "success",
             text1: "Profile updated!",
@@ -419,7 +426,7 @@ const EditProfile = ({
             </View>
             {
               <View className="z-40">
-                <Location location={location} setLocation={setLocation} page={page}/>
+                <Location location={location} setLocation={setLocation} page={page} />
               </View>
             }
 
