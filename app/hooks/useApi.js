@@ -2,15 +2,15 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useCallback } from "react";
 
 const useApi = () => {
   const API_URL = "https://api.machinestreets.com";
   // const API_URL = "http://192.168.1.8:5000";
 
-  const handleRequest = async (request, path, token) => {
+  const handleRequest = useCallback(async (request, path, token) => {
     try {
       const response = await request();
-      console.log("response :", response);
       const successMessage =
         response?.data?.message || response?.data || "Request successful";
 
@@ -34,9 +34,7 @@ const useApi = () => {
       } else if (!err.response) {
         message = "Network Error";
       } else {
-        console.log("err?.response?.status :", err?.response?.status);
         const status = err?.status || err?.response?.status;
-        console.log("status :", status);
         const errorText = err.response?.data?.error || "";
 
         message =
@@ -47,9 +45,7 @@ const useApi = () => {
 
         if (status === 401) {
           message = "Unauthorized. Please login again.";
-          AsyncStorage.removeItem("userToken");
-          AsyncStorage.removeItem("role");
-          AsyncStorage.removeItem("userId");
+          await AsyncStorage.multiRemove(["userToken", "role", "userId"]);
         } else if (status === 403) {
           message = "Access denied.";
         } else if (status === 404) {
@@ -69,12 +65,12 @@ const useApi = () => {
 
       return null;
     }
-  };
+  }, []);
 
   const jsonHeader = (token) => ({
-    "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
   });
+  
 
   const GETAPI = async (path, token) =>
     await handleRequest(
@@ -82,25 +78,28 @@ const useApi = () => {
       path,
       token
     );
-
-  const POSTAPI = async (path, data, token, onUploadProgress) => {
-    const isFormData = data instanceof FormData;
-
-    return await handleRequest(
-      () =>
-        axios.post(`${API_URL}/${path}`, data, {
-          headers: {
-            ...(isFormData
-              ? { Authorization: `Bearer ${token}` } // ✅ Don't set Content-Type
-              : jsonHeader(token)), // ✅ Use JSON header for non-FormData
-          },
-          timeout: 5 * 60 * 1000,
-          onUploadProgress,
-        }),
-      path,
-      token
-    );
-  };
+    const POSTAPI = async (path, data, token, onUploadProgress) => {
+      const isFormData = data instanceof FormData;
+    
+      return await handleRequest(
+        () =>
+          axios.post(`${API_URL}/${path}`, data, {
+            headers: {
+              ...(isFormData
+                ? {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                  }
+                : jsonHeader(token)),
+            },
+            timeout: 5 * 60 * 1000,
+            onUploadProgress,
+          }),
+        path,
+        token
+      );
+    };
+    
 
   const PATCHAPI = async (path, data, token) =>
     await handleRequest(

@@ -32,13 +32,11 @@ export default function Header({
   // const [searchBar, setSearchBar] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [profileImage, setProfileImage] = useState("");
-  console.log("profileImage", profileImage);
   const [showResults, setShowResults] = useState(false);
   const searchRef = useRef(null);
   const { getJsonApi } = useApi();
   const navigation = useNavigation();
 
-  console.log("header");
 
   useEffect(() => {
     const checkData = async () => {
@@ -46,7 +44,6 @@ export default function Header({
         const storedToken = await AsyncStorage.getItem("userToken");
         const response = await getJsonApi("profile", storedToken);
         setProfileImage(response.data);
-        console.log("response header", response.data);
       } catch (err) {
         console.log(err);
       }
@@ -65,7 +62,6 @@ export default function Header({
       const data = await getJsonApi(
         `searchResult/search?searchTerms=${searchBar}&page=${page}`
       );
-      console.log("data from header", data);
 
       if (page === "mechanic" && data.status === 200) {
         // console.log("reached mmm");

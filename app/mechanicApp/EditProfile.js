@@ -48,7 +48,7 @@ const EditProfile = ({
   const [selectedCode, setSelectedCode] = useState(
     mechanicDetails?.contact?.countryCode
   );
-  console.log('meh :', mechanicDetails)
+
   const [location, setLocation] = useState({
     coords: "",
     country: mechanicDetails?.country || "India",
@@ -174,7 +174,6 @@ const EditProfile = ({
           token
         );
         if (result.status === 200) {
-          console.log("Profile updated:", result);
           setMechanicDetails(prev => ({
             ...result?.data?.result?.data,
             profileImage: prev.profileImage,
