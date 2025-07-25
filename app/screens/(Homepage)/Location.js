@@ -35,8 +35,8 @@ const Location = ({ location, setLocation, page }) => {
     try {
       const data = await getJsonApi("CategoryPage");
 
-      const fetchedRegions = (data?.data?.states[0]?.states || []).sort((a, b) =>
-        a.localeCompare(b)
+      const fetchedRegions = (data?.data?.states[0]?.states || []).sort(
+        (a, b) => a.localeCompare(b)
       );
       const fetchedDistricts = data?.data?.states[1]?.districts || [];
 
@@ -73,8 +73,7 @@ const Location = ({ location, setLocation, page }) => {
 
       const matchedDistricts = fetchedDistricts
         .filter(
-          (state) =>
-            normalize(Object.keys(state)[0]) === normalize(temp.region)
+          (state) => normalize(Object.keys(state)[0]) === normalize(temp.region)
         )
         .flatMap((state) => Object.values(state)[0])
         .sort((a, b) => a.localeCompare(b));
@@ -135,9 +134,9 @@ const Location = ({ location, setLocation, page }) => {
 
     setDistricts(matchedDistricts);
   }, [selectedRegion, districtsWithStates]);
- 
+
   return (
-    <View className="relative mt-10">
+    <View className="mt-10">
       {/* Checkbox */}
       <View className="flex flex-row items-center justify-end">
         <View className="flex flex-row items-center">
@@ -150,8 +149,8 @@ const Location = ({ location, setLocation, page }) => {
                 region: "",
                 district: "",
               });
-              setSelectedDistrict("")
-              setSelectedRegion("")
+              setSelectedDistrict("");
+              setSelectedRegion("");
 
               setIndia(!india); // ✅ No fetchIndustries call here
             }}
@@ -166,7 +165,9 @@ const Location = ({ location, setLocation, page }) => {
         <>
           {/* State Dropdown */}
           <View style={{ zIndex: openState ? 2000 : 1000, marginBottom: 20 }}>
-            <Text className="text-lg font-semibold text-teal-600 mb-4">State</Text>
+            <Text className="text-lg font-semibold text-teal-600 mb-4">
+              State
+            </Text>
             <DropDownPicker
               open={openState}
               value={selectedRegion}
@@ -188,7 +189,7 @@ const Location = ({ location, setLocation, page }) => {
                   district: "",
                 }));
               }}
-              setItems={() => { }}
+              setItems={() => {}}
               placeholder="Select State"
               listMode="SCROLLVIEW"
               autoScroll={true}
@@ -210,7 +211,9 @@ const Location = ({ location, setLocation, page }) => {
 
           {/* District Dropdown */}
           <View style={{ zIndex: openDistrict ? 2000 : 1000 }}>
-            <Text className="text-lg font-semibold text-teal-600 mb-4">District</Text>
+            <Text className="text-lg font-semibold text-teal-600 mb-4">
+              District
+            </Text>
             <DropDownPicker
               open={openDistrict}
               value={selectedDistrict}
@@ -231,7 +234,7 @@ const Location = ({ location, setLocation, page }) => {
                   district: newValue,
                 }));
               }}
-              setItems={() => { }}
+              setItems={() => {}}
               placeholder="Select District"
               disabled={!location.region}
               listMode="SCROLLVIEW"
@@ -253,7 +256,9 @@ const Location = ({ location, setLocation, page }) => {
           </View>
 
           {/* Country (Fixed as India) */}
-          <Text className="text-lg font-semibold text-teal-600 mt-6 mb-4">Country:</Text>
+          <Text className="text-lg font-semibold text-teal-600 mt-6 mb-4">
+            Country:
+          </Text>
           <View style={{ zIndex: openCountry ? 3000 : 1000, marginBottom: 20 }}>
             <DropDownPicker
               open={openCountry}
@@ -261,7 +266,7 @@ const Location = ({ location, setLocation, page }) => {
               items={[{ label: "India", value: "India" }]}
               setOpen={setOpenCountry}
               setValue={setSelectedCountry}
-              setItems={() => { }}
+              setItems={() => {}}
               placeholder="Select Country"
               disabled={true}
               listMode="SCROLLVIEW"
@@ -290,9 +295,7 @@ const Location = ({ location, setLocation, page }) => {
               className="border border-gray-300 h-[50] rounded-lg w-full p-3 focus:border-teal-600 outline-teal-600"
               placeholder={`Enter your ${label}`}
               value={location[key]}
-              onChangeText={(text) =>
-                setLocation({ ...location, [key]: text })
-              }
+              onChangeText={(text) => setLocation({ ...location, [key]: text })}
             />
           </View>
         ))

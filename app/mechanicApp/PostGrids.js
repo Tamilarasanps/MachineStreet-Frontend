@@ -23,8 +23,25 @@ const PostGrid = ({ posts, onPostPress, width, userProfile }) => {
     }
   }
 
+  if (!posts || posts.length === 0) {
+    return (
+      <View className="flex-1 mt-8 flex justify-center items-center px-4">
+        <Text style={{ fontSize: 18, color: "#555", textAlign: "center" }}>
+          No Posts Yet
+        </Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={{ flexWrap: "wrap", flexDirection: "row", padding: 16 ,marginBottom:120}}>
+    <View
+      style={{
+        flexWrap: "wrap",
+        flexDirection: "row",
+        padding: 16,
+        marginBottom: 120,
+      }}
+    >
       {posts?.length > 0 &&
         posts.map((item, index) => {
           const isVideo = item.media.length === 24;

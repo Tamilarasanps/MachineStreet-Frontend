@@ -736,7 +736,9 @@ const MechanicList_2 = () => {
                                     className="ml-2 font-semibold text-sm"
                                     style={{ flexShrink: 1 }}
                                   >
-                                    {mechanic.district}
+                                    {mechanic.district ||
+                                      mechanic.region ||
+                                      mechanic.country}
                                   </Text>
                                 </View>
                                 <View className="flex-row mt-2">

@@ -40,7 +40,7 @@ import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 
-const ProfilePage = ({ }) => {
+const ProfilePage = ({}) => {
   const [editModal, setEditModal] = useState(false);
   const { width } = useWindowDimensions();
   const { id, page } = useLocalSearchParams();
@@ -301,7 +301,7 @@ const ProfilePage = ({ }) => {
 
       // Append image files to formdata
       result.assets.forEach((asset) => {
-        console.log('asset :', asset)
+        console.log("asset :", asset);
         if (Platform.OS === "web") {
           formdata.append("images", asset.file);
         } else {
@@ -420,8 +420,9 @@ const ProfilePage = ({ }) => {
             {/* Parent container */}
             <Pressable
               style={{ borderWidth: 2, borderColor: "white" }}
-              className={`absolute left-1/2 -translate-x-1/2 -bottom-24 rounded-full ${width < 480 ? "w-48 h-48" : "w-64 h-64"
-                } items-center justify-center bg-white`}
+              className={`absolute left-1/2 -translate-x-1/2 -bottom-24 rounded-full ${
+                width < 480 ? "w-48 h-48" : "w-64 h-64"
+              } items-center justify-center bg-white`}
             >
               <View
                 className="bg-TealGreen items-center justify-center overflow-hidden"
@@ -513,33 +514,37 @@ const ProfilePage = ({ }) => {
           {page === "uservisit" && (
             <View className="flex-row justify-between items-center px-4 mt-2">
               <TouchableOpacity
-                className={`flex-1 mr-1 py-2 rounded ${activeaTab === "posts" ? "bg-gray-500" : "bg-gray-200"
-                  }`}
+                className={`flex-1 mr-1 py-2 rounded ${
+                  activeaTab === "posts" ? "bg-gray-500" : "bg-gray-200"
+                }`}
                 onPress={() => {
                   setActiveTab("posts");
                   setPostIndex(null);
                 }}
               >
                 <Text
-                  className={`text-center font-medium text-sm ${activeaTab === "posts" ? "text-white" : "text-black"
-                    }`}
+                  className={`text-center font-medium text-sm ${
+                    activeaTab === "posts" ? "text-white" : "text-black"
+                  }`}
                 >
-                  <Feather name="grid" size={24} />
+                  <Feather name="grid" size={22} />
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className={`flex-1 mr-1 py-2 rounded ${activeaTab === "userDetails" ? "bg-gray-500" : "bg-gray-200"
-                  }`}
+                className={`flex-1 mr-1 py-2 rounded ${
+                  activeaTab === "userDetails" ? "bg-gray-500" : "bg-gray-200"
+                }`}
                 onPress={() => {
                   setActiveTab("userDetails");
                   setPostIndex(null);
                 }}
               >
                 <Text
-                  className={`text-center font-medium text-sm ${activeaTab === "userDetails" ? "text-white" : "text-black"
-                    }`}
+                  className={`text-center font-medium text-sm ${
+                    activeaTab === "userDetails" ? "text-white" : "text-black"
+                  }`}
                 >
-                  <Feather name="user" size={24} />
+                  <Feather name="user" size={22} />
                 </Text>
               </TouchableOpacity>
             </View>
@@ -559,42 +564,46 @@ const ProfilePage = ({ }) => {
                     }}
                     className="flex-1 mr-1 p-2 bg-gray-200 rounded"
                   >
-                    <Text className="text-center font-semibold">
-                      <Feather name="plus-square" size={24} />
+                    <Text className="text-center font-medium text-sm">
+                      <Feather name="plus-square" size={22} />
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    className={`flex-1 mr-1 py-2 rounded ${activeaTab === "posts" ? "bg-gray-500" : "bg-gray-200"
-                      }`}
+                    className={`flex-1 mr-1 py-2 rounded ${
+                      activeaTab === "posts" ? "bg-gray-500" : "bg-gray-200"
+                    }`}
                     onPress={() => {
                       setActiveTab("posts");
                       setPostIndex(null);
                     }}
                   >
                     <Text
-                      className={`text-center font-medium text-sm ${activeaTab === "posts" ? "text-white" : "text-black"
-                        }`}
+                      className={`text-center font-medium text-sm ${
+                        activeaTab === "posts" ? "text-white" : "text-black"
+                      }`}
                     >
-                      <Feather name="grid" size={24} />
+                      <Feather name="grid" size={22} />
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    className={`flex-1 mr-1 py-2 rounded ${activeaTab === "userDetails"
+                    className={`flex-1 mr-1 py-2 rounded ${
+                      activeaTab === "userDetails"
                         ? "bg-gray-500"
                         : "bg-gray-200"
-                      }`}
+                    }`}
                     onPress={() => {
                       setActiveTab("userDetails");
                       setPostIndex(null);
                     }}
                   >
                     <Text
-                      className={`text-center font-medium text-sm ${activeaTab === "userDetails"
+                      className={`text-center font-medium text-sm ${
+                        activeaTab === "userDetails"
                           ? "text-white"
                           : "text-black"
-                        }`}
+                      }`}
                     >
-                      <Feather name="user" size={24} />
+                      <Feather name="user" size={22} />
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -602,7 +611,7 @@ const ProfilePage = ({ }) => {
                     className="flex-1 mr-1 py-2 bg-gray-200 rounded"
                   >
                     <Text className="text-center font-medium text-sm">
-                      <Feather name="edit-2" size={24} />
+                      <Feather name="edit-2" size={21} />
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -678,8 +687,9 @@ const ProfilePage = ({ }) => {
               className="flex-1 justify-center items-center"
             >
               <View
-                className={`bg-white p-6 rounded-2xl shadow-xl w-[90%] ${Platform.OS === "web" ? "max-w-[500px]" : "w-[70%]"
-                  } relative`}
+                className={`bg-white p-6 rounded-2xl shadow-xl w-[90%] ${
+                  Platform.OS === "web" ? "max-w-[500px]" : "w-[70%]"
+                } relative`}
               >
                 {/* MAIN VIEW */}
                 {viewMode === "main" && (

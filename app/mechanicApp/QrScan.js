@@ -79,7 +79,10 @@ const QrScan = ({ userProfile, page }) => {
                 color="white"
                 className=""
               />{" "}
-              {userProfile?.district || userProfile?.region || userProfile?.country.charAt(0).toUpperCase() + userProfile?.district.slice(1)}{" "} 
+              {userProfile?.district ||
+                userProfile?.region ||
+                userProfile?.country.charAt(0).toUpperCase() +
+                  userProfile?.district.slice(1)}{" "}
             </Text>
 
             <Text className="text-xl text-white font-bold ml-2 ">
@@ -125,10 +128,11 @@ const QrScan = ({ userProfile, page }) => {
               >
                 <Text style={styles.section}>Contact</Text>
 
-                <Text className="text-md  mt-2">
-                  {" "}
-                  {userProfile?.contact.countryCode}{" "}
-                  {userProfile?.contact.number}
+                <Text className="text-md mt-2">
+                  {userProfile?.contact?.countryCode &&
+                  userProfile?.contact?.number
+                    ? `${userProfile.contact.countryCode} ${userProfile.contact.number}`
+                    : "-Not provided"}
                 </Text>
               </View>
             </View>
@@ -139,8 +143,9 @@ const QrScan = ({ userProfile, page }) => {
           {page === "uservisit" ? (
             <View style={styles.reviewContainer}>
               <Text style={styles.reviewHeading}>✨ Customer Reviews</Text>
+
               <View style={styles.reviewGrid}>
-                {Array.isArray(reviewData) &&
+                {Array.isArray(reviewData) && reviewData.length > 0 ? (
                   reviewData.map((data, index) => (
                     <Animated.View
                       key={data._id || index}
@@ -177,7 +182,14 @@ const QrScan = ({ userProfile, page }) => {
                           data.reviewText.slice(1)}
                       </Text>
                     </Animated.View>
-                  ))}
+                  ))
+                ) : (
+                  <View style={{ padding: 16, alignItems: "center" }}>
+                    <Text style={{ fontSize: 16, color: "white" }}>
+                      No Review
+                    </Text>
+                  </View>
+                )}
               </View>
             </View>
           ) : null}

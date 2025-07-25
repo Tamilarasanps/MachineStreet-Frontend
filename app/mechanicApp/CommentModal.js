@@ -33,11 +33,11 @@ export default function CommentModal({
   const { formatTime } = useContext(FormatTime);
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (inputRef.current) {
+  //     inputRef.current.focus();
+  //   }
+  // }, []);
 
   useEffect(() => {
     const handleCommentsUpdate = (data) => {
@@ -66,6 +66,8 @@ export default function CommentModal({
   const sendComment = () => {
     if (comment.trim().length === 0) return;
     handlePostComment(selectedPost, comment);
+    Keyboard.dismiss();
+    // inputRef.current && inputRef.current.focus();
   };
 
   // const addTodo = () => {
@@ -80,14 +82,16 @@ export default function CommentModal({
   return (
     <Modal animationType="slide" transparent={true}>
       <BlurView intensity={50} tint="light" style={styles.blurContainer}>
-        <KeyboardAvoidingView
+        {/* <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
+        > */}
+        <View
           style={[
             styles.modalWrapper,
             {
               width: width >= 1024 ? 500 : "90%",
               height: height * 0.75,
-              marginBottom: 20,
+              marginBottom: 10,
             },
           ]}
         >
@@ -98,7 +102,7 @@ export default function CommentModal({
           <View style={{ flex: 1, marginTop: 2 }}>
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 80 }}
+              contentContainerStyle={{ paddingBottom: 50 }}
             >
               {comments && comments.length > 0 ? (
                 [...comments].reverse().map((cmt, index) => (
@@ -179,7 +183,8 @@ export default function CommentModal({
               <Ionicons name="send" size={20} color="#fff" />
             </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
+        </View>
+        {/* </KeyboardAvoidingView> */}
       </BlurView>
     </Modal>
   );

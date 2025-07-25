@@ -6,7 +6,7 @@ import { useCallback } from "react";
 
 const useApi = () => {
   const API_URL = "https://api.machinestreets.com";
-  // const API_URL = "http://192.168.1.8:5000";
+  // const API_URL = "http://192.168.1.9:5000";
 
   const handleRequest = useCallback(async (request, path, token) => {
     try {
@@ -70,7 +70,6 @@ const useApi = () => {
   const jsonHeader = (token) => ({
     ...(token && { Authorization: `Bearer ${token}` }),
   });
-  
 
   const GETAPI = async (path, token) =>
     await handleRequest(
@@ -78,28 +77,27 @@ const useApi = () => {
       path,
       token
     );
-    const POSTAPI = async (path, data, token, onUploadProgress) => {
-      const isFormData = data instanceof FormData;
-    
-      return await handleRequest(
-        () =>
-          axios.post(`${API_URL}/${path}`, data, {
-            headers: {
-              ...(isFormData
-                ? {
-                    "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${token}`,
-                  }
-                : jsonHeader(token)),
-            },
-            timeout: 5 * 60 * 1000,
-            onUploadProgress,
-          }),
-        path,
-        token
-      );
-    };
-    
+  const POSTAPI = async (path, data, token, onUploadProgress) => {
+    const isFormData = data instanceof FormData;
+
+    return await handleRequest(
+      () =>
+        axios.post(`${API_URL}/${path}`, data, {
+          headers: {
+            ...(isFormData
+              ? {
+                  "Content-Type": "multipart/form-data",
+                  Authorization: `Bearer ${token}`,
+                }
+              : jsonHeader(token)),
+          },
+          timeout: 5 * 60 * 1000,
+          onUploadProgress,
+        }),
+      path,
+      token
+    );
+  };
 
   const PATCHAPI = async (path, data, token) =>
     await handleRequest(
