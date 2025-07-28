@@ -64,7 +64,6 @@ const MechanicList_2 = () => {
   const [mechanicSearchResults, setMechanicSearchResults] = useState([]);
 
   const [searchBar, setSearchBar] = useState("");
-  console.log("searchBar", searchBar);
   const [authUser] = useContext(AuthContext);
   const [expandedMechanicId, setExpandedMechanicId] = useState(null);
   const [viewMoreModalVisible, setViewMoreModalVisible] = useState(false);

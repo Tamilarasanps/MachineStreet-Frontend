@@ -18,7 +18,6 @@ const GetMechanic = () => {
   useFocusEffect(
     useCallback(() => {
       async function fetchMechanics() {
-        console.log('sfhfhfhhfhf')
         setLoading(true);
         try {
           const token = await AsyncStorage.getItem("userToken");

@@ -43,7 +43,7 @@ const PostGrid = ({ posts, onPostPress, width, userProfile }) => {
       }}
     >
       {posts?.length > 0 &&
-        posts.map((item, index) => {
+        [...posts].reverse().map((item, index) => {
           const isVideo = item.media.length === 24;
 
           return (
@@ -79,16 +79,22 @@ const PostGrid = ({ posts, onPostPress, width, userProfile }) => {
 const VideoGridItem = ({ videoId, onPostPress, index }) => {
   const player = useVideoPlayer(
     `https://api.machinestreets.com/video/${videoId}`,
-    // `http://192.168.250.41:5000/video/${videoId}`,
+    // `http://192.168.1.10:5000/video/${videoId}`,
     (player) => {
       player.loop = true;
-      player.play();
     }
   );
 
+  const handlePress = () => {
+    onPostPress(index);
+    if (player) {
+      player.play();
+    }
+  };
+
   return (
     <Pressable
-      onPress={() => onPostPress(index)}
+      onPress={handlePress}
       className="flex justify-center items-center h-full w-full "
     >
       <View className="h-full w-full">

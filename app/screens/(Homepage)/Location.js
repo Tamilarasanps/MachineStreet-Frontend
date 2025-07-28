@@ -4,6 +4,7 @@ import useGeoLocation from "@/app/hooks/GeoLocation";
 import Checkbox from "expo-checkbox";
 import useApi from "@/app/hooks/useApi";
 import DropDownPicker from "react-native-dropdown-picker";
+import { Dropdown } from "react-native-element-dropdown";
 
 const Location = ({ location, setLocation, page }) => {
   const [india, setIndia] = useState(false);
@@ -11,6 +12,14 @@ const Location = ({ location, setLocation, page }) => {
   const [districts, setDistricts] = useState([]);
   // const [countries] = useState(["India"]);
   const [districtsWithStates, setDistrictsWithStates] = useState([]);
+  
+  const data =
+    regions?.map((region) => ({ label: region, value: region })) || [];
+  const districtData =
+    districts?.map((district) => ({
+      label: district,
+      value: district,
+    })) || [];
 
   const [hasFetchedIndustries, setHasFetchedIndustries] = useState(false);
 
@@ -168,44 +177,37 @@ const Location = ({ location, setLocation, page }) => {
             <Text className="text-lg font-semibold text-teal-600 mb-4">
               State
             </Text>
-            <DropDownPicker
-              open={openState}
-              value={selectedRegion}
-              items={regions?.map((region) => ({
-                label: region,
-                value: region,
-              }))}
-              setOpen={setOpenState}
-              setValue={(callbackOrValue) => {
-                const newValue =
-                  typeof callbackOrValue === "function"
-                    ? callbackOrValue(selectedRegion)
-                    : callbackOrValue;
-
-                setSelectedRegion(newValue);
-                setLocation((prev) => ({
-                  ...prev,
-                  region: newValue,
-                  district: "",
-                }));
-              }}
-              setItems={() => {}}
-              placeholder="Select State"
-              listMode="SCROLLVIEW"
-              autoScroll={true}
+            <Dropdown
               style={{
+                borderWidth: 1,
                 borderColor: "#D1D5DB",
                 height: 50,
                 borderRadius: 8,
                 paddingHorizontal: 8,
               }}
-              dropDownContainerStyle={{
-                borderColor: "#D1D5DB",
-                backgroundColor: "#fff",
-                maxHeight: 200,
+              data={data}
+              labelField="label"
+              valueField="value"
+              value={selectedRegion}
+              onChange={(item) => {
+                setSelectedRegion(item.value);
+                setLocation((prev) => ({
+                  ...prev,
+                  region: item.value,
+                  district: "",
+                }));
               }}
-              textStyle={{ color: "#000" }}
+              placeholder="Select State"
+              maxHeight={200}
+              showsVerticalScrollIndicator={true}
+              dropdownPosition="auto"
+              activeColor="#2095A2"
+              selectedTextStyle={{ color: "#000" }}
               placeholderStyle={{ color: "#9CA3AF" }}
+              dropDownContainerStyle={{
+                borderColor: "#0c1d36ff",
+                backgroundColor: "red",
+              }}
             />
           </View>
 
@@ -214,44 +216,38 @@ const Location = ({ location, setLocation, page }) => {
             <Text className="text-lg font-semibold text-teal-600 mb-4">
               District
             </Text>
-            <DropDownPicker
-              open={openDistrict}
-              value={selectedDistrict}
-              items={districts?.map((district) => ({
-                label: district,
-                value: district,
-              }))}
-              setOpen={setOpenDistrict}
-              setValue={(callbackOrValue) => {
-                const newValue =
-                  typeof callbackOrValue === "function"
-                    ? callbackOrValue(selectedDistrict)
-                    : callbackOrValue;
-
-                setSelectedDistrict(newValue);
-                setLocation((prev) => ({
-                  ...prev,
-                  district: newValue,
-                }));
-              }}
-              setItems={() => {}}
-              placeholder="Select District"
-              disabled={!location.region}
-              listMode="SCROLLVIEW"
-              autoScroll={true}
+            <Dropdown
               style={{
+                borderWidth: 1,
                 borderColor: "#D1D5DB",
                 height: 50,
                 borderRadius: 8,
                 paddingHorizontal: 8,
+                backgroundColor: location.region ? "white" : "#f3f4f6", // optionally gray out if disabled
               }}
+              data={districtData}
+              labelField="label"
+              valueField="value"
+              value={selectedDistrict}
+              onChange={(item) => {
+                setSelectedDistrict(item.value);
+                setLocation((prev) => ({
+                  ...prev,
+                  district: item.value,
+                }));
+              }}
+              placeholder="Select District"
+              disabled={!location.region} // disable if no region selected
+              maxHeight={200}
+              showsVerticalScrollIndicator={true}
+              dropdownPosition="auto"
+              activeColor="#2095A2"
+              selectedTextStyle={{ color: "#000" }}
+              placeholderStyle={{ color: "#9CA3AF" }}
               dropDownContainerStyle={{
                 borderColor: "#D1D5DB",
                 backgroundColor: "#fff",
-                maxHeight: 200,
               }}
-              textStyle={{ color: "#000" }}
-              placeholderStyle={{ color: "#9CA3AF" }}
             />
           </View>
 

@@ -257,7 +257,6 @@ const ProfilePage = ({}) => {
         }
 
         // CASE 1: Visiting another mechanic's profile
-        console.log("run");
         if (page === "uservisit" && id) {
           const selectedMechanic = mechanics.find((mech) => mech._id === id);
           if (selectedMechanic) {
