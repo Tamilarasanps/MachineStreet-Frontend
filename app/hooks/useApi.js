@@ -5,8 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback } from "react";
 
 const useApi = () => {
-  const API_URL = "https://api.machinestreets.com";
-  // const API_URL = "http://192.168.1.10:5000";
+  // const API_URL = "https://api.machinestreets.com";
+  const API_URL = "http://192.168.1.10:5000";
 
   const handleRequest = useCallback(async (request, path, token) => {
     try {
