@@ -229,7 +229,7 @@ const PostViewerModal = ({
   const renderPosts = () => {
     if (!posts || activeIndex === null) return null;
 
-    return posts.map((post, index) => {
+    return [...posts].reverse().map((post, index) => {
       // const videoSource = `http://192.168.1.9:5000/video/${post.media}`;
       // const player = useVideoPlayer(videoSource, (player) => {
       //   player.loop = true;
@@ -239,7 +239,7 @@ const PostViewerModal = ({
       // const { isPlaying } = useEvent(player, "playingChange", {
       //   isPlaying: player.playing,
       // });
-      console;
+      const isVideo = post.media && post.media.length === 24;
       return (
         <View
           key={post._id}
@@ -339,30 +339,17 @@ const PostViewerModal = ({
                 marginVertical: 8,
               }}
             >
-              {post.media.length === 24 ? (
-                <TouchableOpacity
-                // onPress={() => {
-                //   if (isPlaying) {
-                //     player.pause();
-                //   } else {
-                //     player.play();
-                //   }
-                // }}
-                >
-                  <VideoGridItem videoId={post.media} />
-                </TouchableOpacity>
+              {isVideo ? (
+                <VideoGridItem videoId={post.media} index={index} />
               ) : (
                 <Image
-                  source={{
-                    uri: `data:image/jpeg;base64,${post.media}`,
-                  }}
+                  source={{ uri: `data:image/jpeg;base64,${post.media}` }}
                   style={{
                     width: "100%",
                     height: "100%",
                     resizeMode: "contain",
                   }}
                 />
-                // <View className="bg-red-600"></View>
               )}
               <Animated.View
                 style={{
@@ -508,13 +495,22 @@ const VideoGridItem = ({ videoId, onPostPress, index }) => {
     // `http://192.168.1.10:5000/video/${videoId}`,
     (player) => {
       player.loop = true;
-      player.play();
     }
   );
 
+  const handlePress = () => {
+    if (player) {
+      if (player.isPlaying()) {
+        player.pause(); // pause if already playing
+      } else {
+        player.play(); // play if paused
+      }
+    }
+  };
+
   return (
     <Pressable
-      onPress={() => onPostPress(index)}
+      onPress={handlePress}
       className="flex justify-center items-center h-full w-full"
     >
       <View>
