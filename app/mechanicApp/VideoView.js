@@ -6,7 +6,7 @@ const VideoGridItem = ({ videoId, onPostPress, index }) => {
     `https://api.machinestreets.com/video/${videoId}`,
     // `http://192.168.1.10:5000/video/${videoId}`,
     (player) => {
-      player.loop = true;
+      player.loop = false;
       player.play();
     }
   );
@@ -16,7 +16,7 @@ const VideoGridItem = ({ videoId, onPostPress, index }) => {
       onPress={() => onPostPress(index)}
       className="flex justify-center items-center h-full w-full"
     >
-      <View>
+      <View className="w-full h-full">
         <VideoView
           player={player}
           crossOrigin="anonymous" // this is important

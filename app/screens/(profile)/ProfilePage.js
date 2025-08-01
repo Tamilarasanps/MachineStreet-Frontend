@@ -511,9 +511,9 @@ const ProfilePage = ({}) => {
 
           {/* userDetails */}
           {page === "uservisit" && (
-            <View className="flex-row justify-between items-center px-4 mt-2">
+            <View className="flex-row justify-between h-fit items-center px-4 mt-2">
               <TouchableOpacity
-                className={`flex-1 mr-1 py-2 rounded ${
+                className={`flex-1 mr-1 h-fit py-2 items-center justify-center  rounded ${
                   activeaTab === "posts" ? "bg-gray-500" : "bg-gray-200"
                 }`}
                 onPress={() => {
@@ -553,7 +553,7 @@ const ProfilePage = ({}) => {
             {/* Always show the top action buttons */}
             {(page !== "uservisit" && userProfile?.role !== "mechanic") ||
               (page !== "uservisit" && (
-                <View className="flex-row justify-between items-center px-4 mt-2">
+                <View className="flex-row justify-between h-24 items-center px-4 mt-2">
                   <TouchableOpacity
                     onPress={async () => {
                       const result = await pickMedia();

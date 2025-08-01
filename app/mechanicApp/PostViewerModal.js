@@ -230,15 +230,7 @@ const PostViewerModal = ({
     if (!posts || activeIndex === null) return null;
 
     return [...posts].reverse().map((post, index) => {
-      // const videoSource = `http://192.168.1.9:5000/video/${post.media}`;
-      // const player = useVideoPlayer(videoSource, (player) => {
-      //   player.loop = true;
-      //   player.play();
-      // });
-
-      // const { isPlaying } = useEvent(player, "playingChange", {
-      //   isPlaying: player.playing,
-      // });
+    
       const isVideo = post.media && post.media.length === 24;
       return (
         <View
@@ -492,28 +484,25 @@ const PostViewerModal = ({
 const VideoGridItem = ({ videoId, onPostPress, index }) => {
   const player = useVideoPlayer(
     `https://api.machinestreets.com/video/${videoId}`,
-    // `http://192.168.1.10:5000/video/${videoId}`,
+    // `http://192.168.1.11:5000/video/${videoId}`,
     (player) => {
       player.loop = true;
     }
   );
 
   const handlePress = () => {
+    onPostPress(index);
     if (player) {
-      if (player.isPlaying()) {
-        player.pause(); // pause if already playing
-      } else {
-        player.play(); // play if paused
-      }
+      player.play();
     }
   };
 
   return (
     <Pressable
       onPress={handlePress}
-      className="flex justify-center items-center h-full w-full"
+      className="flex justify-center items-center h-full w-full "
     >
-      <View>
+      <View className="h-full w-full">
         <VideoView
           player={player}
           crossOrigin="anonymous" // this is important
@@ -521,11 +510,10 @@ const VideoGridItem = ({ videoId, onPostPress, index }) => {
           controls={false}
           allowsFullscreen={false}
           allowsPictureInPicture={false}
-          resizeMode="cover"
+          resizeMode="contain"
         />
       </View>
     </Pressable>
   );
 };
-
 export default PostViewerModal;
