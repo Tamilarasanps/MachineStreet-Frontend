@@ -102,7 +102,7 @@ const VideoGridItem = ({ videoId, onPostPress, index }) => {
           player={player}
           crossOrigin="anonymous" // this is important
           style={{ width: "100%", height: "100%" }}
-          controls={false}
+          controls={true}
           allowsFullscreen={false}
           allowsPictureInPicture={false}
           resizeMode="contain"

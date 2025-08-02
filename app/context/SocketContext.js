@@ -20,8 +20,8 @@ export const SocketProvider = ({ children }) => {
       const token = await AsyncStorage.getItem("userToken");
 
       if (token) {
-        newSocket = io("http://192.168.1.10:5000", {
-          // const newSocket = io("https://api.machinestreets.com", {
+        // newSocket = io("http://192.168.1.10:5000", {
+          const newSocket = io("https://api.machinestreets.com", {
           transports: ["websocket", "polling"],
           query: { token }, // use the retrieved token here
           withCredentials: true,
