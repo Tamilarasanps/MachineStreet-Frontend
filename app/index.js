@@ -44,4 +44,5 @@ export default function Index() {
     <BottomNavBar />
   );
   // return Platform.OS === "web" ? <ProfilePage /> : <QrScan />;
+  // everything is upto date
 }
