@@ -45,5 +45,4 @@ export default function Index() {
   );
   // return Platform.OS === "web" ? <ProfilePage /> : <QrScan />;
 
-  // checkk for building
 }
