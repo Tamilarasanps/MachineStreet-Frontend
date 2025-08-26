@@ -44,4 +44,6 @@ export default function Index() {
     <BottomNavBar />
   );
   // return Platform.OS === "web" ? <ProfilePage /> : <QrScan />;
+
+  // checkk for building
 }
