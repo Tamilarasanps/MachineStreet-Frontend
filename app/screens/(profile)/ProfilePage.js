@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   Alert,
   ScrollView,
+  StatusBar,
 } from "react-native";
 import PostGrid from "@/app/mechanicApp/PostGrids";
 import Icon from "react-native-vector-icons/Feather";
@@ -358,9 +359,14 @@ const ProfilePage = ({}) => {
     <>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1   "
+        className="flex-1"
       >
-        <ScrollView className="flex-1 ">
+        <ScrollView
+          className="flex-1"
+          style={{
+            paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+          }}
+        >
           {/* Back Icon */}
           <View
             className="   z-50 flex justify-center"

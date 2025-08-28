@@ -6,6 +6,7 @@ import {
   View,
   Modal,
   SafeAreaView,
+  StatusBar,
   Pressable,
   Animated,
 } from "react-native";
@@ -230,7 +231,6 @@ const PostViewerModal = ({
     if (!posts || activeIndex === null) return null;
 
     return [...posts].reverse().map((post, index) => {
-    
       const isVideo = post.media && post.media.length === 24;
       return (
         <View
@@ -432,16 +432,12 @@ const PostViewerModal = ({
       transparent={true}
       animationType="fade"
     >
-      <BlurView
-        intensity={50}
-        tint="light"
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      >
-        <SafeAreaView style={{ width: "100%" }}>
+      <BlurView intensity={50} tint="light" style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
           {/* Back Icon */}
           <View
-            className="  bg-gray-300 z-50 flex justify-center"
-            style={{ width: "100%", height: "48" }}
+            className="bg-gray-300 z-50 flex justify-center"
+            style={{ width: "100%", height: 48 }}
           >
             <Pressable
               onPress={onClose}
@@ -450,32 +446,31 @@ const PostViewerModal = ({
               <Icon name="arrow-left" size={24} color="white" />
             </Pressable>
           </View>
-        </SafeAreaView>
 
-        <ScrollView
-          ref={scrollRef}
-          scrollEventThrottle={16}
-          style={{
-            backgroundColor: "#ffffff",
-            flex: 1,
-            width: width >= 1024 ? 500 : "100%",
-            alignSelf: "center",
-          }}
-          contentContainerStyle={{ paddingBottom: 40 }}
-        >
-          {renderPosts()}
-          {commentModal && (
-            <CommentModal
-              onClose={() => setCommentModal(false)}
-              handlePostComment={handlePostComment}
-              comments={comments}
-              setComments={setComments}
-              comment={comment}
-              setComment={setComment}
-              selectedPost={selectedPost}
-            />
-          )}
-        </ScrollView>
+          <ScrollView
+            ref={scrollRef}
+            scrollEventThrottle={16}
+            style={{
+              flex: 1,
+              width: width >= 1024 ? 500 : "100%",
+              alignSelf: "center",
+            }}
+            contentContainerStyle={{ paddingBottom: 40 }}
+          >
+            {renderPosts()}
+            {commentModal && (
+              <CommentModal
+                onClose={() => setCommentModal(false)}
+                handlePostComment={handlePostComment}
+                comments={comments}
+                setComments={setComments}
+                comment={comment}
+                setComment={setComment}
+                selectedPost={selectedPost}
+              />
+            )}
+          </ScrollView>
+        </SafeAreaView>
       </BlurView>
     </Modal>
   );
@@ -498,22 +493,30 @@ const VideoGridItem = ({ videoId, onPostPress, index }) => {
   };
 
   return (
-    <Pressable
-      onPress={handlePress}
-      className="flex justify-center items-center h-full w-full "
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "black",
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
     >
-      <View className="h-full w-full">
-        <VideoView
-          player={player}
-          crossOrigin="anonymous" // this is important
-          style={{ width: "100%", height: "100%" }}
-          controls={true}
-          allowsFullscreen={false}
-          allowsPictureInPicture={false}
-          resizeMode="contain"
-        />
-      </View>
-    </Pressable>
+      <Pressable
+        onPress={handlePress}
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <View style={{ flex: 1, width: "100%" }}>
+          <VideoView
+            player={player}
+            crossOrigin="anonymous"
+            style={{ width: "100%", height: "100%" }}
+            controls={true}
+            allowsFullscreen={false}
+            allowsPictureInPicture={false}
+            resizeMode="contain"
+          />
+        </View>
+      </Pressable>
+    </SafeAreaView>
   );
 };
 export default PostViewerModal;

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Machinestreet",
     "jsEngine": "hermes",
-    "slug": "frontend",
+    "slug": "Machine-streets",
     "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -21,8 +21,8 @@
     "android": {
       "userInterfaceStyle": "light",
       "windowSoftInputMode": "adjustResize",
-      "package": "com.tamilarasanps.frontend",
-      "versionCode": 8,
+      "package": "com.MachineStreet",
+      "versionCode": 9,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
