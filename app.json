@@ -2,7 +2,8 @@
   "expo": {
     "name": "Machinestreet",
     "jsEngine": "hermes",
-    "slug": "Machinestreet",
+    "slug": "frontend",
+    "owner": "tamilarasan.ps",
     "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -71,9 +72,8 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "ac6ba6e8-c7d2-4cb1-9626-79dd4f82cac2"
+        "projectId": "ac6ba6e8-c7d2-4cb1-9626-79dd4f82cac2" 
       }
-    },
-    "owner": "tamilarasan.ps"
+    }
   }
 }
