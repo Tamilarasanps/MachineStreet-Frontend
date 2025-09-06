@@ -22,7 +22,7 @@
     "android": {
       "userInterfaceStyle": "light",
       "windowSoftInputMode": "adjustResize",
-      "package": "com.MachineStreet",
+      "package": "com.MachineStreet.app",
       "versionCode": 9,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
