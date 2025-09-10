@@ -50,7 +50,7 @@ const HomePage = () => {
     userId: null,
   });
   const cache = useRef({}); // cache object
-  const [searchBarValue, setSearchBarValue] = useState(null);
+  const [searchBarValue, setSearchBarValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const slideAnim = useState(new Animated.Value(-width))[0]; // start off-screen left
   const selectedFIlterAnim = useRef(new Animated.Value(0)).current;
@@ -257,7 +257,6 @@ const HomePage = () => {
     filterItems.otherThanIndia,
   ]);
 
-
   // search api
 
   const fetchSearchResult = async (page) => {
@@ -275,7 +274,6 @@ const HomePage = () => {
         "application/json",
         { secure: true }
       );
-      console.log("data ;", data);
       if (data.status === 200) {
         const results = data?.data?.searchResults || [];
         cache.current[queryKey] = results; // ✅ Save in cache
@@ -285,7 +283,6 @@ const HomePage = () => {
       console.log(err);
     }
   };
-  console.log(page);
   // debounce the query to api
   useEffect(() => {
     if (searchBarValue?.length >= 3) {
@@ -302,7 +299,7 @@ const HomePage = () => {
   {
     /* review modal */
   }
-  console.log(userDetails.length > 0);
+
   return (
     <SafeAreaView
       edges={["top", "left", "right"]} // ignore bottom to let tab bar handle it
@@ -342,8 +339,8 @@ const HomePage = () => {
 
         {(width > 1024 || shouldRenderFilter) && (
           <Animated.View
-            pointerEvents="box-none"
-            style={{
+          style={{
+              pointerEvents : "box-none",
               transform: [{ translateX: slideAnim }],
               position: width <= 1024 ? "absolute" : "relative",
               top: 0,
@@ -507,33 +504,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
-
-// import { useCallback } from "react";
-// import { Button } from "react-native";
-// import * as Linking from "expo-linking";
-// import { SafeAreaView } from "react-native-safe-area-context";
-// import { Platform } from "react-native";
-// import { router } from "expo-router";
-
-// const HomePage = ({ id }) => {
-//   console.log('id :', id)
-//   const openProfileLink = useCallback(() => {
-//     const url = Linking.createURL("E2", {
-//       queryParams: { id },
-//     });
-
-//     console.log("Opening deep link:", url);
-
-//     if (Platform.OS === "web") {
-//       // On web, use router.push for client-side navigation
-//       router.push(`http://localhost:8081/E2?id=68bc28e31f97909bd390d929&type=user_visit`);
-//     } else {
-//       // On native, open the deep link
-//       Linking.openURL(url);
-//     }
-//   }, [id]);
-//   return <SafeAreaView><Button title="Open Profile" onPress={openProfileLink} /></SafeAreaView>;
-// };
-
-// export default HomePage

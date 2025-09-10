@@ -80,24 +80,24 @@ const PostViewerModal = ({
         toValue: 1.5,
         friction: 3,
         tension: 100,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(opacity, {
         toValue: 1,
         duration: 100,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start(() => {
       Animated.parallel([
         Animated.timing(scale, {
           toValue: 0,
           duration: 300,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.timing(opacity, {
           toValue: 0,
           duration: 300,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
       ]).start();
     });

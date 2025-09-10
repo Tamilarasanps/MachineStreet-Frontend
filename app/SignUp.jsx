@@ -57,11 +57,15 @@ const SignUp = () => {
   }, []);
 
   // validation check
+  // validation check
   const checkEmptyFields = useCallback(() => {
     const { role, username, password, confirmPassword } = userDetails;
 
     for (const key in userDetails) {
       const value = userDetails[key];
+
+      // ✅ skip optional fields
+      if (["lat", "lon"].includes(key)) continue;
 
       if (typeof value === "string" && !value.trim()) {
         if (
@@ -159,6 +163,8 @@ const SignUp = () => {
         "application/json",
         { secure: false }
       );
+      console.log("result :", result);
+
       if (result.status === 200) {
         setStep(2);
       }
@@ -193,6 +199,9 @@ const SignUp = () => {
           await SecureStore.setItemAsync("token", result?.data?.token);
           await SecureStore.setItemAsync("role", result?.data?.role);
           await SecureStore.setItemAsync("userId", result?.data?.userId);
+        } else {
+          localStorage.setItem("role", response?.data?.role);
+          localStorage.setItem("userId", response?.data?.userId);
         }
         setTimeout(() => {
           setShowWelcome(false);
@@ -352,6 +361,7 @@ const SignUp = () => {
                   otp={otp}
                   setOtp={setOtp}
                   handleSubmit={handleSubmit}
+                  setStep={setStep}
                 />
               )}
             </View>

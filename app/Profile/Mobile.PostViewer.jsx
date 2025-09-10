@@ -1,12 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import {
-  Animated,
-  View,
-  Image,
-  Text,
-  Platform,
-  Pressable,
-} from "react-native";
+import { Animated, View, Image, Text, Platform, Pressable } from "react-native";
 import VideoGridItem from "./VideoGridItem";
 import CommentSection from "./CommentSection";
 import PostFooterIcons from "./PostFooterIcons";
@@ -22,54 +15,62 @@ const MobilePostViewer = React.memo((props) => {
     setComment,
     userId,
     user,
-    height,
     postModal,
     scrollY,
     handleLike,
     isDesktop,
     setModal,
     modal,
-    setPostModal,
     screenHeight,
     insets,
-    handleDoubleTap,      // ✅ from parent
-    heartAnimations,      // ✅ from parent
-    share,                // ✅ from parent
+    handleDoubleTap,
+    heartAnimations,
+    share,
   } = props;
 
   const [currentIndex, setCurrentIndex] = useState(postModal);
   const [deleteIcon, setDeleteIcon] = useState("");
+  const flatListRef = useRef(null);
 
+  // sync external postModal
   useEffect(() => {
     if (postModal !== null) {
       setCurrentIndex(postModal);
     }
   }, [postModal]);
 
-  const viewabilityConfig = useRef({
-    itemVisiblePercentThreshold: 80,
-    minimumViewTime: 200,
-  }).current;
-
-  const onViewableItemsChanged = useRef(({ viewableItems }) => {
-    if (!viewableItems || viewableItems.length === 0) return;
-    const top = viewableItems.reduce((best, v) => {
-      const pv = v?.percentVisible ?? 0;
-      const bpv = best?.percentVisible ?? 0;
-      return pv > bpv ? v : best;
-    }, viewableItems[0]);
-    if (typeof top?.index === "number") setCurrentIndex(top.index);
-  }).current;
-
+  // if comment modal is open, disable tracking
   useEffect(() => {
     if (modal === "comment") setCurrentIndex(-1);
   }, [modal]);
+
+  // ✅ scroll offset -> currentIndex
+  const onScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    {
+      useNativeDriver: false,
+      listener: (event) => {
+        const offsetY = event.nativeEvent.contentOffset.y;
+        const itemHeight =
+          Platform.OS === "ios"
+            ? (screenHeight - (insets.top + insets.bottom)) * 0.9
+            : screenHeight * 0.9;
+
+        const newIndex = Math.round(offsetY / itemHeight);
+        if (newIndex !== currentIndex) {
+          setCurrentIndex(newIndex);
+        }
+      },
+    }
+  );
 
   const renderMobilePost = ({ item, index }) => {
     const anim = heartAnimations[item._id] || {
       scale: new Animated.Value(0),
       opacity: new Animated.Value(0),
     };
+
+  console.log('mobile :', comment)
 
     return (
       <SafeAreaView className="flex-1">
@@ -201,7 +202,7 @@ const MobilePostViewer = React.memo((props) => {
               userId={userId}
               setModal={setModal}
               handleLike={handleLike}
-              share={share}   // ✅ added
+              share={share}
             />
             {item?.bio ? (
               <Text
@@ -238,7 +239,7 @@ const MobilePostViewer = React.memo((props) => {
                 handleLike={handleLike}
                 comment={comment}
                 setComment={setComment}
-                postId={item._id}
+                post={item}
                 comments={item?.comments}
               />
             </SafeAreaView>
@@ -247,28 +248,27 @@ const MobilePostViewer = React.memo((props) => {
       </SafeAreaView>
     );
   };
+  const ITEM_HEIGHT = Platform.OS === "ios" 
+  ? (screenHeight - (insets.top + insets.bottom)) * 0.9 
+  : screenHeight * 0.9;
 
   return (
     <Animated.FlatList
+      ref={flatListRef}
       data={user?.posts}
-      keyExtractor={(_, idx) => idx.toString()}
-      extraData={user?.posts}
-      renderItem={renderMobilePost}
-      initialScrollIndex={postModal}
       getItemLayout={(_, index) => ({
-        length: height,
-        offset: height * index,
+        length: ITEM_HEIGHT,
+        offset: ITEM_HEIGHT * index,
         index,
       })}
-      viewabilityConfig={viewabilityConfig}
-      onViewableItemsChanged={onViewableItemsChanged}
+      keyExtractor={(_, idx) => idx.toString()}
+      renderItem={renderMobilePost}
+      initialScrollIndex={postModal}
       pagingEnabled={modal !== "comment"}
       scrollEnabled={modal !== "comment"}
       showsVerticalScrollIndicator={false}
-      onScroll={Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        { useNativeDriver: false }
-      )}
+      onScroll={onScroll} // ✅ scroll offset tracking
+      scrollEventThrottle={16}
       windowSize={3}
       initialNumToRender={3}
       maxToRenderPerBatch={3}

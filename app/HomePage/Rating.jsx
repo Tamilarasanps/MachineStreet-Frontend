@@ -51,7 +51,7 @@ const Rating = ({ setReviewModal, review, setReview, postReview }) => {
 
       {/* Review Text Input */}
       <TextInput
-        style={styles.textInput}
+        style={[styles.textInput, { pointerEvents: "auto" }]}
         placeholder="Write your review..."
         placeholderTextColor="#888"
         multiline
@@ -61,7 +61,6 @@ const Rating = ({ setReviewModal, review, setReview, postReview }) => {
         }
         value={review.reviewText}
         editable={true}
-        pointerEvents="auto"
       />
 
       {/* Submit Button */}

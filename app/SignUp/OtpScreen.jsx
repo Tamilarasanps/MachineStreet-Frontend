@@ -8,8 +8,9 @@ import {
   Pressable,
 } from "react-native";
 import Loading from "@/components/Loading";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
-const OtpScreen = ({ otp, setOtp, register, handleSubmit, isLoading }) => {
+const OtpScreen = ({ otp, setOtp, register, handleSubmit, isLoading, setStep }) => {
   const inputs = useRef([]);
   const [counter, setCounter] = useState(60); // countdown state
   const [isResendDisabled, setIsResendDisabled] = useState(true);
@@ -72,20 +73,36 @@ const OtpScreen = ({ otp, setOtp, register, handleSubmit, isLoading }) => {
   return (
     <View
       className={`${
-        Platform.OS === "web" ? "w-full h-[600px]" : "w-full"
-      } flex flex-col gap-8 items-center bg-white rounded-md m-auto p-5 py-8`}
+        Platform.OS === "web" ? "w-[400px] h-[550px]" : "w-full"
+      } flex flex-col items-center bg-white rounded-2xl shadow-lg p-6`}
     >
-      <Text className="text-2xl font-bold mx-auto text-TealGreen">
-        Enter Your OTP
+      {/* Header Back Button */}
+      <View className="flex-row items-center self-start mb-6">
+        <Pressable
+          onPress={() => setStep(0)}
+          className="p-2 rounded-full bg-gray-100"
+          android_ripple={{ color: "#ddd", borderless: true }}
+        >
+          <Ionicons name="arrow-back-outline" size={22} color="#0f766e" />
+        </Pressable>
+        <Text className="ml-3 text-base font-medium text-gray-600">
+          Return to main menu
+        </Text>
+      </View>
+
+      {/* Title */}
+      <Text className="text-2xl font-bold text-TealGreen mb-2">Enter OTP</Text>
+      <Text className="text-sm text-gray-500 mb-8 text-center px-4">
+        We’ve sent a verification code to your registered number.
       </Text>
 
-      {/* OTP Boxes */}
-      <View className="flex-row gap-4 mt-10 mx-auto">
+      {/* OTP Input Boxes */}
+      <View className="flex-row justify-center gap-3 mb-8">
         {otp.map((digit, index) => (
           <TextInput
             key={index}
             ref={(el) => (inputs.current[index] = el)}
-            className="w-12 h-12 text-center border-2 border-gray-300 rounded-md text-xl text-black outline-TealGreen"
+            className="w-12 h-14 text-center border border-gray-300 rounded-lg text-xl font-semibold text-black focus:border-TealGreen"
             keyboardType="numeric"
             maxLength={1}
             value={digit}
@@ -96,12 +113,15 @@ const OtpScreen = ({ otp, setOtp, register, handleSubmit, isLoading }) => {
               }
               handleKeyPress(e);
             }}
-            // 👇 Auto-select text if user taps on a filled box
             onFocus={() => {
               if (otp[index]) {
-                inputs.current[index].setNativeProps({
-                  selection: { start: 0, end: 1 },
-                });
+                if (Platform.OS === "web") {
+                  inputs.current[index]?.setSelectionRange(0, 1);
+                } else {
+                  inputs.current[index]?.setNativeProps({
+                    selection: { start: 0, end: 1 },
+                  });
+                }
               }
             }}
           />
@@ -109,28 +129,31 @@ const OtpScreen = ({ otp, setOtp, register, handleSubmit, isLoading }) => {
       </View>
 
       {/* Verify Button */}
-      <TouchableOpacity className="bg-TealGreen rounded-sm mt-4 w-24 py-2 mx-auto h-12 items-center justify-center">
+      <Pressable
+        className={`bg-TealGreen w-full justify-center ${isLoading ? "h-12 overflow-hidden" : 'py-3'} rounded-lg shadow-md`}
+        onPress={register}
+      >
         {isLoading ? (
           <Loading />
         ) : (
-          <Text className="text-white text-center" onPress={() => register()}>
+          <Text className="text-white text-center text-lg font-semibold">
             Verify OTP
           </Text>
         )}
-      </TouchableOpacity>
+      </Pressable>
 
-      {/* Resend OTP Timer */}
+      {/* Resend OTP */}
       <Pressable
-        className="mt-4 mx-auto"
+        className="mt-6"
         onPress={handleResend}
         disabled={isResendDisabled}
       >
         <Text
-          className={`mx-auto underline ${
+          className={`text-sm font-medium underline ${
             isResendDisabled ? "text-gray-400" : "text-blue-500"
           }`}
         >
-          {isResendDisabled ? `Resend OTP in ${counter}s` : "Resend OTP"}
+          {isResendDisabled ? `Resend in ${counter}s` : "Resend OTP"}
         </Text>
       </Pressable>
     </View>

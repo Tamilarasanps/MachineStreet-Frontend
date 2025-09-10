@@ -26,6 +26,7 @@ const CommentSection = ({
   const { formatTime } = useContext(FormatTime);
   const scrollRef = useRef();
 
+  console.log("post :", post);
   return (
     <View className="flex-1 bg-white py-4">
       {/* Close button */}
@@ -53,12 +54,14 @@ const CommentSection = ({
               <View key={c._id} className="flex-row items-start mb-4">
                 {c.userId?.profileImage ? (
                   <Image
-                    source={{ uri: c.userId.profileImage }}
+                    source={{
+                      uri: `http://localhost:5000/api/mediaDownload/${c?.userId?.profileImage}`,
+                    }}
                     className="w-10 h-10 rounded-full mr-3"
                   />
                 ) : (
                   <View className="w-10 h-10 rounded-full bg-gray-200 justify-center items-center mr-3">
-                    <Icon name="user" size={20} color="gray" />
+                    <Icon name="user" size={20} color="red" />
                   </View>
                 )}
                 <View className="flex-1">
@@ -109,8 +112,9 @@ const CommentSection = ({
             className="ml-3 p-2 rounded-full bg-gray-100"
             onPress={() => {
               if (comment.comment?.trim()) {
+                console.log("triggered");
                 handleLike({ comment, postId: post?._id }, "api/postComment");
-                setComment({ comment: "" });
+                setComment((prev) => ({ ...prev, comment: "" }));
               }
             }}
           >

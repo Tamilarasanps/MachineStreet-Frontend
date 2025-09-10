@@ -39,24 +39,35 @@ export default function Profile() {
   const { id, type, post } = useLocalSearchParams();
   const [uploadType, setUploadType] = useState("");
 
-  console.log(type)
-
   const [description, setDescription] = useState("");
   const [modal, setModal] = useState("");
   const [postModal, setPostModal] = useState(null);
-  const [comment, setComment] = useState({ comment: "", userId: userId || "" });
+  const [comment, setComment] = useState({ comment: "", userId: null });
+
+  useEffect(()=>{
+    setComment((prev)=>({...prev,userId : userId}))
+  },[userId])
+
 
   const insets = useSafeAreaInsets();
 
-  console.log("id :", id);
+  const [viewType, setViewType] = useState("user"); // "posts" | "blogs"
+  const sections = [
+    {
+      title: "profile",
+      data:
+        viewType === "posts"
+          ? selectedMechanic?.posts || []
+          : [{ id: "placeholder" }],
+    },
+  ];
 
   // get selectedMechnic details
 
   const getMechanic = useCallback(async () => {
-   
     try {
       const user = Platform.OS === "web" ? id : userId;
-      
+
       const result = await getJsonApi(
         `api/getSelectedMechanic/${user}`,
         "application/json",
@@ -65,7 +76,6 @@ export default function Profile() {
       if (result.status === 200) {
         setSelectedMechanic(result?.data);
         setTempMech(result?.data);
-        console.log(post);
 
         if (post) {
           const po = result?.data?.posts || [];
@@ -85,33 +95,32 @@ export default function Profile() {
   }, [id]);
 
   // media upload
-  const handleMediaupload = useCallback(async () => {
-    if (media?.canceled) return;
+  const handleMediaupload = async () => {
+    console.log("media inside function :", media, "uploadType:", uploadType);
+
+    if (!media || media.length === 0 || media?.canceled) return;
+
     const formData = new FormData();
-    uploadType === "posts" && formData.append("description", description);
+    if (uploadType === "posts") formData.append("description", description);
     formData.append("type", uploadType);
 
     await Promise.all(
-      media?.map(async (asset) => {
+      media.map(async (asset) => {
         let file;
-
         if (Platform.OS === "web") {
           const blob = await (await fetch(asset.uri)).blob();
-          file = new File(
-            [blob],
-            asset.fileName || "file.jpg",
-            { type: asset.mimeType || blob.type || "image/jpeg" } // <--- fix here
-          );
+          file = new File([blob], asset.fileName || "file.jpg", {
+            type: asset.mimeType || blob.type || "image/jpeg",
+          });
         } else {
           file = {
             uri: asset.uri,
             name: asset.fileName || asset.uri.split("/").pop(),
             type:
               asset.mimeType ||
-              `${asset.type}/${asset.uri.split(".").pop() || "jpeg"}`, // <--- use mimeType
+              `${asset.type}/${asset.uri.split(".").pop() || "jpeg"}`,
           };
         }
-
         formData.append("media", file);
       })
     );
@@ -119,16 +128,16 @@ export default function Profile() {
     const res = await postJsonApi(
       "api/postUpload",
       formData,
-      "multipart/form-data",
+      Platform.OS === "web" ? undefined : "multipart/form-data",
       { secure: true }
     );
-
+    console.log("res :", res);
     if (res?.status === 200) {
       setDescription("");
       setMedia([]);
       setViewType(viewType === "plus-square" ? "grid" : "user");
     }
-  }, [media]);
+  };
 
   useEffect(() => {
     if (media.length > 0 && uploadType !== "posts") {
@@ -156,7 +165,6 @@ export default function Profile() {
 
   // userDetails updation
   const hanldeUpdate = useCallback(async (userDetails) => {
-    console.log("triggered");
     try {
       const result = await patchApi(
         "api/userDetailsUpdate",
@@ -214,14 +222,14 @@ export default function Profile() {
 
   // post likes and comments
   const handleLike = useCallback(async (postId, api) => {
-    console.log(postId);
+    console.log("inside function", postId, api);
     try {
       const result = await postJsonApi(api, postId, "application/json", {
         secure: true,
       });
 
       if (result.status === 200) {
-        setComment("");
+        setComment((prev) => ({ ...prev, comment: "" }));
       }
     } catch (err) {
       console.log(err);
@@ -256,16 +264,6 @@ export default function Profile() {
     }
   }, []);
 
-  const [viewType, setViewType] = useState("user"); // "posts" | "blogs"
-  const sections = [
-    {
-      title: "profile",
-      data:
-        viewType === "posts"
-          ? selectedMechanic?.posts || []
-          : [{ id: "placeholder" }],
-    },
-  ];
   return (
     <SafeAreaView
       style={{
@@ -338,7 +336,7 @@ export default function Profile() {
         }
         renderItem={({ item }) => (
           <View className="mt-2 p-4 rounded-md -z-10">
-            {selectedMechanic?.role === "mechanic" && viewType === "user" && (
+            {selectedMechanic?.role === "mechanic" && (viewType === "user" || viewType === "share") && (
               <UserDetails userDetails={selectedMechanic} isMobile={isMobile} />
             )}
             {(viewType === "grid" || viewType === "plus-square") &&

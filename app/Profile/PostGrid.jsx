@@ -17,7 +17,6 @@ const PostGrid = ({ isDesktop, selectedMechanic, page, setPostModal }) => {
       extraData={selectedMechanic?.posts} // 👈 force FlatList to re-render on updates
       contentContainerStyle={{ padding: 16, marginBottom: 120 }}
       renderItem={({ item: post, index }) => {
-        console.log(post)
         const mediaUri = `http://localhost:5000/api/mediaDownload/${post?.media}`;
         const modalIndex = index; // ✅ safe now because we already reversed
 

@@ -117,11 +117,12 @@ const UserCard = ({
         </Text>
 
         {/* view more button */}
-        <View className="bg-gray-100 p-2 mt-2 overflow-hidden">
-          <View className=" flex flex-row">
+        <View className="bg-gray-100 p-2 mt-2">
+          <View className="flex flex-row">
             <View className="w-max">
               <Text>{mechanic.subcategory[0].name} :</Text>
             </View>
+
             <View
               className="flex-1 flex-row"
               onLayout={(e) => {
@@ -140,23 +141,23 @@ const UserCard = ({
             </View>
           </View>
 
-          {/* <Pressable
+          <Pressable
             onPress={() => {
               setSelectedMechanic(mechanic);
               setServiceModal(true);
             }}
-            className="mt-2  rounded-md"
+            className="mt-4 rounded-md items-end"
           >
-            <Text className="hover:underline font-semibold mt-2">
-              View more
-            </Text>
-          </Pressable> */}
+            <View>
+              <Text className="font-semibold underline">View more</Text>
+            </View>
+          </Pressable>
         </View>
 
         {/* special services */}
 
         <Text className="font-bold mt-4">Specialization / services</Text>
-        <View className="bg-gray-100 p-2 mt-2 overflow-hidden">
+        <View className="bg-gray-100 p-2 mt-2">
           <View>
             <Text>
               {mechanic?.services[0]?.length > 25
@@ -164,16 +165,17 @@ const UserCard = ({
                 : `${mechanic.services[0]} ...`}
             </Text>
           </View>
+
           <Pressable
-            className=" hover:underline"
             onPress={() => {
               setSelectedMechanic(mechanic);
               setServiceModal(true);
             }}
+            className="mt-4 items-end"
           >
-            <Text className="hover:underline font-semibold mt-2">
-              View more
-            </Text>
+            <View>
+              <Text className="font-semibold underline">View more</Text>
+            </View>
           </Pressable>
         </View>
 
@@ -216,7 +218,7 @@ const UserCard = ({
               <Text className="text-white text-lg">Call</Text>
             </Pressable>
           ) : (
-            ""
+            <Text></Text>
           )}
         </View>
 
@@ -242,7 +244,7 @@ const UserCard = ({
               </Pressable>
             </>
           ) : (
-            <View pointerEvents="box-none" className="flex flex-row gap-4 ">
+            <View style={{pointerEvents:"box-none"}} className="flex flex-row gap-4 ">
               <Text>No Reviews Yet</Text>
               <Pressable
                 onPress={() => {

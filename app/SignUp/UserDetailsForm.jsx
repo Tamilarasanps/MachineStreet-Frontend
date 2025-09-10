@@ -6,7 +6,6 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useCallback, useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {
-  Platform,
   Pressable,
   ScrollView,
   Text,
@@ -147,7 +146,7 @@ const UserDetailsForm = ({
   };
 
   return (
-    <ScrollView className="w-full h-full bg-white rounded-md ">
+    <ScrollView className="w-full h-full bg-white rounded-md" keyboardShouldPersistTaps={true}>
       <View style={{ height: "100%", width: "100%", paddingBottom: 20 }}>
         {/* Back Button */}
         {/* {page  && ( */}
@@ -359,7 +358,7 @@ const UserDetailsForm = ({
         <Pressable
           disabled={isLoading}
           onPress={() => handleSubmit(userDetails)}
-          className={`h-12 -z-10 bg-TealGreen py-4 px-4 mx-auto mt-24 rounded-md overflow-hidden ${
+          className={`h-12 -z-10 bg-TealGreen items-center justify-center px-4 mx-auto mt-24 rounded-md overflow-hidden ${
             isDesktop ? "w-[75%]" : "w-full"
           } ${isLoading ? "opacity-50" : ""}`}
         >

@@ -78,7 +78,7 @@ const Login = () => {
   });
 
   // passwordReset
-  console.log('userDetails :', userDetails);
+ 
   const handlePasswordReset = useCallback(async (password) => {
     try {
       const result = await patchApi(

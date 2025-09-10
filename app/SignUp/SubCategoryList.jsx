@@ -9,8 +9,7 @@ const SubCategoryList = ({
   industrySuggestion,
   handleChange,
 }) => {
-  
-  // add category 
+  // add category
 
   const handleAddCategory = () => {
     setUserDetails((prev) => ({
@@ -42,7 +41,6 @@ const SubCategoryList = ({
     updated[catIndex].services.splice(subIndex, 1);
     setUserDetails({ ...userDetails, subcategory: updated });
   };
-console.log('industrySuggestion.industry :', industrySuggestion.industry)
   return (
     <>
       {/* industry input tag */}
@@ -85,8 +83,7 @@ console.log('industrySuggestion.industry :', industrySuggestion.industry)
                   userDetails?.industry?.toLowerCase()
               );
               const subSug = industrySuggestion?.subcategory?.find(
-                (c) =>
-                  c?.value?.toLowerCase() === cat?.name?.toLowerCase()
+                (c) => c?.value?.toLowerCase() === cat?.name?.toLowerCase()
               );
 
               return (
