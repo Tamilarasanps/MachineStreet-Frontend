@@ -18,7 +18,7 @@ export const AppProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedMechanic, setSelectedMechanic] = useState(null);
   const [revies, setReviews] = useState([]);
-  const [qr, setQr] = useState(true);
+  // const [qr, setQr] = useState(true);
 
   const [socket, setSocket] = useState(null);
 
@@ -29,23 +29,26 @@ export const AppProvider = ({ children }) => {
       try {
         let storedToken;
         let storedUserId;
+        let storedUserRole;
 
         if (Platform.OS === "web") {
           storedUserId = localStorage.getItem("userId");
+          storedUserRole = localStorage.getItem("role");
         } else {
           storedUserId = await SecureStore.getItemAsync("userId");
-          // storedToken = await SecureStore.getItemAsync("token");
+          storedUserRole = await SecureStore.getItemAsync("role");
         }
 
         setUserId(storedUserId);
+        setUserRole(storedUserRole);
         // setToken(storedToken);
 
         // ✅ initialize socket
-        newSocket = io(
+        newSocket = io("https://api-machinestreets.onrender.com",
           // "https://api.machinestreets.com",
-          Platform.OS === "web"
-            ? "http://localhost:5000"
-            : "http://192.168.1.10:5000",
+          // Platform.OS === "web"
+          //   ? "http://localhost:5000"
+          //   : "http://192.168.1.10:5000",
           {
             transports: ["websocket", "polling"],
             reconnection: true,

@@ -43,6 +43,7 @@ const Settings = ({ setModal, setViewType }) => {
         className="flex-row items-center gap-4 border border-gray-300 rounded-md px-4 py-3"
         onPress={() => {
           setViewType("edit-2");
+          setModal("")
         }}
       >
         <FontAwesome5 name="user-edit" size={30} color="#2095A2" />

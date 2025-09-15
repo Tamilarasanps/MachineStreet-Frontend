@@ -22,7 +22,7 @@ console.log('rendered')
         style={{ width: "100%", height: 48 }}
       >
         <Pressable
-          onPress={() => router.push('/(tabs)')}
+          onPress={() => router.push('/(tabs)/HomePage')}
           className="flex-row items-center h-12 px-4 bg-white"
         >
           <Icon name="arrow-left" size={24} color="grey" />
@@ -36,7 +36,7 @@ console.log('rendered')
       >
         {selectedMechanic?.banner ? <Image
           source={{
-            uri: `http://localhost:5000/api/mediaDownload/${selectedMechanic?.banner}`,
+            uri: `https://api-machinestreets.onrender.com/api/mediaDownload/${selectedMechanic?.banner}`,
           }}
           style={{
             width: "100%",
@@ -68,7 +68,7 @@ console.log('rendered')
             {selectedMechanic?.profileImage ? (
               <Image
                 source={{
-                  uri: `http://localhost:5000/api/mediaDownload/${selectedMechanic?.profileImage}`,
+                  uri: `https://api-machinestreets.onrender.com/api/mediaDownload/${selectedMechanic?.profileImage}`,
                 }}
                 className="w-full h-full"
                 resizeMode="cover"

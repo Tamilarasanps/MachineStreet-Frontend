@@ -11,16 +11,9 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppContext } from "@/context/AppContext";
 
-
-
-
 export default function TabLayout() {
   const { setUserId } = useAppContext();
   const insets = useSafeAreaInsets(); // safe area insets
-
-
- 
-  
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -85,6 +78,15 @@ export default function TabLayout() {
           title: "Home",
           tabBarIcon: ({ focused }) => (
             <AnimatedIcon name="home" focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="HomePage"
+        options={{
+          title: "Mechanics",
+          tabBarIcon: ({ focused }) => (
+            <AnimatedIcon name="cogs" focused={focused} />
           ),
         }}
       />

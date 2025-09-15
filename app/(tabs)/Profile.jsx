@@ -44,10 +44,9 @@ export default function Profile() {
   const [postModal, setPostModal] = useState(null);
   const [comment, setComment] = useState({ comment: "", userId: null });
 
-  useEffect(()=>{
-    setComment((prev)=>({...prev,userId : userId}))
-  },[userId])
-
+  useEffect(() => {
+    setComment((prev) => ({ ...prev, userId: userId }));
+  }, [userId]);
 
   const insets = useSafeAreaInsets();
 
@@ -336,9 +335,13 @@ export default function Profile() {
         }
         renderItem={({ item }) => (
           <View className="mt-2 p-4 rounded-md -z-10">
-            {selectedMechanic?.role === "mechanic" && (viewType === "user" || viewType === "share") && (
-              <UserDetails userDetails={selectedMechanic} isMobile={isMobile} />
-            )}
+            {selectedMechanic?.role === "mechanic" &&
+              (viewType === "user" || viewType === "share") && (
+                <UserDetails
+                  userDetails={selectedMechanic}
+                  isMobile={isMobile}
+                />
+              )}
             {(viewType === "grid" || viewType === "plus-square") &&
               (selectedMechanic?.posts.length > 0 ? (
                 <PostGrid
@@ -386,8 +389,12 @@ export default function Profile() {
           style={styles.fullScreen}
         >
           <SafeAreaView
-            className="w-full items-center justify-center"
-            style={{ flex: 1 }}
+            className="w-full h-full items-center justify-center"
+            style={{
+              flex: 1,
+              paddingTop: Platform.OS === "ios" ? insets.top : 0,
+              paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+            }}
             edges={["top", "bottom"]}
           >
             {/* Background close */}
@@ -417,6 +424,7 @@ export default function Profile() {
                 backgroundColor: "#fff",
                 borderRadius: 24,
                 padding: 20,
+                height : modal==='settings' ? "auto" : "100%",
                 // shadowColor: "#000",
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.25,

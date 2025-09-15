@@ -205,7 +205,7 @@ const SignUp = () => {
         }
         setTimeout(() => {
           setShowWelcome(false);
-          router.push("/(tabs)");
+          router.push('/(tabs)/HomePage');
         }, 5000);
       }
     } catch (err) {

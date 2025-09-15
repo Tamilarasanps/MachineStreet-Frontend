@@ -69,7 +69,7 @@ const Login = () => {
           localStorage.setItem("userId", response?.data?.userId);
         }
         setTimeout(() => {
-          router.replace("/(tabs)");
+          router.replace('/(tabs)/HomePage');
         }, 2000);
       }
     } catch (error) {

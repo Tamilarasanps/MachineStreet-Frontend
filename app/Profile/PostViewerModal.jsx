@@ -114,7 +114,7 @@ const PostViewerModal = ({
 
         if (Platform.OS === "web") {
           // Use your dev server URL for web
-          productUrl = `http://localhost:8081/E2?id=${userId}&type=user_visit&post=${post._id}`;
+          productUrl = `https://api-machinestreets.onrender.com/E2?id=${userId}&type=user_visit&post=${post._id}`;
         } else {
           // Use Expo Linking for native deep link
           productUrl = Linking.createURL("E2", {

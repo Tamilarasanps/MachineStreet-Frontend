@@ -8,26 +8,7 @@ import { LocationProvider } from "@/context/LocationContext";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import { FileUploadProvider } from "@/context/FileUpload";
 import { FormatTimeProvider } from "@/context/FormatTime";
-
-import * as Linking from "expo-linking";
-
-const prefix = Linking.createURL("/"); // uses your scheme from app.json
-const linking = {
-  prefixes: [prefix, "https://myapp.com", "frontend://"],
-  config: {
-    screens: {
-      "(tabs)": {
-        screens: {
-          index: "home",
-          Profile: "user/:id", // deep link for profile
-        },
-      },
-      Login: "login",
-      SignUp: "signup",
-      E2: "e2/:id",
-    },
-  },
-};
+import { linking } from "./linking";
 
 export default function RootLayout() {
   const toastConfig = {

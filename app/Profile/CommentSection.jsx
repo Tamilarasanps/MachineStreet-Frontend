@@ -55,7 +55,7 @@ const CommentSection = ({
                 {c.userId?.profileImage ? (
                   <Image
                     source={{
-                      uri: `http://localhost:5000/api/mediaDownload/${c?.userId?.profileImage}`,
+                      uri: `https://api-machinestreets.onrender.com/api/mediaDownload/${c?.userId?.profileImage}`,
                     }}
                     className="w-10 h-10 rounded-full mr-3"
                   />
