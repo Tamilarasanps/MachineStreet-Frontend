@@ -36,7 +36,7 @@ console.log('rendered')
       >
         {selectedMechanic?.banner ? <Image
           source={{
-            uri: `https://api-machinestreets.onrender.com/api/mediaDownload/${selectedMechanic?.banner}`,
+            uri: `https://api.machinestreets.com/api/mediaDownload/${selectedMechanic?.banner}`,
           }}
           style={{
             width: "100%",
@@ -68,7 +68,7 @@ console.log('rendered')
             {selectedMechanic?.profileImage ? (
               <Image
                 source={{
-                  uri: `https://api-machinestreets.onrender.com/api/mediaDownload/${selectedMechanic?.profileImage}`,
+                  uri: `https://api.machinestreets.com/api/mediaDownload/${selectedMechanic?.profileImage}`,
                 }}
                 className="w-full h-full"
                 resizeMode="cover"

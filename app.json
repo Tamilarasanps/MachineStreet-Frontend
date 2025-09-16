@@ -2,7 +2,7 @@
   "expo": {
     "name": "MachineStreets",
     "slug": "machine-streets",
-    "version": "1.0.0",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "scheme": "machinestreets",
@@ -14,10 +14,13 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "We need your location to provide better services."
+        "NSLocationWhenInUseUsageDescription": "MachineStreets needs access to your location to provide better services.",
+        "NSLocationAlwaysUsageDescription": "MachineStreets needs access to your location in the background.",
+        "NSPhotoLibraryAddUsageDescription": "MachineStreets access to your photo library to save posters."
       }
     },
     "android": {
+      "versionCode": 10,
       "intentFilters": [
         {
           "action": "VIEW",
@@ -34,7 +37,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "edgeToEdgeEnabled": true,
-      "package": "com.machinestreets"
+      "package": "com.MachineStreet.app"
     },
     "web": {
       "bundler": "metro",

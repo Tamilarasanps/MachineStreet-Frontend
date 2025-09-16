@@ -36,7 +36,7 @@ export const LocationProvider = ({ children }) => {
 
       try {
         const response = await fetch(
-          `http://192.168.1.11:5000/api/reverse-geocode?lat=${geoCoords.latitude}&lon=${geoCoords.longitude}`
+          `http://api.machinestreets.com/api/reverse-geocode?lat=${geoCoords.latitude}&lon=${geoCoords.longitude}`
         );
         if (!response.ok) throw new Error("Failed to fetch address");
 

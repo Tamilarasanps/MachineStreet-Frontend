@@ -55,14 +55,14 @@ const DesktopPostViewer = ({
           >
             {item?.contentType === "video" ? (
               <VideoGridItem
-                source={`https://api-machinestreets.onrender.com/api/mediaDownload/${item?.media}`}
+                source={`https://api.machinestreets.com/api/mediaDownload/${item?.media}`}
                 isVisible={true}
                 page={"pvm"}
               />
             ) : (
               <Image
                 source={{
-                  uri: `https://api-machinestreets.onrender.com/api/mediaDownload/${item?.media}`,
+                  uri: `https://api.machinestreets.com/api/mediaDownload/${item?.media}`,
                 }}
                 className="w-full h-full"
                 resizeMode="contain"

@@ -35,8 +35,7 @@ const LandingPage = () => {
 
   const getCounts = useCallback(async () => {
     try {
-      console.log('trugger')
-      const response = await getJsonApi("api/landingPage/", "application/json",
+      const response = await getJsonApi("api/landingPage", "application/json",
         { secure: false });
       console.log('response :', response)
       if (response.status === 200) {

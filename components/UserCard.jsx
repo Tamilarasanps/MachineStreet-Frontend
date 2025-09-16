@@ -59,7 +59,7 @@ const UserCard = ({
         {mechanic?.profileImage ? (
           <Image
             source={{
-              uri: `https://api-machinestreets.onrender.com/api/mediaDownload/${mechanic?.profileImage}`,
+              uri: `https://api.machinestreets.com/api/mediaDownload/${mechanic?.profileImage}`,
             }}
             resizeMode="cover"
             style={{

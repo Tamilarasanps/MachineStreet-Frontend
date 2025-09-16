@@ -6,11 +6,11 @@ import { router } from "expo-router";
 import { useAppContext } from "@/context/AppContext";
 
 const useApi = () => {
-  const API_URL = "https://api-machinestreets.onrender.com"
-    // Platform.OS === "web"
+  // const API_URL = "https://api-machinestreets.onrender.com"
+    //  const API_URL = Platform.OS === "web"
     //   ? "http://localhost:5000"
     //   : "http://192.168.1.10:5000";
-  // const API_URL = "https://api.machinestreets.com";
+  const API_URL = "https://api.machinestreets.com";
 
   const {startLoading, stopLoading} = useAppContext();
   const handleRequest = async (request) => {

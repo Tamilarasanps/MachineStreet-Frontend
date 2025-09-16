@@ -104,7 +104,7 @@ const MobilePostViewer = React.memo((props) => {
             {user?.profileImage ? (
               <Image
                 source={{
-                  uri: `https://api-machinestreets.onrender.com/api/mediaDownload/${user?.profileImage}`,
+                  uri: `https://api.machinestreets.com/api/mediaDownload/${user?.profileImage}`,
                 }}
                 style={{
                   height: 48,
@@ -155,14 +155,14 @@ const MobilePostViewer = React.memo((props) => {
           >
             {item?.contentType === "video" ? (
               <VideoGridItem
-                source={`https://api-machinestreets.onrender.com/api/mediaDownload/${item?.media}`}
+                source={`https://api.machinestreets.com/api/mediaDownload/${item?.media}`}
                 page="pvm"
                 isVisible={index === currentIndex}
               />
             ) : (
               <Image
                 source={{
-                  uri: `https://api-machinestreets.onrender.com/api/mediaDownload/${item?.media}`,
+                  uri: `https://api.machinestreets.com/api/mediaDownload/${item?.media}`,
                 }}
                 style={{ width: "100%", height: "100%" }}
                 resizeMode="contain"

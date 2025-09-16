@@ -56,13 +56,13 @@ const HomePage = () => {
   const slideAnim = useState(new Animated.Value(-width))[0]; // start off-screen left
   const selectedFIlterAnim = useRef(new Animated.Value(0)).current;
 
-  const [isOpen, setIsOpen] = useState(Platform.OS === "web" && isDesktop);
+  const [isOpen, setIsOpen] = useState(Platform.OS === "web" && width>1024);
   const [shouldRenderFilter, setShouldRenderFilter] = useState(isOpen);
 
   const [serviceModal, setServiceModal] = useState(false);
   const [reviewModal, setReviewModal] = useState(null);
   const [qr, setQr] = useState(false);
-  const [role, setRole] = useState(null);
+  // const [role, setRole] = useState(null);
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
@@ -93,7 +93,7 @@ const HomePage = () => {
 
         setPage((prev) => prev + 1);
         setTotalPages(result?.data?.totalPages);
-        setRole(result?.data?.role);
+        // setRole(result?.data?.role);
 
         // ✅ append instead of overwrite
         setUserDetails((prev) => [
@@ -298,11 +298,7 @@ const HomePage = () => {
     }
   }, [searchBarValue]);
 
-  {
-    /* review modal */
-  }
-console.log(qr === false )
-console.log('role :', userRole )
+
   return (
     <SafeAreaView
       edges={["top", "left", "right"]} // ignore bottom to let tab bar handle it

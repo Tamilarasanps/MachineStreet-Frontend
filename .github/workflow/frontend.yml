@@ -1,0 +1,73 @@
+name: Expo Frontend CI/CD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-web:
+    name: Build Expo Web App
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install Expo CLI
+        run: npm install -g expo-cli
+
+      - name: Export Expo Web Build
+        run: npx expo export --platform web
+
+      - name: List Build Output
+        run: ls -R
+
+      - name: Upload Web Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: dist/
+
+  build-android:
+    name: Build Expo Android App
+    runs-on: ubuntu-latest
+    needs: build-web
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
+      - name: Authenticate with Expo
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas whoami || eas login --token $EXPO_TOKEN
+
+      - name: Build Android AAB (Production)
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas build --platform android --profile production --non-interactive
+
+      - name: Build Android APK
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas build --platform android --profile preview --non-interactive

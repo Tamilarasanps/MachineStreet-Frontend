@@ -44,8 +44,7 @@ export const AppProvider = ({ children }) => {
         // setToken(storedToken);
 
         // ✅ initialize socket
-        newSocket = io("https://api-machinestreets.onrender.com",
-          // "https://api.machinestreets.com",
+        newSocket = io("https://api.machinestreets.com",
           // Platform.OS === "web"
           //   ? "http://localhost:5000"
           //   : "http://192.168.1.10:5000",
