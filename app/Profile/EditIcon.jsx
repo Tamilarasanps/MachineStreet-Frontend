@@ -13,7 +13,6 @@ const EditIcon = ({ isMobile, upload,setUploadType,type}) => {
       }}
       onPress={async () => {
         setUploadType(type)
-        console.log("po");
         await upload();
       }}
     >

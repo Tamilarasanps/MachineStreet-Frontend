@@ -6,11 +6,17 @@
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "scheme": "machinestreets",
-    "deepLinking": true,
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "platforms": ["ios", "android", "web"],
-    "assetBundlePatterns": ["assets/images/*", "assets/fonts/*"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "assets/images/*",
+      "assets/fonts/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -24,8 +30,15 @@
       "intentFilters": [
         {
           "action": "VIEW",
-          "data": [{ "scheme": "machinestreets" }],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "data": [
+            {
+              "scheme": "machinestreets"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ],
       "adaptiveIcon": {
@@ -37,7 +50,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "edgeToEdgeEnabled": true,
-      "package": "com.MachineStreet.app"
+      "package": "com.tamilarasanps.frontend"
     },
     "web": {
       "bundler": "metro",
@@ -61,17 +74,17 @@
           "photosPermission": "MachineStreets needs access to your photos."
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-font",
+      "expo-video",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "router": {},
-      "eas": {
-        "projectId": "2cbb7ea4-fdca-4fb8-bd68-262c68bf9429"
-      }
-    },
-    "owner": "concept_creators"
+      "eas": {}
+    }
   }
 }

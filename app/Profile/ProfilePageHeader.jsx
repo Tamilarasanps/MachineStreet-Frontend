@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Pressable, Image } from "react-native";
-import Icon from "react-native-vector-icons/Feather"; // or MaterialIcons depending on your setup
+import { Feather } from "@expo/vector-icons";
+ // or MaterialIcons depending on your setup
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
 import EditIcon from "./EditIcon"; // ✅ adjust path to where your EditIcon lives
@@ -13,7 +14,6 @@ const ProfilePageHeader = ({
   setUploadType,
   setModal,
 }) => {
-console.log('rendered')
   return (
     <>
       {/* back icon */}
@@ -25,7 +25,7 @@ console.log('rendered')
           onPress={() => router.push('/(tabs)/HomePage')}
           className="flex-row items-center h-12 px-4 bg-white"
         >
-          <Icon name="arrow-left" size={24} color="grey" />
+          <Feather name="arrow-left" size={24} color="grey" />
         </Pressable>
       </View>
 
@@ -37,6 +37,7 @@ console.log('rendered')
         {selectedMechanic?.banner ? <Image
           source={{
             uri: `https://api.machinestreets.com/api/mediaDownload/${selectedMechanic?.banner}`,
+            // uri: `http://192.168.43.158:5000/api/mediaDownload/${selectedMechanic?.banner}`,
           }}
           style={{
             width: "100%",
@@ -99,7 +100,7 @@ console.log('rendered')
             className="absolute right-0 top-4 w-24 items-center"
             onPress={() => setModal("settings")}
           >
-            <Icon name="settings" size={22} />
+            <Feather name="settings" size={22} color="black" />
           </Pressable>
         </View>
       )}

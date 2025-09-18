@@ -37,7 +37,6 @@ const LandingPage = () => {
     try {
       const response = await getJsonApi("api/landingPage", "application/json",
         { secure: false });
-      console.log('response :', response)
       if (response.status === 200) {
         const mech = response?.data?.data?.mechanicCount || 0;
         const mach = response?.data?.data?.industryCount || 0;

@@ -27,10 +27,7 @@ const VideoGridItem = ({ source, page, isVisible, setPostModal }) => {
   }, [isVisible]);
 
   useEffect(() => {
-    return () => {
-      player.pause?.();
-      player.seekTo?.(0);
-    };
+    return ;
   }, []);
 
   const appState = useRef(AppState.currentState);

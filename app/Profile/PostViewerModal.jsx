@@ -6,12 +6,15 @@ import {
   Dimensions,
   View,
   Share as NativeShare,
+  Alert,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Feather";
 import DesktopPostViewer from "./Desktop.PostViewer";
 import MobilePostViewer from "./Mobile.PostViewer";
-import { Alert } from "react-native";
 import * as Linking from "expo-linking";
 import { Feather } from "@expo/vector-icons";
 
@@ -35,7 +38,6 @@ const PostViewerModal = ({
   const [heartAnimations, setHeartAnimations] = useState({});
   const screenHeight = Dimensions.get("window").height;
 
-  // Setup heart animations for each post
   useEffect(() => {
     if (user?.posts) {
       const newAnimations = {};
@@ -49,7 +51,6 @@ const PostViewerModal = ({
     }
   }, [user?.posts]);
 
-  // Double tap + heart animation
   const lastTap = useRef(null);
 
   const handleDoubleTap = (post) => {
@@ -61,7 +62,7 @@ const PostViewerModal = ({
       if (!post.likes.includes(userId)) {
         setTimeout(() => {
           handleLike({ postId: post._id }, "api/postLikes");
-        }, 1000); // ✅ use 200 (not [200])
+        }, 500);
       }
     } else {
       lastTap.current = now;
@@ -103,31 +104,19 @@ const PostViewerModal = ({
     });
   };
 
-  // Share functionality
-
   const share = useCallback(
     async (post) => {
-      console.log("Triggered:", post);
-
       try {
         let productUrl;
-
         if (Platform.OS === "web") {
-          // Use your dev server URL for web
           productUrl = `https://api.machinestreets.com/E2?id=${userId}&type=user_visit&post=${post._id}`;
         } else {
-          // Use Expo Linking for native deep link
           productUrl = Linking.createURL("E2", {
-            queryParams: {
-              id: userId,
-              type: "user_visit",
-              post: post._id,
-            },
+            queryParams: { id: userId, type: "user_visit", post: post._id },
           });
         }
 
         const message = `Check out this post: ${post.bio || ""}\n${productUrl}`;
-
         if (Platform.OS === "web") {
           if (navigator.share) {
             await navigator.share({
@@ -142,10 +131,7 @@ const PostViewerModal = ({
         } else {
           await NativeShare.share({ message });
         }
-
-        console.log("Shared URL:", productUrl);
       } catch (error) {
-        console.error("Sharing failed:", error);
         Alert.alert("Error", "Unable to share the post.");
       }
     },
@@ -154,22 +140,29 @@ const PostViewerModal = ({
 
   const goPrev = () =>
     setPostModal((prev) => (prev < user.posts.length - 1 ? prev + 1 : prev));
-
   const goNext = () => setPostModal((prev) => (prev > 0 ? prev - 1 : prev));
 
   return (
-    <View className="z-50 flex-1">
-      {/* Close button for desktop */}
+    <SafeAreaView className="z-50 flex-1 ">
+      {/* Desktop close button */}
       {Platform.OS === "web" && isDesktop && (
         <Pressable
           onPress={() => setPostModal(null)}
-          className="z-50 bg-black/40 p-2 rounded-full absolute right-2 top-2"
+          className="bg-gray-100 z-50 p-2 rounded-full absolute right-2 top-2"
         >
           <Icon name="x" size={26} color="white" />
         </Pressable>
       )}
       {!isDesktop && (
-        <View className="w-full bg-gray" style={{ height: screenHeight * 0.1 }}>
+        <View
+          className="w-full bg-white"
+          style={{
+            height:
+              Platform.OS === "ios"
+                ? (screenHeight - (insets.top + insets.bottom)) * 0.1
+                : screenHeight * 0.1,
+          }}
+        >
           <Pressable
             onPress={() => setPostModal(null)}
             className="z-50 bg-black/40 p-2 rounded-full absolute left-2 top-2"
@@ -179,7 +172,7 @@ const PostViewerModal = ({
         </View>
       )}
 
-      {isDesktop ? (
+      {isDesktop && user?.posts[postModal] ? (
         <DesktopPostViewer
           type={type}
           isDesktop={isDesktop}
@@ -188,10 +181,10 @@ const PostViewerModal = ({
           setComment={setComment}
           setModal={setModal}
           handleLike={handleLike}
-          handleDoubleTap={handleDoubleTap} // ✅ added
-          heartAnimations={heartAnimations} // ✅ added
-          share={share} // ✅ added
-          item={user?.posts[postModal]}
+          handleDoubleTap={handleDoubleTap}
+          heartAnimations={heartAnimations}
+          share={share}
+          item={user.posts[postModal]}
           goPrev={goPrev}
           goNext={goNext}
           postModal={postModal}
@@ -199,7 +192,8 @@ const PostViewerModal = ({
           totalPosts={user?.posts?.length}
           postDelete={postDelete}
         />
-      ) : (
+      ) : null}
+      {!isDesktop && user?.posts[postModal] && (
         <MobilePostViewer
           screenHeight={screenHeight}
           type={type}
@@ -213,16 +207,16 @@ const PostViewerModal = ({
           postModal={postModal}
           scrollY={scrollY}
           handleLike={handleLike}
-          handleDoubleTap={handleDoubleTap} // ✅ added
-          heartAnimations={heartAnimations} // ✅ added
-          share={share} // ✅ added
+          handleDoubleTap={handleDoubleTap}
+          heartAnimations={heartAnimations}
+          share={share}
           isDesktop={isDesktop}
           setPostModal={setPostModal}
           insets={insets}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
-
+// kjnjh
 export default PostViewerModal;

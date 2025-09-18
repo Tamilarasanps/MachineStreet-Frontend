@@ -60,7 +60,6 @@ const Login = () => {
 
       if (response && response.status === 200) {
         if (Platform.OS !== "web") {
-          console.log("token :", response?.data?.token);
           await SecureStore.setItemAsync("token", response?.data?.token);
           await SecureStore.setItemAsync("role", response?.data?.role);
           await SecureStore.setItemAsync("userId", response?.data?.userId);
@@ -105,7 +104,6 @@ const Login = () => {
         "application/json",
         { secure: false }
       );
-      console.log(response);
       if (response && response.status === 200) {
         if(step===0) setUserDetails((prev) => ({ ...prev, userId: response?.data?.userId }));
         setStep((prev) => prev + 1);

@@ -71,7 +71,6 @@ export const AppProvider = ({ children }) => {
 
         // likes updation
         newSocket.on("likes-update", (updatedPost) => {
-          console.log("Socket likes-update:", updatedPost);
           setSelectedMechanic((prev) =>
             prev
               ? {

@@ -2,16 +2,10 @@ import InputWOL from "@/components/InputWOL";
 import MobileInput from "@/components/MobileInput";
 import { useAppContext } from "@/context/AppContext";
 import useApi from "@/hooks/useApi";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { useCallback, useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import {
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import Loading from "@/components/Loading";
 import useScreenWidth from "../../hooks/useScreenWidth";
 import Location from "./Location";
@@ -57,7 +51,6 @@ const UserDetailsForm = ({
           "application/json",
           { secure: false }
         );
-        console.log("data :", data);
         if (data.status === 200) {
           setIndustrySuggestion(data?.data?.industries);
           setStates(data?.data?.states[1]?.districts);
@@ -134,7 +127,6 @@ const UserDetailsForm = ({
         }));
       }
     } catch (error) {
-      console.log("Phone parsing error:", error);
       setUserDetails((prev) => ({
         ...prev,
         mobile: {
@@ -146,7 +138,10 @@ const UserDetailsForm = ({
   };
 
   return (
-    <ScrollView className="w-full h-full bg-white rounded-md" keyboardShouldPersistTaps={true}>
+    <ScrollView
+      className={`w-full ${page !== "profile" ? "h-full" : "h-[90%]"} bg-white rounded-md`}
+      keyboardShouldPersistTaps="always"
+    >
       <View style={{ height: "100%", width: "100%", paddingBottom: 20 }}>
         {/* Back Button */}
         {/* {page  && ( */}
@@ -313,7 +308,7 @@ const UserDetailsForm = ({
                 userDetails?.confirmPassword !== userDetails?.password,
             },
           ].map((field) => (
-            <View>
+            <View key={field.key}>
               <View key={field.key} className="relative ">
                 <InputWOL
                   placeholder={field.placeholder}
@@ -325,10 +320,10 @@ const UserDetailsForm = ({
                   onFocus={() => setFocusedLabel(field.key)}
                   onBlur={() => setFocusedLabel(null)}
                 />
-                <FontAwesome
+                <Ionicons
                   onPress={() => setPassDisplay(!passDisplay)}
-                  name={passDisplay ? "eye" : "eye-slash"}
-                  size={18}
+                  name={passDisplay ? "eye" : "eye-off"}
+                  size={20}
                   color="black"
                   className="absolute right-4 bottom-7"
                   style={{ zIndex: 9999 }}

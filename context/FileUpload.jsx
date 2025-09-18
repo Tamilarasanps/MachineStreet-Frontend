@@ -28,7 +28,6 @@ export const FileUploadProvider = ({ children }) => {
 
     if (!result.canceled) {
       const asset = result.assets[0];
-      console.log('result :', result)
       // Normalize fileSize for web
       const fileSize =
         asset.fileSize ??

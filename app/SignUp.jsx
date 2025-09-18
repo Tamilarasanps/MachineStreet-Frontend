@@ -163,7 +163,6 @@ const SignUp = () => {
         "application/json",
         { secure: false }
       );
-      console.log("result :", result);
 
       if (result.status === 200) {
         setStep(2);

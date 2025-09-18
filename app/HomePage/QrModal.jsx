@@ -10,7 +10,7 @@ import {
   Image,
   Linking,
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import qrImage from "../../assets/qr.png";
 
 const QrModal = ({ visible, onClose, getItem }) => {
@@ -18,11 +18,11 @@ const QrModal = ({ visible, onClose, getItem }) => {
   const modalWidth = Platform.OS === "web" && width >= 1024 ? "50%" : "90%";
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
+    <Modal visible={visible} transparent statusBarTranslucent={true} animationType="slide">
       <View style={styles.overlay}>
         <View style={[styles.modalContainer, { width: modalWidth }]}>
-          <Pressable style={styles.closeIcon} onPress={onClose}>
-            <Icon name="close" size={24} color="#fff" />
+          <Pressable style={styles.closeIcon} onPress={onClose} className="outline-none">
+          <AntDesign name="close-circle" size={24} color="red" />
           </Pressable>
           <Text style={styles.title}>Generate Your Business Qr</Text>
 
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 12,
     right: 12,
-    backgroundColor: "#444",
+    backgroundColor: "#fff",
     borderRadius: 20,
     padding: 4,
   },

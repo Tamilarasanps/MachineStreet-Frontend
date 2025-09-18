@@ -7,7 +7,7 @@ import {
   Keyboard,
   ScrollView,
 } from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import Fontisto from "@expo/vector-icons/Fontisto";
 import ReviewModal from "./ReviewModal";
 import Rating from "./Rating";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -30,7 +30,6 @@ const Modal_R = ({
       animationType="slide"
       transparent={true}
       statusBarTranslucent={true}
-      presentationStyle="fullScreen"
       onRequestClose={() => setReviewModal("")}
     >
       <SafeAreaView
@@ -42,7 +41,7 @@ const Modal_R = ({
       >
         <View
           style={{
-            height: "95%",
+            height: "90%",
             width: isTablet ? 500 : "100%",
             backgroundColor: "#fff",
             borderTopLeftRadius: 24,
@@ -58,11 +57,11 @@ const Modal_R = ({
           }}
         >
           {reviewModal === "read" && selectedMechanic && (
-            <AntDesign
-              onPress={() => setReviewModal("")}
-              name="closecircle"
+            <Fontisto
+              name="close"
               size={24}
               color="red"
+              onPress={() => setReviewModal("")}
               style={{
                 position: "absolute",
                 top: 16,
@@ -82,12 +81,12 @@ const Modal_R = ({
             <View style={{ flex: 1 }}>
               {reviewModal === "read" ? (
                 selectedMechanic && (
-                    <ReviewModal
-                      setReviewModal={setReviewModal}
-                      selectedMechanic={selectedMechanic}
-                      height={height}
-                      width={width}
-                    />
+                  <ReviewModal
+                    setReviewModal={setReviewModal}
+                    selectedMechanic={selectedMechanic}
+                    height={height}
+                    width={width}
+                  />
                 )
               ) : (
                 <KeyboardAvoidingView

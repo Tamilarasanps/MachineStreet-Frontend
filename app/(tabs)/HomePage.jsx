@@ -14,7 +14,7 @@ import {
   Text,
   View,
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import SelectedFilter from "../FIlter/SelectedFIlters";
 import ServiceModal from "../HomePage/ServiceModal";
 import Modal_R from "../HomePage/Modal_R";
@@ -39,7 +39,7 @@ const HomePage = () => {
     selectedMechanic,
     setSelectedMechanic,
     isLoading,
-    userRole
+    userRole,
   } = useAppContext();
   const { isDesktop, width, isTablet, isMobile, height } = useScreenWidth();
   const { getJsonApi, postJsonApi } = useApi();
@@ -51,12 +51,12 @@ const HomePage = () => {
     userId: null,
   });
   const cache = useRef({}); // cache object
-  const [searchBarValue, setSearchBarValue] = useState('');
+  const [searchBarValue, setSearchBarValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const slideAnim = useState(new Animated.Value(-width))[0]; // start off-screen left
   const selectedFIlterAnim = useRef(new Animated.Value(0)).current;
 
-  const [isOpen, setIsOpen] = useState(Platform.OS === "web" && width>1024);
+  const [isOpen, setIsOpen] = useState(Platform.OS === "web" && width > 1024);
   const [shouldRenderFilter, setShouldRenderFilter] = useState(isOpen);
 
   const [serviceModal, setServiceModal] = useState(false);
@@ -80,7 +80,7 @@ const HomePage = () => {
   const getmechanics = useCallback(async () => {
     try {
       const result = await getJsonApi(
-        `homepage/getmechanics/?page=${page}&limit=1`,
+        `homepage/getmechanics/?page=${page}&limit=50`,
         "application/json",
         { secure: true }
       );
@@ -298,7 +298,6 @@ const HomePage = () => {
     }
   }, [searchBarValue]);
 
-
   return (
     <SafeAreaView
       edges={["top", "left", "right"]} // ignore bottom to let tab bar handle it
@@ -329,30 +328,31 @@ const HomePage = () => {
       {/* filter icon */}
       {width <= 1024 && (
         <Pressable onPress={() => setIsOpen(true)} className="mt-4 ml-3">
-          <Icon name="filter-list" size={40} color="#000" />
+          <Ionicons name="filter-outline" size={40} color="black" />
         </Pressable>
       )}
 
       <View className="flex-row w-full flex-1 ">
         {/* filter component */}
 
-        {(width > 1024 || shouldRenderFilter) && (
-          <Animated.View
-          style={{
-              pointerEvents : "box-none",
-              transform: [{ translateX: slideAnim }],
+        {/* filter component */}
+        {(width > 1024 || isOpen) && (
+          <View
+            style={{
+              height: "100%",
               position: width <= 1024 ? "absolute" : "relative",
               top: 0,
               bottom: 0,
               left: 0,
+              right: 0,
               width: isTablet
                 ? "40%"
                 : width > 1024
-                  ? "20%"
-                  : isMobile
-                    ? "99%"
-                    : null,
-              zIndex: 50,
+                ? "20%"
+                : isMobile
+                ? "100%"
+                : null,
+              zIndex: 999,
               paddingHorizontal: 8,
               paddingVertical: 8,
               backgroundColor: "#fff",
@@ -372,7 +372,7 @@ const HomePage = () => {
               setFilterItems={setFilterItems}
               width={width}
             />
-          </Animated.View>
+          </View>
         )}
 
         {qr === false && userRole === "mechanic" && (
@@ -385,12 +385,14 @@ const HomePage = () => {
         {/* userDetails */}
 
         <View
-          className={`flex-1 ${Platform.OS === "web" && width >= 1024 ? "p-4" : null} `}
+          className={`flex-1 ${
+            Platform.OS === "web" && width >= 1024 ? "p-4" : null
+          } `}
         >
           <FlatList
             key={isDesktop ? "desktop" : "mobile"}
             data={filteredMechanics}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item._id.toString()}
             numColumns={isDesktop ? 2 : 1}
             contentContainerStyle={{
               padding: isDesktop ? 10 : 0,
@@ -403,6 +405,7 @@ const HomePage = () => {
             }
             renderItem={({ item }) => (
               <View
+                key={item._id.toString()}
                 className={`${
                   Platform.OS === "web"
                     ? isDesktop

@@ -1,3 +1,6 @@
+// import React, { useRef, useState, useEffect } from "react";
+// import { Animated, View, Text, Platform } from "react-native";
+// import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useRef, useState, useEffect } from "react";
 import { Animated, View, Image, Text, Platform, Pressable } from "react-native";
 import VideoGridItem from "./VideoGridItem";
@@ -29,196 +32,177 @@ const MobilePostViewer = React.memo((props) => {
   } = props;
 
   const [currentIndex, setCurrentIndex] = useState(postModal);
-  const [deleteIcon, setDeleteIcon] = useState("");
   const flatListRef = useRef(null);
 
-  // sync external postModal
+  const [deleteIcon, setDeleteIcon] = useState("");
+
+  // ✅ Define ITEM_HEIGHT once
+  const ITEM_HEIGHT =
+    Platform.OS === "ios"
+      ? (screenHeight - (insets.top + insets.bottom)) * 0.9
+      : screenHeight * 0.9;
+
+  // ✅ Scroll to initial index after FlatList mounts
   useEffect(() => {
-    if (postModal !== null) {
-      setCurrentIndex(postModal);
+    if (flatListRef.current && postModal !== null) {
+      setTimeout(() => {
+        flatListRef.current.scrollToIndex({
+          index: postModal,
+          animated: false,
+        });
+      }, 50); // small delay to allow layout
     }
   }, [postModal]);
 
-  // if comment modal is open, disable tracking
-  useEffect(() => {
-    if (modal === "comment") setCurrentIndex(-1);
-  }, [modal]);
+  // ✅ Update currentIndex after scroll ends
+  const handleMomentumScrollEnd = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const newIndex = Math.round(offsetY / ITEM_HEIGHT);
+    if (newIndex !== currentIndex) setCurrentIndex(newIndex);
+  };
 
-  // ✅ scroll offset -> currentIndex
-  const onScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    {
-      useNativeDriver: false,
-      listener: (event) => {
-        const offsetY = event.nativeEvent.contentOffset.y;
-        const itemHeight =
-          Platform.OS === "ios"
-            ? (screenHeight - (insets.top + insets.bottom)) * 0.9
-            : screenHeight * 0.9;
-
-        const newIndex = Math.round(offsetY / itemHeight);
-        if (newIndex !== currentIndex) {
-          setCurrentIndex(newIndex);
-        }
-      },
-    }
-  );
-
-  const renderMobilePost = ({ item, index }) => {
+  const renderMobilePost = ({ item,index }) => {
     const anim = heartAnimations[item._id] || {
       scale: new Animated.Value(0),
       opacity: new Animated.Value(0),
     };
-
-  console.log('mobile :', comment)
-
+    // khbhkb
     return (
-      <SafeAreaView className="flex-1">
-        {/* main container */}
+      <View
+        style={{
+          height: ITEM_HEIGHT,
+          width: "100%",
+          backgroundColor: "white",
+        }}
+      >
+        {/* header */}
         <View
           style={{
-            height:
-              Platform.OS === "ios"
-                ? screenHeight - (insets.top + insets.bottom) * 0.9
-                : screenHeight * 0.9,
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+            borderBottomWidth: 1,
+            borderBottomColor: "#e5e5e5",
+            height:'10%',
+            width: "100%",
             backgroundColor: "white",
           }}
         >
-          {/* header */}
-          <View
+          {user?.profileImage ? (
+            <Image
+              source={{
+                uri: `http://192.168.43.158:5000/api/mediaDownload/${user?.profileImage}`,
+                // uri: `https://api.machinestreets.com/api/mediaDownload/${user?.profileImage}`,
+              }}
+              style={{
+                height: 48,
+                width: 48,
+                borderRadius: 24,
+                resizeMode: "cover",
+                marginRight: 12,
+              }}
+            />
+          ) : (
+            <Ionicons name="person-circle-outline" size={48} color="gray" />
+          )}
+
+          <Text
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-              borderBottomWidth: 1,
-              borderBottomColor: "#e5e5e5",
-              height:
-                (Platform.OS === "ios"
-                  ? screenHeight - (insets.top + insets.bottom)
-                  : screenHeight) * 0.1,
-              width: "100%",
-              backgroundColor: "white",
+              color: "black",
+              fontWeight: "600",
+              fontSize: 16,
+              marginLeft: 20,
             }}
           >
-            {user?.profileImage ? (
-              <Image
-                source={{
-                  uri: `https://api.machinestreets.com/api/mediaDownload/${user?.profileImage}`,
-                }}
-                style={{
-                  height: 48,
-                  width: 48,
-                  borderRadius: 24,
-                  resizeMode: "cover",
-                  marginRight: 12,
-                }}
-              />
-            ) : (
-              <Ionicons name="person-circle-outline" size={48} color="gray" />
-            )}
+            {user?.username}
+          </Text>
 
+          <DeleteIcon
+            deleteIcon={deleteIcon}
+            type={type}
+            item={item}
+            postDelete={postDelete}
+            setDeleteIcon={setDeleteIcon}
+            isDesktop={isDesktop}
+          />
+        </View>
+
+        {/* media with double-tap */}
+        <Pressable
+          onPress={() => handleDoubleTap(item)}
+          className="bg-gray-100"
+          style={{
+            height:'75%',
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {item?.contentType === "video" ? (
+            <View className="h-full w-full">
+              <VideoGridItem
+              // source={`http://192.168.43.158:5000/api/mediaDownload/${item?.media}`}
+              source={`https://api.machinestreets.com/api/mediaDownload/${item?.media}`}
+              page="pvm"
+              isVisible={index === currentIndex}
+            />
+            </View>
+          ) : (
+            <Image
+              source={{
+                // uri: `http://192.168.43.158:5000/api/mediaDownload/${item?.media}`,
+                uri: `https://api.machinestreets.com/api/mediaDownload/${item?.media}`,
+              }}
+              style={{ width: "100%", height: "100%" }}
+              resizeMode="contain"
+            />
+          )}
+
+          {/* ❤️ heart animation */}
+          <Animated.View
+            style={{
+              position: "absolute",
+              alignSelf: "center",
+              opacity: anim.opacity,
+              transform: [{ scale: anim.scale }],
+            }}
+          >
+            <Ionicons name="heart" size={120} color="white" />
+          </Animated.View>
+        </Pressable>
+
+        {/* footer */}
+        <View
+          style={{
+            height:'15%',
+            width: "100%",
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+            borderTopWidth: 1,
+            borderTopColor: "#e5e5e5",
+          }}
+        >
+          <PostFooterIcons
+            item={item}
+            userId={userId}
+            setModal={setModal}
+            handleLike={handleLike}
+            share={share}
+          />
+          {item?.bio ? (
             <Text
               style={{
                 color: "black",
-                fontWeight: "600",
-                fontSize: 16,
-                marginLeft: 20,
+                paddingHorizontal: 16,
+                paddingBottom: 8,
+                marginTop: 2,
               }}
             >
-              {user?.username}
+              {item?.bio}
             </Text>
-
-            <DeleteIcon
-              deleteIcon={deleteIcon}
-              type={type}
-              item={item}
-              postDelete={postDelete}
-              setDeleteIcon={setDeleteIcon}
-              isDesktop={isDesktop}
-            />
-          </View>
-
-          {/* media with double-tap */}
-          <Pressable
-            onPress={() => handleDoubleTap(item)}
-            style={{
-              height:
-                (Platform.OS === "ios"
-                  ? screenHeight - (insets.top + insets.bottom)
-                  : screenHeight) * 0.7,
-              width: "100%",
-              backgroundColor: "black",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {item?.contentType === "video" ? (
-              <VideoGridItem
-                source={`https://api.machinestreets.com/api/mediaDownload/${item?.media}`}
-                page="pvm"
-                isVisible={index === currentIndex}
-              />
-            ) : (
-              <Image
-                source={{
-                  uri: `https://api.machinestreets.com/api/mediaDownload/${item?.media}`,
-                }}
-                style={{ width: "100%", height: "100%" }}
-                resizeMode="contain"
-              />
-            )}
-
-            {/* ❤️ heart animation */}
-            <Animated.View
-              style={{
-                position: "absolute",
-                alignSelf: "center",
-                opacity: anim.opacity,
-                transform: [{ scale: anim.scale }],
-              }}
-            >
-              <Ionicons name="heart" size={120} color="white" />
-            </Animated.View>
-          </Pressable>
-
-          {/* footer */}
-          <View
-            style={{
-              height:
-                (Platform.OS === "ios"
-                  ? screenHeight - (insets.top + insets.bottom)
-                  : screenHeight) * 0.1,
-              width: "100%",
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-              borderTopWidth: 1,
-              borderTopColor: "#e5e5e5",
-              backgroundColor: "white",
-            }}
-          >
-            <PostFooterIcons
-              item={item}
-              userId={userId}
-              setModal={setModal}
-              handleLike={handleLike}
-              share={share}
-            />
-            {item?.bio ? (
-              <Text
-                style={{
-                  color: "black",
-                  paddingHorizontal: 16,
-                  paddingBottom: 8,
-                  marginTop: 2,
-                }}
-              >
-                {item?.bio}
-              </Text>
-            ) : null}
-          </View>
+          ) : null}
         </View>
-
         {/* Comments modal */}
         {modal === "comment" && (
           <View
@@ -245,35 +229,35 @@ const MobilePostViewer = React.memo((props) => {
             </SafeAreaView>
           </View>
         )}
-      </SafeAreaView>
+      </View>
     );
   };
-  const ITEM_HEIGHT = Platform.OS === "ios" 
-  ? (screenHeight - (insets.top + insets.bottom)) * 0.9 
-  : screenHeight * 0.9;
 
   return (
-    <Animated.FlatList
-      ref={flatListRef}
-      data={user?.posts}
-      getItemLayout={(_, index) => ({
-        length: ITEM_HEIGHT,
-        offset: ITEM_HEIGHT * index,
-        index,
-      })}
-      keyExtractor={(_, idx) => idx.toString()}
-      renderItem={renderMobilePost}
-      initialScrollIndex={postModal}
-      pagingEnabled={modal !== "comment"}
-      scrollEnabled={modal !== "comment"}
-      showsVerticalScrollIndicator={false}
-      onScroll={onScroll} // ✅ scroll offset tracking
-      scrollEventThrottle={16}
-      windowSize={3}
-      initialNumToRender={3}
-      maxToRenderPerBatch={3}
-      removeClippedSubviews
-    />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <Animated.FlatList
+  ref={flatListRef}
+  data={user?.posts}
+  getItemLayout={(_, index) => ({
+    length: ITEM_HEIGHT,
+    offset: ITEM_HEIGHT * index,
+    index,
+  })}
+  keyExtractor={(_, idx) => idx.toString()}
+  renderItem={renderMobilePost}
+  initialScrollIndex={0} // ✅ set correctly
+  pagingEnabled={modal !== "comment"}
+  scrollEnabled={modal !== "comment"}
+  showsVerticalScrollIndicator={false}
+  onMomentumScrollEnd={handleMomentumScrollEnd}
+  scrollEventThrottle={16}
+  windowSize={3}
+  initialNumToRender={3}
+  maxToRenderPerBatch={3}
+  removeClippedSubviews={false}
+/>
+
+    </SafeAreaView>
   );
 });
 

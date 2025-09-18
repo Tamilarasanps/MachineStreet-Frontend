@@ -59,6 +59,7 @@ const UserCard = ({
         {mechanic?.profileImage ? (
           <Image
             source={{
+              // uri: `http://192.168.43.158:5000/api/mediaDownload/${mechanic?.profileImage}`,
               uri: `https://api.machinestreets.com/api/mediaDownload/${mechanic?.profileImage}`,
             }}
             resizeMode="cover"
@@ -135,7 +136,7 @@ const UserCard = ({
               {tickerWidth > 0 && (
                 <ScrollingEffect
                   width={tickerWidth}
-                  data={["tirupur", "coimbator", "delhi"]}
+                  data={mechanic.subcategory[0].services}
                 />
               )}
             </View>
@@ -244,7 +245,10 @@ const UserCard = ({
               </Pressable>
             </>
           ) : (
-            <View style={{pointerEvents:"box-none"}} className="flex flex-row gap-4 ">
+            <View
+              style={{ pointerEvents: "box-none" }}
+              className="flex flex-row gap-4 "
+            >
               <Text>No Reviews Yet</Text>
               <Pressable
                 onPress={() => {

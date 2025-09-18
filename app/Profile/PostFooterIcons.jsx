@@ -1,7 +1,7 @@
 import { View, Pressable, Text } from "react-native";
-import Icon from "react-native-vector-icons/Feather";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Feather from "react-native-vector-icons/Feather";
+import Feather from '@expo/vector-icons/Feather';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 const PostFooterIcons = ({ item, userId, isDesktop, handleLike, setModal, share }) => {
   return (
@@ -15,9 +15,10 @@ const PostFooterIcons = ({ item, userId, isDesktop, handleLike, setModal, share 
         }}
       >
         {item?.likes?.includes(userId) ? (
-          <FontAwesome name="heart" size={24} color="red" />
+          // <FontAwesome name="heart" size={24} color="red" />
+          <AntDesign name="heart" size={24} color="red" />
         ) : (
-          <Feather name="heart" size={24} color="black" />
+          <FontAwesome6 name="heart" size={24} color="black" />
         )}
         {/* */}
       </Pressable>
@@ -31,12 +32,12 @@ const PostFooterIcons = ({ item, userId, isDesktop, handleLike, setModal, share 
             alignItems: "center",
           }}
         >
-          <Icon name="message-circle" size={24} color="black" />
+        <FontAwesome6 name="comment" size={24} color="black" />
         </Pressable>
       )}
 
       <Pressable onPress={()=>share(item)}>
-        <Icon name="send" size={24} color="black" />
+      <Feather name="send" size={24} color="black" />
       </Pressable>
       {item?.likes?.length > 0 && (
         <Text className="text-base ml-8 ">

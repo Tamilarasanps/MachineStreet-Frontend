@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TextInput, Pressable, Platform } from "react-native";
 import { router } from "expo-router";
 import useScreenWidth from "../hooks/useScreenWidth";
-import Icon from "react-native-vector-icons/Feather";
+import Feather from '@expo/vector-icons/Feather';
 import { MaterialIcons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 import { useNavigation } from "expo-router";
@@ -57,7 +57,7 @@ const Header = ({ isOpen, searchBarValue, setSearchBarValue }) => {
           />
           {/* <Link href={`/(screen)/ProductList?searchTerms=${searchBar}`} asChild> */}
           <Pressable className="absolute right-1">
-            <Icon name="search" size={20} color="gray" />
+          <Feather name="search" size={20} color="gray" />
           </Pressable>
           {/* </Link> */}
         </View>

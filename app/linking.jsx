@@ -1,6 +1,6 @@
 import * as Linking from 'expo-linking';
 
-export const linking = {
+const linking = {
   prefixes: [
     Linking.createURL('/'),      // your app scheme
     'https://machinestreets.com' // web URL fallback
@@ -20,3 +20,6 @@ export const linking = {
     },
   },
 };
+
+
+export default linking

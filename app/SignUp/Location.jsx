@@ -55,7 +55,6 @@ const Location = ({ states, userDetails, setUserDetails }) => {
       </View>
 
       {!otherThanIndia ? (
-        <FadeSlideView delay={100}>
           <View>
             {/* State Input with suggestions */}
             <InputWOL
@@ -92,7 +91,6 @@ const Location = ({ states, userDetails, setUserDetails }) => {
               }))}
             />
           </View>
-        </FadeSlideView>
       ) : (
         // Other than India inputs
         <View className="mt-4">

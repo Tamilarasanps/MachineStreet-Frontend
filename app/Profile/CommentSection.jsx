@@ -12,6 +12,7 @@ import {
 import Icon from "react-native-vector-icons/Feather";
 import { FormatTime } from "@/context/FormatTime";
 import PostFooterIcons from "./PostFooterIcons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const CommentSection = ({
   userId,
@@ -22,17 +23,17 @@ const CommentSection = ({
   handleLike,
   post,
   comments,
+  share
 }) => {
   const { formatTime } = useContext(FormatTime);
-  const scrollRef = useRef();
+  const scrollRef = useRef(null);
 
-  console.log("post :", post);
   return (
     <View className="flex-1 bg-white py-4">
       {/* Close button */}
       {!isDesktop && (
         <Pressable className="w-full mb-4 items-end px-4" onPress={onclose}>
-          <Icon name="x" size={24} color="gray" />
+          <AntDesign name="close" size={24} color="black" />
         </Pressable>
       )}
 
@@ -42,9 +43,11 @@ const CommentSection = ({
         className="flex-1 px-4"
         contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
-        onContentSizeChange={() =>
-          scrollRef.current.scrollToEnd({ animated: true })
-        }
+        onContentSizeChange={() => {
+          if (scrollRef.current) {
+            scrollRef.current.scrollToEnd({ animated: true });
+          }
+        }}
       >
         {comments?.length > 0 ? (
           comments
@@ -90,6 +93,7 @@ const CommentSection = ({
             userId={userId}
             isDesktop={isDesktop}
             handleLike={handleLike}
+            share={share}
           />
         </View>
       )}
@@ -112,7 +116,6 @@ const CommentSection = ({
             className="ml-3 p-2 rounded-full bg-gray-100"
             onPress={() => {
               if (comment.comment?.trim()) {
-                console.log("triggered");
                 handleLike({ comment, postId: post?._id }, "api/postComment");
                 setComment((prev) => ({ ...prev, comment: "" }));
               }

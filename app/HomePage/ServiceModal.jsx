@@ -1,15 +1,16 @@
-import { Modal, ScrollView, Text, View, Pressable } from "react-native";
+import { Modal, ScrollView, Text, View, Pressable, Platform } from "react-native";
 import { BlurView } from "expo-blur";
 
 const ServiceModal = ({ onclose, viewServiceModal, selectedMechanic, isDesktop }) => {
   return (
     <Modal
       visible={viewServiceModal}
-      transparent
       animationType="slide"
+      transparent={true}
+      statusBarTranslucent={true}
       onRequestClose={()=>onclose()}
     >
-      <BlurView intensity={50} tint="light" style={{ flex: 1 }}>
+      <BlurView intensity={Platform.OS === 'ios' ? 50 : 100} tint="dark" style={{ flex: 1 }}>
         <View
           className="bg-gray-300 rounded-xl p-6 max-h-[80%] m-auto"
           style={{ width: isDesktop ? "40%" : "90%" }}

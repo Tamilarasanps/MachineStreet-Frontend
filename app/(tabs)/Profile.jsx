@@ -95,8 +95,6 @@ export default function Profile() {
 
   // media upload
   const handleMediaupload = async () => {
-    console.log("media inside function :", media, "uploadType:", uploadType);
-
     if (!media || media.length === 0 || media?.canceled) return;
 
     const formData = new FormData();
@@ -130,7 +128,6 @@ export default function Profile() {
       Platform.OS === "web" ? undefined : "multipart/form-data",
       { secure: true }
     );
-    console.log("res :", res);
     if (res?.status === 200) {
       setDescription("");
       setMedia([]);
@@ -201,8 +198,6 @@ export default function Profile() {
       await Share.share({
         message: `Check out my profile: ${url}`,
       });
-
-      console.log("Profile shared via deep link:", url);
     } catch (error) {
       console.log("Error sharing profile:", error.message);
     }
@@ -221,7 +216,6 @@ export default function Profile() {
 
   // post likes and comments
   const handleLike = useCallback(async (postId, api) => {
-    console.log("inside function", postId, api);
     try {
       const result = await postJsonApi(api, postId, "application/json", {
         secure: true,
@@ -353,7 +347,9 @@ export default function Profile() {
               ) : (
                 <View className="h-screen w-full  items-center justify-center">
                   <View
-                    className={`${isDesktop ? "w-[500px]" : "w-[90%]"}  bg-gray`}
+                    className={`${
+                      isDesktop ? "w-[500px]" : "w-[90%]"
+                    }  bg-gray`}
                   >
                     <LottieView
                       source={postsAnimation}
@@ -375,9 +371,9 @@ export default function Profile() {
           viewType === "edit-2" || modal === "settings" || modal === "reset"
         }
         animationType="slide"
-        transparent={true}
-        statusBarTranslucent={true}
-        presentationStyle="fullScreen"
+        transparent={modal !== "edit-2"} // overlay for settings/reset, not edit
+        presentationStyle={modal === "edit-2" ? "fullScreen" : "overFullScreen"}
+        statusBarTranslucent
         onRequestClose={() => {
           setTempMech(selectedMechanic);
           setViewType("user");
@@ -389,7 +385,7 @@ export default function Profile() {
           style={styles.fullScreen}
         >
           <SafeAreaView
-            className="w-full h-full items-center justify-center"
+            className="w-full h-full items-center justify-center "
             style={{
               flex: 1,
               paddingTop: Platform.OS === "ios" ? insets.top : 0,
@@ -424,7 +420,7 @@ export default function Profile() {
                 backgroundColor: "#fff",
                 borderRadius: 24,
                 padding: 20,
-                height : modal==='settings' ? "auto" : "100%",
+                height: "auto",
                 // shadowColor: "#000",
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.25,
@@ -466,9 +462,9 @@ export default function Profile() {
         visible={postModal !== null}
         onRequestClose={() => setPostModal(null)}
         statusBarTranslucent={true}
-        transparent={Platform.OS === "web" && isDesktop}
+        transparent={Platform.OS === "web" && isDesktop} // never true on iOS
         animationType="slide"
-        presentationStyle="fullScreen"
+        // presentationStyle={Platform.OS === "ios" ? "fullScreen" : "overFullScreen"}
       >
         <SafeAreaView
           style={{
@@ -476,9 +472,9 @@ export default function Profile() {
             paddingTop: Platform.OS === "ios" ? insets.top : 0,
             paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
           }}
-          edges={["top", "left", "right"]}
+          edges={["top", "bottom"]}
         >
-          {selectedMechanic?.posts?.length > 0 ? (
+          {selectedMechanic?.posts?.length > 0 && (
             <PostViewerModal
               type={type}
               postDelete={postDelete}
@@ -495,10 +491,6 @@ export default function Profile() {
               width={width * 0.8}
               isDesktop={isDesktop}
             />
-          ) : (
-            <View className="flex-1 items-center justify-center bg-red-200">
-              <Text>No Posts Yet</Text>
-            </View>
           )}
         </SafeAreaView>
       </Modal>

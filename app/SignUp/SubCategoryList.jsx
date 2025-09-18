@@ -56,7 +56,10 @@ const SubCategoryList = ({
       {/* add category button */}
 
       {userDetails.industry.length > 0 && (
-        <FadeSlideView delay={100}>
+        <FadeSlideView
+        delay={100}
+        initialVisible={userDetails.industry && userDetails.industry.length > 0}
+      >
           <View className="p-4 border-2 border-gray-300 rounded-md ">
             <Pressable
               onPress={handleAddCategory}

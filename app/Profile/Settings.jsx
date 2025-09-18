@@ -5,6 +5,7 @@ import * as SecureStore from "expo-secure-store";
 import { useCallback } from "react";
 import useApi from "@/hooks/useApi";
 import { router } from "expo-router";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const Settings = ({ setModal, setViewType }) => {
   const { postJsonApi } = useApi();
@@ -19,7 +20,6 @@ const Settings = ({ setModal, setViewType }) => {
           {},
           { secure: true }
         );
-        console.log("result :", result);
         if (result.status === 200) {
           // Clear localStorage
           localStorage.removeItem("role");
@@ -69,7 +69,7 @@ const Settings = ({ setModal, setViewType }) => {
         }}
         className="flex-row items-center gap-4 border border-gray-300 rounded-md px-4 py-3 mt-4"
       >
-        <Icon name="log-out" size={30} color="#2095A2" />
+        <MaterialIcons name="logout" size={30} color="#2095A2" />
         <Text className="text-lg font-semibold text-gray-700">Logout</Text>
       </Pressable>
     </View>

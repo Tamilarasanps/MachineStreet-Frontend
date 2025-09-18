@@ -15,8 +15,7 @@ const UserDetails = ({ userDetails, isMobile }) => {
 
   useEffect(() => {
     setReviewData(userDetails?.reviews);
-  }, []);
-
+  }, [userDetails]);
   return (
     <FadeSlideView>
       <LinearGradient
