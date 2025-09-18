@@ -4,6 +4,7 @@ import { FormatTime } from "@/context/FormatTime";
 import { useContext } from "react";
 import LottieView from "lottie-react-native";
 import noreviews from "../../assets/animations/no_reviews.json";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const ReviewModal = ({ selectedMechanic, setReviewModal }) => {
   const { formatTime } = useContext(FormatTime);
@@ -18,7 +19,7 @@ const ReviewModal = ({ selectedMechanic, setReviewModal }) => {
             source={noreviews}
             autoPlay
             loop
-            style={{ height : "100%", width : "100%" }}
+            style={{ height: "100%", width: "100%" }}
           />
           {/* <Text className="text-gray-500 mt-2">No reviews yet</Text> */}
         </View>
@@ -34,7 +35,7 @@ const ReviewModal = ({ selectedMechanic, setReviewModal }) => {
                 {item.userId?.profileImage ? (
                   <Image
                     source={{
-                      uri: `data:image/jpeg;base64,${item?.user?.profileImage}`,
+                      uri: `https://api.machinestreets.com/api/mediaDownload/${item?.userId?.profileImage}`,
                     }}
                     className="w-8 h-8 rounded-full mr-2"
                   />
@@ -57,18 +58,16 @@ const ReviewModal = ({ selectedMechanic, setReviewModal }) => {
               </View>
 
               {/* Stars */}
+
               <View className="flex-row mb-1">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Text
+                  <Icon
                     key={i}
-                    className={
-                      i < item.star
-                        ? "text-yellow-400 text-base"
-                        : "text-gray-300 text-base"
-                    }
-                  >
-                    ★
-                  </Text>
+                    name={i < item.star ? "star" : "star-border"} // filled or outline
+                    size={18}
+                    color={i < item.star ? "#facc15" : "#d1d5db"} // yellow-400 or gray-300
+                    style={{ marginRight: 2 }}
+                  />
                 ))}
               </View>
 
