@@ -48,7 +48,7 @@ const ReviewModal = ({ selectedMechanic, setReviewModal }) => {
                 )}
                 <View className="flex-row items-center space-x-4">
                   <Text className="font-semibold text-gray-900">
-                    {item.userId.username}
+                    {item?.userId?.username}
                   </Text>
                   <Text className="text-gray-500 text-xs mt-[2px]">
                     {formatTime(item.createdAt)}

@@ -92,8 +92,8 @@ const MobilePostViewer = React.memo((props) => {
           {user?.profileImage ? (
             <Image
               source={{
-                uri: `http://192.168.43.158:5000/api/mediaDownload/${user?.profileImage}`,
-                // uri: `https://api.machinestreets.com/api/mediaDownload/${user?.profileImage}`,
+                // uri: `http://192.168.43.158:5000/api/mediaDownload/${user?.profileImage}`,
+                uri: `https://api.machinestreets.com/api/mediaDownload/${user?.profileImage}`,
               }}
               style={{
                 height: 48,

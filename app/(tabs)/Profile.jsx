@@ -220,7 +220,7 @@ export default function Profile() {
       const result = await postJsonApi(api, postId, "application/json", {
         secure: true,
       });
-
+      console.log("RESULT :", result);
       if (result.status === 200) {
         setComment((prev) => ({ ...prev, comment: "" }));
       }
@@ -228,7 +228,6 @@ export default function Profile() {
       console.log(err);
     }
   }, []);
-
   // delete api
 
   const postDelete = useCallback(async (postId) => {

@@ -44,10 +44,11 @@ export const AppProvider = ({ children }) => {
         // setToken(storedToken);
 
         // ✅ initialize socket
-        newSocket = io("https://api.machinestreets.com",
+        newSocket = io(
+        "https://api.machinestreets.com",
           // Platform.OS === "web"
           //   ? "http://localhost:5000"
-          //   : "http://192.168.1.10:5000",
+          //   : "http://192.168.43.158:5000",
           {
             transports: ["websocket", "polling"],
             reconnection: true,
@@ -86,6 +87,7 @@ export const AppProvider = ({ children }) => {
         // coments updation
 
         newSocket.on("post-update", (data,type) => {
+         
           setSelectedMechanic((prev) => ({
             ...prev,
             [type]: data[type],

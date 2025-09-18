@@ -42,7 +42,7 @@ const Modal_R = ({
         <View
           style={{
             height: "90%",
-            width: isTablet ? 500 : "100%",
+            width: isTablet ? 500 : isDesktop ? 500 : "100%",
             backgroundColor: "#fff",
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,

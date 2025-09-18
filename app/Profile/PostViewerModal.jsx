@@ -191,6 +191,7 @@ const PostViewerModal = ({
           width={width}
           totalPosts={user?.posts?.length}
           postDelete={postDelete}
+          user={user}
         />
       ) : null}
       {!isDesktop && user?.posts[postModal] && (

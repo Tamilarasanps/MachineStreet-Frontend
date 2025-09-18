@@ -21,16 +21,16 @@ const DesktopPostViewer = ({
   postModal,
   totalPosts,
   width,
-  handleDoubleTap,    // ✅ from parent
-  heartAnimations,    // ✅ from parent
-  share,              // ✅ from parent
+  handleDoubleTap, // ✅ from parent
+  heartAnimations, // ✅ from parent
+  share,
+  user, // ✅ from parent
 }) => {
   const [deleteIcon, setDeleteIcon] = useState("");
   const anim = heartAnimations[item._id] || {
     scale: new Animated.Value(0),
     opacity: new Animated.Value(0),
   };
-
   return (
     <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.6)" }}>
       <View
@@ -86,6 +86,7 @@ const DesktopPostViewer = ({
         {/* Comments */}
         <View className="bg-white w-2/5 h-[80%] flex flex-col justify-between">
           <CommentSection
+            user={user}
             userId={userId}
             isDesktop={isDesktop}
             onclose={() => setModal("")}
@@ -94,7 +95,7 @@ const DesktopPostViewer = ({
             setComment={setComment}
             post={item}
             comments={item?.comments}
-            share={share}   // ✅ pass share support
+            share={share} // ✅ pass share support
           />
         </View>
       </View>

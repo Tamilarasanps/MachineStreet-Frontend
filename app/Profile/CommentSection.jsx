@@ -23,7 +23,8 @@ const CommentSection = ({
   handleLike,
   post,
   comments,
-  share
+  share,
+  user
 }) => {
   const { formatTime } = useContext(FormatTime);
   const scrollRef = useRef(null);
