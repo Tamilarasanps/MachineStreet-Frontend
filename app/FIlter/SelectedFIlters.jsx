@@ -35,8 +35,8 @@ const SelectedFilter = ({ filterItems, setFilterItems }) => {
           {/* Industry */}
           <View className="flex-row items-center mr-2">
             <Text className="text-indigo-800 font-semibold text-sm">
-              {filterItems?.selectedIndustry.charAt(0).toUpperCase() +
-                filterItems?.selectedIndustry.slice(1)}
+              {filterItems?.selectedIndustry?.charAt(0)?.toUpperCase() +
+                filterItems?.selectedIndustry?.slice(1)}
             </Text>
             {filterItems?.selectedCategory && (
               <Text className="text-indigo-800 font-semibold text-sm"> ➝ </Text>

@@ -81,8 +81,8 @@ const UserCard = ({
         {/* username */}
 
         <Text className="text-lg font-extrabold text-gray-600 text-center md:text-left mx-auto">
-          {mechanic?.username.charAt(0).toUpperCase() +
-            mechanic?.username.slice(1)}
+          {mechanic?.username?.charAt(0)?.toUpperCase() +
+            mechanic?.username?.slice(1)}
         </Text>
 
         {/*  */}
@@ -113,8 +113,8 @@ const UserCard = ({
 
         {/* industryName */}
         <Text className="font-bold mt-4">
-          {mechanic.industry?.charAt(0).toUpperCase() +
-            mechanic.industry.slice(1)}
+          {mechanic?.industry?.charAt(0)?.toUpperCase() +
+            mechanic.industry?.slice(1)}
         </Text>
 
         {/* view more button */}

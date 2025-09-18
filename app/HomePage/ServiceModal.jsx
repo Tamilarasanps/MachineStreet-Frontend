@@ -19,7 +19,7 @@ const ServiceModal = ({ onclose, viewServiceModal, selectedMechanic, isDesktop }
             {selectedMechanic?.subcategory?.map((sub, subIndex) => (
               <View key={subIndex} className="mb-4">
                 <Text className="font-bold text-lg mb-1">
-                  {sub.name.charAt(0).toUpperCase() + sub.name.slice(1)}:
+                  {sub?.name?.charAt(0).toUpperCase() + sub?.name?.slice(1)}:
                 </Text>
                 <View className="flex-row flex-wrap gap-2">
                   {sub.services.map((service, idx) => (
@@ -27,7 +27,7 @@ const ServiceModal = ({ onclose, viewServiceModal, selectedMechanic, isDesktop }
                       key={idx}
                       className="bg-gray-200 px-3 py-1 rounded-full"
                     >
-                      {service.charAt(0).toUpperCase() + service.slice(1)}
+                      {service?.charAt(0)?.toUpperCase() + service?.slice(1)}
                     </Text>
                   ))}
                 </View>
@@ -41,7 +41,7 @@ const ServiceModal = ({ onclose, viewServiceModal, selectedMechanic, isDesktop }
                   key={index}
                   className="bg-yellow-500 px-2 py-1 rounded-sm font-semibold text-md text-black"
                 >
-                  {service.charAt(0).toUpperCase() + service.slice(1)}
+                  {service?.charAt(0)?.toUpperCase() + service?.slice(1)}
                 </Text>
               ))}
             </View>

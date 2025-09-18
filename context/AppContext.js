@@ -18,13 +18,14 @@ export const AppProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedMechanic, setSelectedMechanic] = useState(null);
   const [revies, setReviews] = useState([]);
+  const [filterData, setFIlterData] = useState({});
+
   // const [qr, setQr] = useState(true);
 
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     let newSocket;
-
     const socketInit = async () => {
       try {
         let storedToken;
@@ -34,10 +35,13 @@ export const AppProvider = ({ children }) => {
         if (Platform.OS === "web") {
           storedUserId = localStorage.getItem("userId");
           storedUserRole = localStorage.getItem("role");
+          storedToken = localStorage.getItem("token"); // add this
         } else {
           storedUserId = await SecureStore.getItemAsync("userId");
           storedUserRole = await SecureStore.getItemAsync("role");
+          storedToken = await SecureStore.getItemAsync("token"); // add this
         }
+        
 
         setUserId(storedUserId);
         setUserRole(storedUserRole);
@@ -46,9 +50,8 @@ export const AppProvider = ({ children }) => {
         // ✅ initialize socket
         newSocket = io(
         "https://api.machinestreets.com",
-          // Platform.OS === "web"
-          //   ? "http://localhost:5000"
-          //   : "http://192.168.43.158:5000",
+          
+        //  "http://10.255.87.158:5000",
           {
             transports: ["websocket", "polling"],
             reconnection: true,
@@ -67,7 +70,7 @@ export const AppProvider = ({ children }) => {
         );
 
         newSocket.on("connect_error", (err) => {
-          console.log("Socket connect_error:", err.message);
+          console.log("Socket connect_error:", err);
         });
 
         // likes updation
@@ -106,6 +109,7 @@ export const AppProvider = ({ children }) => {
         // review updation
 
         newSocket.on("update-review", (updatedUser) => {
+          console.log('updatedUser :', updatedUser)
           setUserDetails((prev) =>
             prev.map((mech) => {
               if (mech._id === updatedUser._id) {
@@ -170,7 +174,7 @@ export const AppProvider = ({ children }) => {
         setReviews,
         socket,
         userId,
-        setUserId,
+        setUserId,filterData, setFIlterData
       }}
     >
       {children}

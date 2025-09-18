@@ -349,7 +349,6 @@ const SignUp = () => {
                   setUserDetails={setUserDetails}
                   isDesktop={isDesktop}
                   isTablet={isTablet}
-                  isLoading={isLoading}
                   handleSubmit={handleSubmit}
                 />
               )}

@@ -60,7 +60,7 @@ const Filter = ({
 
   return (
     <View
-      className={`bg-gray-100 rounded-md p-3 shadow-md  ${
+      className={`bg-gray-100 rounded-md p-3 shadow-md overflow-hidden   ${
         !isDesktop ? "z-50 flex-col max-w-[100vw] flex-1" : "flex-col h-full"
       }`}
     >
@@ -103,7 +103,7 @@ const Filter = ({
 
       {/* Right filter panel */}
       <View
-        className={`pl-4 ${!isDesktop ? "w-full flex-1" : "w-[272px] flex-1"}`}
+        className={`pl-4 ${!isDesktop ? "w-full flex-1" : "w-full flex-1"}`}
       >
         <View className="mb-4 flex-1">
           {/* location filter */}
@@ -284,8 +284,8 @@ const Filter = ({
                     </Pressable>
                     <Text className="font-semibold text-base mb-2">
                       Categories in{" "}
-                      {filterItems?.selectedIndustry.charAt(0).toUpperCase() +
-                        filterItems?.selectedIndustry.slice(1)}
+                      {filterItems?.selectedIndustry?.charAt(0)?.toUpperCase() +
+                        filterItems?.selectedIndustry?.slice(1)}
                     </Text>
                     {filterData?.industryData
                       ?.find(

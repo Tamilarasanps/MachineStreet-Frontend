@@ -2,10 +2,11 @@
   "expo": {
     "name": "MachineStreets",
     "slug": "machine-streets",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "scheme": "machinestreets",
+    "deepLinking" : true,
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "platforms": [
@@ -26,7 +27,7 @@
       }
     },
     "android": {
-      "versionCode": 10,
+      "versionCode": 11,
       "intentFilters": [
         {
           "action": "VIEW",
@@ -84,7 +85,9 @@
     },
     "extra": {
       "router": {},
-      "eas": {}
+      "eas": {
+        "projectId": "05074c8b-591f-4cd4-b6ea-b53c3e6a2a9e"
+      }
     }
   }
 }

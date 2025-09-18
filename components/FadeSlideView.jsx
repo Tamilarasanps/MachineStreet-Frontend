@@ -1,44 +1,31 @@
 import React, { useRef, useEffect } from 'react';
 import { Animated } from 'react-native';
-
-const FadeSlideView = ({
-  children,
-  style,
-  delay = 0,
-  duration = 400,
-  initialVisible = false, // new prop
-}) => {
-  const fadeAnim = useRef(new Animated.Value(initialVisible ? 1 : 0)).current;
-  const slideAnim = useRef(new Animated.Value(initialVisible ? 0 : 20)).current;
+const FadeSlideView = ({ children, style, delay = 0, duration = 400, visible = true }) => {
+  const fadeAnim = useRef(new Animated.Value(visible ? 1 : 0)).current;
+  const slideAnim = useRef(new Animated.Value(visible ? 0 : 20)).current;
 
   useEffect(() => {
-    if (initialVisible) return; // skip animation if already visible
-
     Animated.parallel([
       Animated.timing(fadeAnim, {
-        toValue: 1,
+        toValue: visible ? 1 : 0,
         duration,
         delay,
         useNativeDriver: false,
       }),
       Animated.timing(slideAnim, {
-        toValue: 0,
+        toValue: visible ? 0 : 20,
         duration,
         delay,
         useNativeDriver: false,
       }),
     ]).start();
-  }, [fadeAnim, slideAnim, delay, duration, initialVisible]);
+  }, [visible, fadeAnim, slideAnim, delay, duration]);
 
   return (
     <Animated.View
       style={[
         style,
-        {
-          opacity: fadeAnim,
-          transform: [{ translateY: slideAnim }],
-          zIndex: 999,
-        },
+        { opacity: fadeAnim, transform: [{ translateY: slideAnim }], zIndex: 999 },
       ]}
     >
       {children}

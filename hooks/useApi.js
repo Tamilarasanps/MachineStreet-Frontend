@@ -9,7 +9,7 @@ const useApi = () => {
   // const API_URL = "https://api-machinestreets.onrender.com"
     //  const API_URL = Platform.OS === "web"
     //   ? "http://localhost:5000"
-    //   : "http://192.168.43.158:5000";
+    //   : "http://10.255.87.158:5000";
   const API_URL = "https://api.machinestreets.com";
 // ok
   const {startLoading, stopLoading} = useAppContext();
@@ -32,10 +32,8 @@ const useApi = () => {
           visibilityTime: 2000,
         });
       }
-
       return response;
     } catch (err) {
-      stopLoading()
       if (err?.response?.status === 401) {
         router.replace("/SignUp");
       }
@@ -61,6 +59,7 @@ const useApi = () => {
           position: "top",
           visibilityTime: 2000,
           animation: "slide",
+          autoHide: true,
         });
       }
 

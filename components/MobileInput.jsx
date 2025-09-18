@@ -35,7 +35,7 @@ const MobileInput = ({ setFocusedLabel, focusedLabel, userDetails, onChangeText 
             }}
           >
             <Text className="font-bold text-gray-500 whitespace-nowrap">
-              {userDetails.mobile.countryCode} ▼
+              {userDetails?.mobile?.countryCode} ▼
             </Text>
           </Pressable>
 
@@ -43,7 +43,7 @@ const MobileInput = ({ setFocusedLabel, focusedLabel, userDetails, onChangeText 
             className="flex-1 min-w-0 text-gray-700 text-md px-2 py-1 outline-none"
             placeholder="Enter phone number"
             keyboardType="phone-pad"
-            value={userDetails.mobile.number}
+            value={userDetails?.mobile?.number}
             onChangeText={(text) => onChangeText('number', text)}
             returnKeyType="done"
             onFocus={() => {
@@ -81,12 +81,12 @@ const MobileInput = ({ setFocusedLabel, focusedLabel, userDetails, onChangeText 
                   key={item.iso2}
                   className="p-3"
                   onPress={() => {
-                    onChangeText('countryCode', item.dialCode)
+                    onChangeText('countryCode', item?.dialCode)
                     setDropdownVisible(false);
                   }}
                 >
                   <Text className="text-[16px] text-gray-600">
-                    {item.name} ({item.dialCode})
+                    {item?.name} ({item?.dialCode})
                   </Text>
                 </Pressable>
               ))}

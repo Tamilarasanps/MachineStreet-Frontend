@@ -16,6 +16,8 @@ const UserDetails = ({ userDetails, isMobile }) => {
   useEffect(() => {
     setReviewData(userDetails?.reviews);
   }, [userDetails]);
+
+  console.log('rendered')
   return (
     <FadeSlideView>
       <LinearGradient
@@ -27,22 +29,22 @@ const UserDetails = ({ userDetails, isMobile }) => {
         <Card.Content>
           <View>
             <Text className="text-white text-2xl font-bold text-center mt-8">
-              {userDetails?.organization.charAt(0).toUpperCase() +
-                userDetails?.organization.slice(1)}
+              {userDetails?.organization?.charAt(0).toUpperCase() +
+                userDetails?.organization?.slice(1)}
             </Text>
 
             <Text className="text-white text-center mb-2 text-lg mt-2">
               <MaterialIcons name="location-on" size={16} color="white" />{" "}
               {userDetails?.district ||
                 userDetails?.region ||
-                userDetails?.country.charAt(0).toUpperCase() +
-                  userDetails?.district.slice(1)}
+                userDetails?.country?.charAt(0).toUpperCase() +
+                  userDetails?.district?.slice(1)}
             </Text>
 
             <Text className="text-xl text-white font-bold ml-2 mt-1">
               <MaterialCommunityIcons name="factory" size={20} color="white" />{" "}
-              {userDetails?.industry.charAt(0).toUpperCase() +
-                userDetails?.industry.slice(1)}
+              {userDetails?.industry?.charAt(0).toUpperCase() +
+                userDetails?.industry?.slice(1)}
             </Text>
 
             <View className="flex-row flex-wrap justify-between mt-5 gap-2">
@@ -127,8 +129,8 @@ const UserDetails = ({ userDetails, isMobile }) => {
                       <View className="ml-3">
                         <Text className="text-lg font-semibold text-gray-900">
                           {data?.user?.username
-                            ? data.user?.username.charAt(0).toUpperCase() +
-                              data.user?.username.slice(1)
+                            ? data.user?.username?.charAt(0).toUpperCase() +
+                              data.user?.username?.slice(1)
                             : "Guest User"}
                         </Text>
                         <View className="flex-row">
@@ -146,8 +148,8 @@ const UserDetails = ({ userDetails, isMobile }) => {
 
                     {/* Review */}
                     <Text className="text-base text-gray-700 leading-relaxed">
-                      {data.reviewText.charAt(0).toUpperCase() +
-                        data.reviewText.slice(1)}
+                      {data.reviewText?.charAt(0).toUpperCase() +
+                        data.reviewText?.slice(1)}
                     </Text>
                   </Animated.View>
                 ))

@@ -38,7 +38,7 @@ export default function Profile() {
   const [tempMech, setTempMech] = useState(selectedMechanic);
   const { id, type, post } = useLocalSearchParams();
   const [uploadType, setUploadType] = useState("");
-
+  console.log(id, type, post);
   const [description, setDescription] = useState("");
   const [modal, setModal] = useState("");
   const [postModal, setPostModal] = useState(null);
@@ -65,8 +65,9 @@ export default function Profile() {
 
   const getMechanic = useCallback(async () => {
     try {
-      const user = Platform.OS === "web" ? id : userId;
-
+      const user =
+        Platform.OS === "web" ? id : type === "user_visit" ? id : userId;
+      console.log("userid :", user);
       const result = await getJsonApi(
         `api/getSelectedMechanic/${user}`,
         "application/json",
@@ -90,8 +91,9 @@ export default function Profile() {
   });
 
   useEffect(() => {
+    console.log("userId :", userId);
     getMechanic();
-  }, [id]);
+  }, [id, type]);
 
   // media upload
   const handleMediaupload = async () => {
@@ -152,7 +154,7 @@ export default function Profile() {
       );
       if (result.status === 200) {
         setViewType("user");
-        setModal("");
+        setModal("settings");
       }
     } catch (err) {
       console.log(err);
@@ -329,7 +331,8 @@ export default function Profile() {
         renderItem={({ item }) => (
           <View className="mt-2 p-4 rounded-md -z-10">
             {selectedMechanic?.role === "mechanic" &&
-              (viewType === "user" || viewType === "share") && (
+              viewType !== "grid" &&
+              viewType !== "plus-square" && (
                 <UserDetails
                   userDetails={selectedMechanic}
                   isMobile={isMobile}
@@ -357,7 +360,6 @@ export default function Profile() {
                       style={{ width: "100%", height: "100%" }}
                     />
                   </View>
-                  <Text>No posts Yet</Text>
                 </View>
               ))}
           </View>
@@ -380,7 +382,7 @@ export default function Profile() {
         }}
       >
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          behavior={Platform.OS === "ios" ? "padding" : 'padding'}
           style={styles.fullScreen}
         >
           <SafeAreaView
@@ -419,7 +421,13 @@ export default function Profile() {
                 backgroundColor: "#fff",
                 borderRadius: 24,
                 padding: 20,
-                height: "auto",
+                height:
+                  Platform.OS === "web"
+                    ? viewType === "edit-2"
+                      ? "95%"
+                      : "auto"
+                    : "auto", // height for non-web platforms
+
                 // shadowColor: "#000",
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.25,
@@ -439,7 +447,6 @@ export default function Profile() {
                   userDetails={tempMech}
                   setUserDetails={setTempMech}
                   page="profile"
-                  isLoading={false}
                   handleSubmit={hanldeUpdate}
                 />
               )}

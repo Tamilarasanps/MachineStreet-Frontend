@@ -21,9 +21,9 @@ const UserDetailsForm = ({
   userDetails,
   setUserDetails,
   page,
-  isLoading,
   handleSubmit,
 }) => {
+
   const { isDesktop } = useScreenWidth();
   const { getJsonApi } = useApi();
   const {
@@ -31,6 +31,7 @@ const UserDetailsForm = ({
     setIndustrySuggestion,
     focusedLabel,
     setFocusedLabel,
+    isLoading
   } = useAppContext();
   const [states, setStates] = useState([]);
   const [passDisplay, setPassDisplay] = useState(false);
@@ -103,21 +104,31 @@ const UserDetailsForm = ({
   }, []);
 
   // --- 🔥 Mobile Input Handling with libphonenumber-js ---
-  const handleMobileInput = (text) => {
-    let input = text.trim().replace(/\s+/g, "");
-
-    try {
-      const phoneNumber = parsePhoneNumberFromString(input);
-      if (phoneNumber) {
-        setUserDetails((prev) => ({
-          ...prev,
-          mobile: {
-            countryCode: `+${phoneNumber.countryCallingCode}`,
-            number: phoneNumber.nationalNumber,
-          },
-        }));
-      } else {
-        // fallback: just strip non-digits
+  const handleMobileInput = useCallback(()=>{
+    (text) => {
+      let input = text.trim().replace(/\s+/g, "");
+  
+      try {
+        const phoneNumber = parsePhoneNumberFromString(input);
+        if (phoneNumber) {
+          setUserDetails((prev) => ({
+            ...prev,
+            mobile: {
+              countryCode: `+${phoneNumber.countryCallingCode}`,
+              number: phoneNumber.nationalNumber,
+            },
+          }));
+        } else {
+          // fallback: just strip non-digits
+          setUserDetails((prev) => ({
+            ...prev,
+            mobile: {
+              ...prev.mobile,
+              number: input.replace(/\D/g, ""),
+            },
+          }));
+        }
+      } catch (error) {
         setUserDetails((prev) => ({
           ...prev,
           mobile: {
@@ -126,16 +137,8 @@ const UserDetailsForm = ({
           },
         }));
       }
-    } catch (error) {
-      setUserDetails((prev) => ({
-        ...prev,
-        mobile: {
-          ...prev.mobile,
-          number: input.replace(/\D/g, ""),
-        },
-      }));
-    }
-  };
+    };
+  },[])
 
   return (
     <ScrollView

@@ -39,12 +39,11 @@ const HomePage = () => {
     selectedMechanic,
     setSelectedMechanic,
     isLoading,
-    userRole,
+    userRole,filterData, setFIlterData,
   } = useAppContext();
   const { isDesktop, width, isTablet, isMobile, height } = useScreenWidth();
   const { getJsonApi, postJsonApi } = useApi();
 
-  const [filterData, setFIlterData] = useState({});
   const [review, setReview] = useState({
     star: null,
     reviewText: null,
@@ -61,7 +60,7 @@ const HomePage = () => {
 
   const [serviceModal, setServiceModal] = useState(false);
   const [reviewModal, setReviewModal] = useState(null);
-  const [qr, setQr] = useState(false);
+  const [qr, setQr] = useState(true);
   // const [role, setRole] = useState(null);
 
   const [page, setPage] = useState(1);
@@ -74,54 +73,42 @@ const HomePage = () => {
       return await SecureStore.getItemAsync(key);
     }
   };
-  // get mechanics
-  const mechanicsCache = useRef(null);
+  // remove: const mechanicsCache = useRef(null);
 
-  const getmechanics = useCallback(async () => {
-    try {
-      const result = await getJsonApi(
-        `homepage/getmechanics/?page=${page}&limit=50`,
-        "application/json",
-        { secure: true }
-      );
+const getmechanics = useCallback(async () => {
+  try {
+    const result = await getJsonApi(
+      `homepage/getmechanics/?page=${page}&limit=50`,
+      "application/json",
+      { secure: true }
+    );
 
-      if (result?.status === 200) {
-        // cache only the first load
-        if (!mechanicsCache.current) {
-          mechanicsCache.current = result.data;
-        }
+    if (result?.status === 200) {
+      setPage((prev) => prev + 1);
+      setTotalPages(result?.data?.totalPages);
 
-        setPage((prev) => prev + 1);
-        setTotalPages(result?.data?.totalPages);
-        // setRole(result?.data?.role);
+      // ✅ append with deduplication
+      setUserDetails((prev) => {
+        const combined = [...(prev || []), ...(result?.data?.userData || [])];
+        return combined.filter(
+          (item, index, arr) =>
+            index === arr.findIndex((x) => x._id === item._id)
+        );
+      });
 
-        // ✅ append instead of overwrite
-        setUserDetails((prev) => [
-          ...(prev || []),
-          ...(result?.data?.userData || []),
-        ]);
-
-        setFIlterData(result?.data?.filterData);
-        setQr(result.data.qr);
-      }
-    } catch (err) {
-      console.log(err);
+      setFIlterData(result?.data?.filterData);
+      setQr(result.data.qr);
     }
-  }, [getJsonApi]);
+  } catch (err) {
+    console.log(err);
+  }
+}, [getJsonApi, page]);
 
-  useEffect(() => {
-    if (!userDetails?.length) {
-      if (mechanicsCache.current) {
-        // hydrate from cache only on first render
-        setUserDetails(mechanicsCache?.current?.userData);
-        setFIlterData(mechanicsCache?.current?.filterData);
-        setQr(mechanicsCache?.current?.qr);
-      } else {
-        console.log("lplplp");
-        getmechanics();
-      }
-    }
-  }, []);
+useEffect(() => {
+  if (!userDetails?.length) {
+    getmechanics();
+  }
+}, []);
 
   // post review
 
@@ -333,7 +320,6 @@ const HomePage = () => {
       )}
 
       <View className="flex-row w-full flex-1 ">
-        {/* filter component */}
 
         {/* filter component */}
         {(width > 1024 || isOpen) && (
@@ -361,6 +347,7 @@ const HomePage = () => {
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
+              overflow : 'hidden'
             }}
           >
             <Filter

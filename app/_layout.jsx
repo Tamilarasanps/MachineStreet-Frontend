@@ -64,9 +64,9 @@ export default function RootLayout() {
   return (
     <>
       {/* <Header /> */}
-      <View style={{ zIndex: 9999 }}>
+      
         <Toast config={toastConfig} />
-      </View>
+    
 
       <LocationProvider>
         <FileUploadProvider>

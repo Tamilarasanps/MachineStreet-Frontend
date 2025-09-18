@@ -5,7 +5,6 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView,
 } from "react-native";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import ReviewModal from "./ReviewModal";
@@ -41,7 +40,8 @@ const Modal_R = ({
       >
         <View
           style={{
-            height: "90%",
+            flex: 1,
+            maxHeight: "90%",
             width: isTablet ? 500 : isDesktop ? 500 : "100%",
             backgroundColor: "#fff",
             borderTopLeftRadius: 24,
@@ -71,43 +71,39 @@ const Modal_R = ({
             />
           )}
 
-          <TouchableWithoutFeedback
-            onPress={() => {
-              if (Platform.OS !== "web" && !isDesktop) Keyboard.dismiss();
-            }}
-            accessible={false}
-            touchSoundDisabled={true}
-          >
-            <View style={{ flex: 1 }}>
-              {reviewModal === "read" ? (
-                selectedMechanic && (
-                  <ReviewModal
-                    setReviewModal={setReviewModal}
-                    selectedMechanic={selectedMechanic}
-                    height={height}
-                    width={width}
-                  />
-                )
-              ) : (
-                <KeyboardAvoidingView
-                  behavior={Platform.OS === "ios" ? "padding" : "height"}
-                  keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+          {reviewModal !== "read" ? (
+            <KeyboardAvoidingView
+              style={{ flex: 1 }}
+              behavior={Platform.OS === "ios" ? "padding" : undefined}
+              keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+            >
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  if (Platform.OS !== "web" && !isDesktop) Keyboard.dismiss();
+                }}
+                accessible={false}
+                touchSoundDisabled={true}
+              >
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                   <Rating
                     review={review}
                     setReview={setReview}
                     setReviewModal={setReviewModal}
                     postReview={postReview}
                   />
-                </KeyboardAvoidingView>
-              )}
+                </View>
+              </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+          ) : (
+            <View style={{ flex: 1, zIndex: 9999 }}>
+              <ReviewModal
+                setReviewModal={setReviewModal}
+                selectedMechanic={selectedMechanic}
+                height={height}
+                width={width}
+              />
             </View>
-          </TouchableWithoutFeedback>
+          )}
         </View>
       </SafeAreaView>
     </Modal>
