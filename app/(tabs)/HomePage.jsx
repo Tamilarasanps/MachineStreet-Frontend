@@ -284,7 +284,7 @@ useEffect(() => {
       setSearchResults([]);
     }
   }, [searchBarValue]);
-
+console.log('totalPages :', totalPages )
   return (
     <SafeAreaView
       edges={["top", "left", "right"]} // ignore bottom to let tab bar handle it

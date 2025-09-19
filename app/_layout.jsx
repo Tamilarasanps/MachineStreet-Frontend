@@ -64,9 +64,6 @@ export default function RootLayout() {
   return (
     <>
       {/* <Header /> */}
-      
-        <Toast config={toastConfig} />
-    
 
       <LocationProvider>
         <FileUploadProvider>
@@ -81,6 +78,7 @@ export default function RootLayout() {
                 <Stack.Screen name="Login" options={{ headerShown: false }} />
                 <Stack.Screen name="SignUp" options={{ headerShown: false }} />
               </Stack>
+              <Toast config={toastConfig} />
             </AppProvider>
           </FormatTimeProvider>
         </FileUploadProvider>

@@ -240,6 +240,7 @@ export default function Profile() {
         "application/json",
         { secure: true }
       );
+      console.log(result)
       if (result?.status === 200) {
         setSelectedMechanic((prev) => {
           const newPosts = prev.posts.filter((post) => post._id !== postId);

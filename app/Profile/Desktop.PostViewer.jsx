@@ -31,6 +31,7 @@ const DesktopPostViewer = ({
     scale: new Animated.Value(0),
     opacity: new Animated.Value(0),
   };
+  console.log('postModal :', postModal)
   return (
     <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.6)" }}>
       <View
@@ -55,6 +56,7 @@ const DesktopPostViewer = ({
           >
             {item?.contentType === "video" ? (
               <VideoGridItem
+                // source={`http://192.168.1.10:5000/api/mediaDownload/${item?.media}`}
                 source={`https://api.machinestreets.com/api/mediaDownload/${item?.media}`}
                 isVisible={true}
                 page={"pvm"}
@@ -63,6 +65,7 @@ const DesktopPostViewer = ({
               <Image
                 source={{
                   uri: `https://api.machinestreets.com/api/mediaDownload/${item?.media}`,
+                  // uri: `http://192.168.1.10:5000/api/mediaDownload/${item?.media}`,
                 }}
                 className="w-full h-full"
                 resizeMode="contain"
@@ -101,17 +104,17 @@ const DesktopPostViewer = ({
       </View>
 
       {/* Arrows */}
-      {postModal < totalPosts - 1 && (
+      {postModal  > 0  && (
         <Pressable
-          onPress={goPrev}
+          onPress={goNext }
           className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 p-3 rounded-full"
         >
           <Icon name="chevron-left" size={28} color="white" />
         </Pressable>
       )}
-      {postModal > 0 && (
+      {postModal < totalPosts - 1 && (
         <Pressable
-          onPress={goNext}
+          onPress={goPrev}
           className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 p-3 rounded-full"
         >
           <Icon name="chevron-right" size={28} color="white" />
