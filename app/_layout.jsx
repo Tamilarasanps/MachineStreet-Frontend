@@ -2,7 +2,6 @@
 import Header from "@/components/Header";
 import { AppProvider } from "@/context/AppContext";
 import { Stack } from "expo-router";
-import { View } from "react-native";
 import "../global.css";
 import { LocationProvider } from "@/context/LocationContext";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
@@ -77,6 +76,10 @@ export default function RootLayout() {
                 <Stack.Screen name="E2" options={{ headerShown: false }} />
                 <Stack.Screen name="Login" options={{ headerShown: false }} />
                 <Stack.Screen name="SignUp" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="ServicePage"
+                  options={{ headerShown: false }}
+                />
               </Stack>
               <Toast config={toastConfig} />
             </AppProvider>

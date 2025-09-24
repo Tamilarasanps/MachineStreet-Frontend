@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "scheme": "machinestreets",
-    "deepLinking" : true,
+    "deepLinking": true,
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "platforms": [
@@ -27,7 +27,7 @@
       }
     },
     "android": {
-      "versionCode": 11,
+      "versionCode": 16,
       "intentFilters": [
         {
           "action": "VIEW",
@@ -86,8 +86,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "05074c8b-591f-4cd4-b6ea-b53c3e6a2a9e"
+        "projectId": "2cbb7ea4-fdca-4fb8-bd68-262c68bf9429"
       }
-    }
+    },
+    "owner": "concept_creators"
   }
 }
