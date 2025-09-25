@@ -56,13 +56,16 @@ export default function Footer() {
             </Text>
           </Text>
           <Text className="text-sm text-gray-400 mb-2">
-            Phone:{" "}
+            Phone:
             <Text
               onPress={() => Linking.openURL("tel:+919788401234")}
               className="text-white"
             >
               +91 97884 01234
             </Text>
+          </Text>
+          <Text className="text-sm text-gray-400">
+            THIRU.C.RAJIV PROP.CHINNAMMAL ENTERPRISES 
           </Text>
           <Text className="text-sm text-gray-400">
             373/2, Vaiyampatti, NH47 Trichy-Dindugal{"\n"}
@@ -75,9 +78,6 @@ export default function Footer() {
       <View className="border-t border-gray-700 mt-8 pt-4">
         <Text className="text-center text-sm text-gray-500">
           © {year} MachineStreets. All rights reserved.
-        </Text>
-        <Text className="text-center text-sm text-gray-400 mt-1">
-          Powered by <Text className="text-white">Chinnammal Enterprises</Text>
         </Text>
       </View>
     </View>

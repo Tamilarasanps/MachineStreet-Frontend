@@ -26,8 +26,7 @@ const MobilePostViewer = React.memo((props) => {
     modal,
     screenHeight,
     insets,
-    handleDoubleTap,
-    heartAnimations,
+    
     share,
     setSelectedMechanic
   } = props;
@@ -63,10 +62,7 @@ const MobilePostViewer = React.memo((props) => {
   };
 
   const renderMobilePost = ({ item, index }) => {
-    const anim = heartAnimations[item._id] || {
-      scale: new Animated.Value(0),
-      opacity: new Animated.Value(0),
-    };
+
     // khbhkb
     return (
       <View
@@ -131,7 +127,6 @@ const MobilePostViewer = React.memo((props) => {
 
         {/* media with double-tap */}
         <Pressable
-          onPress={() => handleDoubleTap(item)}
           className="bg-gray-100"
           style={{
             height: "75%",
@@ -152,7 +147,7 @@ const MobilePostViewer = React.memo((props) => {
           ) : (
             <Image
               source={{
-                // uri: `http://192.168.1.10:5000/api/mediaDownload/${item?.media}`,
+                // uri: `http://192.168.43.158:5000/api/mediaDownload/${item?.media}`,
                 uri: `https://api.machinestreets.com/api/mediaDownload/${item?.media}`,
               }}
               style={{ width: "100%", height: "100%" }}
@@ -161,16 +156,7 @@ const MobilePostViewer = React.memo((props) => {
           )}
 
           {/* ❤️ heart animation */}
-          <Animated.View
-  style={{
-    position: "absolute",
-    alignSelf: "center",
-    opacity: anim.opacity,
-    transform: [{ scale: anim.scale }],
-  }}
->
-  <Ionicons name="heart" size={120} color="red" />
-</Animated.View>
+          
 
         </Pressable>
 

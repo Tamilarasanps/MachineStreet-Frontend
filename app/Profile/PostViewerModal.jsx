@@ -36,92 +36,89 @@ const PostViewerModal = ({
 }) => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
-  const [heartAnimations, setHeartAnimations] = useState({});
+  // const [heartAnimations, setHeartAnimations] = useState({});
   const screenHeight = Dimensions.get("window").height;
 
-  const animateHeart = (postId) => {
-    const anim = heartAnimations[postId];
-    console.log('animheart :', anim)
-    if (!anim) return;
+  // const animateHeart = (postId) => {
+  //   const anim = heartAnimations[postId];
+  //   if (!anim) return;
 
-    console.log('pl')
+  //   anim.scale.setValue(0);
+  //   anim.opacity.setValue(1);
 
-    anim.scale.setValue(0);
-    anim.opacity.setValue(1);
+  //   Animated.parallel([
+  //     Animated.spring(anim.scale, {
+  //       toValue: 1.5,
+  //       friction: 3,
+  //       tension: 100,
+  //       useNativeDriver: true,
+  //     }),
+  //     Animated.timing(anim.opacity, {
+  //       toValue: 1,
+  //       duration: 100,
+  //       useNativeDriver: true,
+  //     }),
+  //   ]).start(() => {
+  //     Animated.parallel([
+  //       Animated.timing(anim.scale, {
+  //         toValue: 0,
+  //         duration: 300,
+  //         useNativeDriver: true,
+  //       }),
+  //       Animated.timing(anim.opacity, {
+  //         toValue: 0,
+  //         duration: 300,
+  //         useNativeDriver: true,
+  //       }),
+  //     ]).start();
+  //   });
+  // };
 
-    Animated.parallel([
-      Animated.spring(anim.scale, {
-        toValue: 1.5,
-        friction: 3,
-        tension: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(anim.opacity, {
-        toValue: 1,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      Animated.parallel([
-        Animated.timing(anim.scale, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.timing(anim.opacity, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    });
-  };
+  // useEffect(() => {
+  //   if (user?.posts) {
+  //     const newAnimations = {};
+  //     user.posts.forEach((post) => {
+  //       newAnimations[post._id] = {
+  //         scale: new Animated.Value(0),
+  //         opacity: new Animated.Value(0),
+  //       };
+  //     });
+  //     setHeartAnimations(newAnimations);
+  //   }
+  // }, [user?.posts]);
 
-  useEffect(() => {
-    if (user?.posts) {
-      const newAnimations = {};
-      user.posts.forEach((post) => {
-        newAnimations[post._id] = {
-          scale: new Animated.Value(0),
-          opacity: new Animated.Value(0),
-        };
-      });
-      setHeartAnimations(newAnimations);
-    }
-  }, [user?.posts]);
+  // const lastTap = useRef(null);
 
-  const lastTap = useRef(null);
+  // const handleDoubleTap = (post) => {
+  //   const now = Date.now();
+  //   if (!post || !Array.isArray(post.likes)) return;
 
-  const handleDoubleTap = (post) => {
-    const now = Date.now();
-    if (!post || !Array.isArray(post.likes)) return;
-
-    if (lastTap.current && now - lastTap.current < 300) {
-      animateHeart(post._id);
-      if (!post.likes.includes(userId)) {
-        setSelectedMechanic((prev) =>
-          prev
-            ? {
-                ...prev,
-                posts: prev.posts.map((p) =>
-                  p._id === post._id
-                    ? {
-                        ...p,
-                        likes: p.likes ? [...p.likes, userId] : [userId],
-                      }
-                    : p
-                ),
-              }
-            : prev
-        );
-        setTimeout(() => {
-          handleLike({ postId: post._id }, "api/postLikes");
-        }, 500);
-      }
-    } else {
-      lastTap.current = now;
-    }
-  };
+  //   if (lastTap.current && now - lastTap.current < 300) {
+  //     animateHeart(post._id);
+  //     if (!post.likes.includes(userId)) {
+  //       setSelectedMechanic((prev) =>
+  //         prev
+  //           ? {
+  //               ...prev,
+  //               posts: prev.posts.map((p) =>
+  //                 p._id === post._id
+  //                   ? {
+  //                       ...p,
+  //                       likes: p.likes ? [...p.likes, userId] : [userId],
+  //                     }
+  //                   : p
+  //               ),
+  //             }
+  //           : prev
+  //       );
+  //       setTimeout(() => {
+  //         handleLike({ postId: post._id }, "api/postLikes");
+  //       }, 500);
+  //     }
+  //   } else {
+  //     lastTap.current = now;
+  //   }
+  // };
 
   const share = useCallback(
     async (post) => {
@@ -200,8 +197,8 @@ const PostViewerModal = ({
           setComment={setComment}
           setModal={setModal}
           handleLike={handleLike}
-          handleDoubleTap={handleDoubleTap}
-          heartAnimations={heartAnimations}
+          // handleDoubleTap={handleDoubleTap}
+          // heartAnimations={heartAnimations}
           share={share}
           item={user.posts[postModal]}
           goPrev={goPrev}
@@ -227,8 +224,8 @@ const PostViewerModal = ({
           postModal={postModal}
           scrollY={scrollY}
           handleLike={handleLike}
-          handleDoubleTap={handleDoubleTap}
-          heartAnimations={heartAnimations}
+          // handleDoubleTap={handleDoubleTap}
+          // heartAnimations={heartAnimations}
           share={share}
           isDesktop={isDesktop}
           setPostModal={setPostModal}
