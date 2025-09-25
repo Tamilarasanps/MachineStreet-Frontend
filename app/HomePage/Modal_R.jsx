@@ -74,7 +74,7 @@ const Modal_R = ({
           {reviewModal !== "read" ? (
             <KeyboardAvoidingView
               style={{ flex: 1 }}
-              behavior={Platform.OS === "ios" ? "padding" : undefined}
+              behavior="padding"
               keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
             >
               <TouchableWithoutFeedback
@@ -84,7 +84,13 @@ const Modal_R = ({
                 accessible={false}
                 touchSoundDisabled={true}
               >
-                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <Rating
                     review={review}
                     setReview={setReview}

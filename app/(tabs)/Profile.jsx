@@ -38,7 +38,7 @@ export default function Profile() {
   const [tempMech, setTempMech] = useState(selectedMechanic);
   const { id, type, post } = useLocalSearchParams();
   const [uploadType, setUploadType] = useState("");
-  console.log(id, type, post);
+
   const [description, setDescription] = useState("");
   const [modal, setModal] = useState("");
   const [postModal, setPostModal] = useState(null);
@@ -483,6 +483,7 @@ export default function Profile() {
         >
           {selectedMechanic?.posts?.length > 0 && (
             <PostViewerModal
+            setSelectedMechanic={setSelectedMechanic}
               type={type}
               postDelete={postDelete}
               comment={comment}

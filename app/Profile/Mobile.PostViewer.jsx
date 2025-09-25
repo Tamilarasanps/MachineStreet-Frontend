@@ -29,6 +29,7 @@ const MobilePostViewer = React.memo((props) => {
     handleDoubleTap,
     heartAnimations,
     share,
+    setSelectedMechanic
   } = props;
 
   const [currentIndex, setCurrentIndex] = useState(postModal);
@@ -61,7 +62,7 @@ const MobilePostViewer = React.memo((props) => {
     if (newIndex !== currentIndex) setCurrentIndex(newIndex);
   };
 
-  const renderMobilePost = ({ item,index }) => {
+  const renderMobilePost = ({ item, index }) => {
     const anim = heartAnimations[item._id] || {
       scale: new Animated.Value(0),
       opacity: new Animated.Value(0),
@@ -84,7 +85,7 @@ const MobilePostViewer = React.memo((props) => {
             paddingVertical: 12,
             borderBottomWidth: 1,
             borderBottomColor: "#e5e5e5",
-            height:'10%',
+            height: "10%",
             width: "100%",
             backgroundColor: "white",
           }}
@@ -133,7 +134,7 @@ const MobilePostViewer = React.memo((props) => {
           onPress={() => handleDoubleTap(item)}
           className="bg-gray-100"
           style={{
-            height:'75%',
+            height: "75%",
             width: "100%",
             justifyContent: "center",
             alignItems: "center",
@@ -142,16 +143,16 @@ const MobilePostViewer = React.memo((props) => {
           {item?.contentType === "video" ? (
             <View className="h-full w-full">
               <VideoGridItem
-              // source={`http://192.168.43.158:5000/api/mediaDownload/${item?.media}`}
-              source={`https://api.machinestreets.com/api/mediaDownload/${item?.media}`}
-              page="pvm"
-              isVisible={index === currentIndex}
-            />
+                // source={`http://192.168.43.158:5000/api/mediaDownload/${item?.media}`}
+                source={`https://api.machinestreets.com/api/mediaDownload/${item?.media}`}
+                page="pvm"
+                isVisible={index === currentIndex}
+              />
             </View>
           ) : (
             <Image
               source={{
-                // uri: `http://192.168.43.158:5000/api/mediaDownload/${item?.media}`,
+                // uri: `http://192.168.1.10:5000/api/mediaDownload/${item?.media}`,
                 uri: `https://api.machinestreets.com/api/mediaDownload/${item?.media}`,
               }}
               style={{ width: "100%", height: "100%" }}
@@ -161,21 +162,22 @@ const MobilePostViewer = React.memo((props) => {
 
           {/* ❤️ heart animation */}
           <Animated.View
-            style={{
-              position: "absolute",
-              alignSelf: "center",
-              opacity: anim.opacity,
-              transform: [{ scale: anim.scale }],
-            }}
-          >
-            <Ionicons name="heart" size={120} color="white" />
-          </Animated.View>
+  style={{
+    position: "absolute",
+    alignSelf: "center",
+    opacity: anim.opacity,
+    transform: [{ scale: anim.scale }],
+  }}
+>
+  <Ionicons name="heart" size={120} color="red" />
+</Animated.View>
+
         </Pressable>
 
         {/* footer */}
         <View
           style={{
-            height:'15%',
+            height: "15%",
             width: "100%",
             paddingHorizontal: 16,
             paddingVertical: 12,
@@ -189,6 +191,7 @@ const MobilePostViewer = React.memo((props) => {
             setModal={setModal}
             handleLike={handleLike}
             share={share}
+            setSelectedMechanic={setSelectedMechanic}
           />
           {item?.bio ? (
             <Text
@@ -205,29 +208,16 @@ const MobilePostViewer = React.memo((props) => {
         </View>
         {/* Comments modal */}
         {modal === "comment" && (
-          <View
-            className="absolute bottom-0 rounded-2xl pt-2 px-4 shadow-lg right-0 left-0"
-            style={{
-              height: "95%",
-              width: isDesktop ? 500 : "100%",
-              backgroundColor: "white",
-              shadowColor: "#000",
-              shadowOpacity: 0.2,
-              shadowRadius: 10,
-              elevation: 10,
-            }}
-          >
-            <SafeAreaView style={{ flex: 1 }}>
-              <CommentSection
-                onclose={() => setModal("")}
-                handleLike={handleLike}
-                comment={comment}
-                setComment={setComment}
-                post={item}
-                comments={item?.comments}
-              />
-            </SafeAreaView>
-          </View>
+          <CommentSection
+            setModal={setModal}
+            handleLike={handleLike}
+            comment={comment}
+            setComment={setComment}
+            post={item}
+            comments={item?.comments}
+            screenHeight={screenHeight}
+            insets={insets}
+          />
         )}
       </View>
     );
@@ -236,27 +226,26 @@ const MobilePostViewer = React.memo((props) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Animated.FlatList
-  ref={flatListRef}
-  data={user?.posts}
-  getItemLayout={(_, index) => ({
-    length: ITEM_HEIGHT,
-    offset: ITEM_HEIGHT * index,
-    index,
-  })}
-  keyExtractor={(_, idx) => idx.toString()}
-  renderItem={renderMobilePost}
-  initialScrollIndex={0} // ✅ set correctly
-  pagingEnabled={modal !== "comment"}
-  scrollEnabled={modal !== "comment"}
-  showsVerticalScrollIndicator={false}
-  onMomentumScrollEnd={handleMomentumScrollEnd}
-  scrollEventThrottle={16}
-  windowSize={3}
-  initialNumToRender={3}
-  maxToRenderPerBatch={3}
-  removeClippedSubviews={false}
-/>
-
+        ref={flatListRef}
+        data={user?.posts}
+        getItemLayout={(_, index) => ({
+          length: ITEM_HEIGHT,
+          offset: ITEM_HEIGHT * index,
+          index,
+        })}
+        keyExtractor={(_, idx) => idx.toString()}
+        renderItem={renderMobilePost}
+        initialScrollIndex={0} // ✅ set correctly
+        pagingEnabled={modal !== "comment"}
+        scrollEnabled={modal !== "comment"}
+        showsVerticalScrollIndicator={false}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
+        scrollEventThrottle={16}
+        windowSize={3}
+        initialNumToRender={3}
+        maxToRenderPerBatch={3}
+        removeClippedSubviews={false}
+      />
     </SafeAreaView>
   );
 });

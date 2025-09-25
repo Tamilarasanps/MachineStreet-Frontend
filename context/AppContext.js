@@ -73,19 +73,19 @@ export const AppProvider = ({ children }) => {
           console.log("Socket connect_error:", err);
         });
 
-        // likes updation
-        newSocket.on("likes-update", (updatedPost) => {
-          setSelectedMechanic((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  posts: prev.posts.map((p) =>
-                    p._id === updatedPost._id ? updatedPost : p
-                  ),
-                }
-              : prev
-          );
-        });
+        // // likes updation
+        // newSocket.on("likes-update", (updatedPost) => {
+        //   setSelectedMechanic((prev) =>
+        //     prev
+        //       ? {
+        //           ...prev,
+        //           posts: prev.posts.map((p) =>
+        //             p._id === updatedPost._id ? updatedPost : p
+        //           ),
+        //         }
+        //       : prev
+        //   );
+        // });
 
         // coments updation
 

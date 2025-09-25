@@ -8,10 +8,9 @@ export default function Footer() {
 
   const handleNavigation = (item) => {
     if (item === "Home") {
-      // navigation.navigate("HomePage"); // tabs/HomePage screen
-      router.push('/(tabs)/HomePage'); // tabs/HomePage screen
+      router.push("/(tabs)/HomePage");
     } else if (item === "Services") {
-      router.push('/Footer/ServicesPage')
+      router.push("/Footer/ServicesPage");
     } else if (item === "About") {
       navigation.navigate("AboutPage");
     }
@@ -48,7 +47,7 @@ export default function Footer() {
         <View className="mb-8 md:mb-0">
           <Text className="text-white font-semibold mb-3">Contact</Text>
           <Text className="text-sm text-gray-400 mb-2">
-            Email:
+            Email:{" "}
             <Text
               onPress={() => Linking.openURL("mailto:info@yourbrand.com")}
               className="text-white"
@@ -57,52 +56,28 @@ export default function Footer() {
             </Text>
           </Text>
           <Text className="text-sm text-gray-400 mb-2">
-            Phone:
+            Phone:{" "}
             <Text
-              onPress={() => Linking.openURL("tel:+1234567890")}
+              onPress={() => Linking.openURL("tel:+919788401234")}
               className="text-white"
             >
               +91 97884 01234
             </Text>
           </Text>
           <Text className="text-sm text-gray-400">
-            373/2, Vaiyampatti, NH47 Trichy-dindugal{"\n"}
+            373/2, Vaiyampatti, NH47 Trichy-Dindugal{"\n"}
             Manapparai taluk, Tamil Nadu - 621315
           </Text>
         </View>
-
-        {/* Social */}
-        {/* <View>
-          <Text className="text-white font-semibold mb-3">Follow Us</Text>
-          <View className="flex-row space-x-4">
-            <TouchableOpacity
-              onPress={() => Linking.openURL("https://facebook.com")}
-            >
-              <Facebook size={22} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => Linking.openURL("https://twitter.com")}
-            >
-              <Twitter size={22} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => Linking.openURL("https://instagram.com")}
-            >
-              <Instagram size={22} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => Linking.openURL("https://linkedin.com")}
-            >
-              <Linkedin size={22} color="white" />
-            </TouchableOpacity>
-          </View>
-        </View> */}
       </View>
 
       {/* Bottom Bar */}
       <View className="border-t border-gray-700 mt-8 pt-4">
         <Text className="text-center text-sm text-gray-500">
           © {year} MachineStreets. All rights reserved.
+        </Text>
+        <Text className="text-center text-sm text-gray-400 mt-1">
+          Powered by <Text className="text-white">Chinnammal Enterprises</Text>
         </Text>
       </View>
     </View>

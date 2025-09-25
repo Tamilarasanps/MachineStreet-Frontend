@@ -14,6 +14,8 @@ export default function RootLayout() {
     success: (props) => (
       <BaseToast
         {...props}
+        autoHide={props.autoHide}
+        visibilityTime={props.visibilityTime} // <--- forward visibilityTime
         style={{ borderLeftColor: "green", backgroundColor: "#e6ffe6" }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{
@@ -30,6 +32,8 @@ export default function RootLayout() {
     info: (props) => (
       <BaseToast
         {...props}
+        autoHide={props.autoHide}
+        visibilityTime={props.visibilityTime} // <--- forward visibilityTime
         style={{ borderLeftColor: "orange", backgroundColor: "#ffffffff" }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{
@@ -46,6 +50,8 @@ export default function RootLayout() {
     error: (props) => (
       <ErrorToast
         {...props}
+        autoHide={props.autoHide}
+        visibilityTime={props.visibilityTime} // <--- forward visibilityTime
         style={{ borderLeftColor: "red", backgroundColor: "#ffe6e6" }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{

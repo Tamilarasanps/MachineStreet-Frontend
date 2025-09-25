@@ -32,11 +32,50 @@ const PostViewerModal = ({
   width,
   isDesktop,
   handleLike,
+  setSelectedMechanic,
 }) => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
   const [heartAnimations, setHeartAnimations] = useState({});
   const screenHeight = Dimensions.get("window").height;
+
+  const animateHeart = (postId) => {
+    const anim = heartAnimations[postId];
+    console.log('animheart :', anim)
+    if (!anim) return;
+
+    console.log('pl')
+
+    anim.scale.setValue(0);
+    anim.opacity.setValue(1);
+
+    Animated.parallel([
+      Animated.spring(anim.scale, {
+        toValue: 1.5,
+        friction: 3,
+        tension: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(anim.opacity, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      Animated.parallel([
+        Animated.timing(anim.scale, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(anim.opacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  };
 
   useEffect(() => {
     if (user?.posts) {
@@ -60,6 +99,21 @@ const PostViewerModal = ({
     if (lastTap.current && now - lastTap.current < 300) {
       animateHeart(post._id);
       if (!post.likes.includes(userId)) {
+        setSelectedMechanic((prev) =>
+          prev
+            ? {
+                ...prev,
+                posts: prev.posts.map((p) =>
+                  p._id === post._id
+                    ? {
+                        ...p,
+                        likes: p.likes ? [...p.likes, userId] : [userId],
+                      }
+                    : p
+                ),
+              }
+            : prev
+        );
         setTimeout(() => {
           handleLike({ postId: post._id }, "api/postLikes");
         }, 500);
@@ -67,41 +121,6 @@ const PostViewerModal = ({
     } else {
       lastTap.current = now;
     }
-  };
-
-  const animateHeart = (postId) => {
-    const { scale, opacity } = heartAnimations[postId] || {};
-    if (!scale || !opacity) return;
-
-    scale.setValue(0);
-    opacity.setValue(1);
-
-    Animated.parallel([
-      Animated.spring(scale, {
-        toValue: 1.5,
-        friction: 3,
-        tension: 100,
-        useNativeDriver: false,
-      }),
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 100,
-        useNativeDriver: false,
-      }),
-    ]).start(() => {
-      Animated.parallel([
-        Animated.timing(scale, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: false,
-        }),
-        Animated.timing(opacity, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: false,
-        }),
-      ]).start();
-    });
   };
 
   const share = useCallback(
@@ -214,6 +233,7 @@ const PostViewerModal = ({
           isDesktop={isDesktop}
           setPostModal={setPostModal}
           insets={insets}
+          setSelectedMechanic={setSelectedMechanic}
         />
       )}
     </SafeAreaView>
