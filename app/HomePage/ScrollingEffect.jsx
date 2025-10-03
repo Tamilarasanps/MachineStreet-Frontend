@@ -1,35 +1,33 @@
 import React, { useRef, useEffect, useState } from "react";
 import { View, Text, Animated } from "react-native";
 
-const ScrollingEffect = ({ width, data }) => {
+const ScrollingEffect = ({ width }) => {
   const scrollAnim = useRef(new Animated.Value(0)).current;
   const [shouldScroll, setShouldScroll] = useState(false);
+  const [contentWidth, setContentWidth] = useState(0);
 
-  // Duplicate array for continuous scroll effect if needed
-  const items = [...data, ...data]; // duplicate for looping scroll
+  // static data
+  const items = ["Apple", "Banana", "Orange", "Mango", "Grapes", "Peach"];
 
   useEffect(() => {
-    const itemWidth = width / 4; // approximate width per item (adjust if needed)
-    const singleContentWidth = data.length * (itemWidth + 8); // margin included
-
-    // Decide if scrolling is needed
-    if (singleContentWidth > width) {
+    if (contentWidth > width) {
       setShouldScroll(true);
 
       const animate = () => {
         scrollAnim.setValue(0);
         Animated.timing(scrollAnim, {
-          toValue: -singleContentWidth,
+          toValue: -contentWidth / 2, // scroll across one copy
           duration: 15000,
-          useNativeDriver: false,
+          useNativeDriver: true,
         }).start(() => animate());
       };
+
       animate();
     } else {
       setShouldScroll(false);
       scrollAnim.setValue(0);
     }
-  }, [data, width, scrollAnim]);
+  }, [width, contentWidth]);
 
   return (
     <View style={{ width, overflow: "hidden" }}>
@@ -38,14 +36,21 @@ const ScrollingEffect = ({ width, data }) => {
           flexDirection: "row",
           transform: [{ translateX: shouldScroll ? scrollAnim : 0 }],
         }}
+        onLayout={(e) => setContentWidth(e.nativeEvent.layout.width)}
       >
-        {(shouldScroll ? items : data).map((item, index) => (
+        {/* duplicate once for seamless scroll */}
+        {[...items, ...items].map((item, index) => (
           <View
             key={index}
-            className="bg-neutral-800 px-3 py-1 mx-1 rounded-md"
-            style={{ marginHorizontal: 4 }}
+            style={{
+              backgroundColor: "#222",
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 6,
+              marginHorizontal: 4,
+            }}
           >
-            <Text className="text-white text-base">{item}</Text>
+            <Text style={{ color: "#fff", fontSize: 16 }}>{item}</Text>
           </View>
         ))}
       </Animated.View>

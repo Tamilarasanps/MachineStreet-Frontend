@@ -1,12 +1,10 @@
-import React, { useRef, useCallback, useState, useEffect } from "react";
+import React, { useRef, useCallback } from "react";
 import {
   Animated,
   Platform,
   Pressable,
   Dimensions,
   View,
-  Share as NativeShare,
-  Alert,
 } from "react-native";
 import {
   SafeAreaView,
@@ -15,8 +13,14 @@ import {
 import Icon from "react-native-vector-icons/Feather";
 import DesktopPostViewer from "./Desktop.PostViewer";
 import MobilePostViewer from "./Mobile.PostViewer";
-import * as Linking from "expo-linking";
 import { Feather } from "@expo/vector-icons";
+import { GestureHandlerRootView, Gesture } from "react-native-gesture-handler";
+import {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
 
 const PostViewerModal = ({
   type,
@@ -33,126 +37,75 @@ const PostViewerModal = ({
   isDesktop,
   handleLike,
   setSelectedMechanic,
+  share
 }) => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
-  // const [heartAnimations, setHeartAnimations] = useState({});
+
   const screenHeight = Dimensions.get("window").height;
+  const lastTap = useRef(null);
 
-  // const animateHeart = (postId) => {
-  //   const anim = heartAnimations[postId];
-  //   if (!anim) return;
+  const scale = useSharedValue(0);
+  const opacity = useSharedValue(0);
 
-  //   anim.scale.setValue(0);
-  //   anim.opacity.setValue(1);
+  const animatedStyle = useCallback(useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  })),[])
 
-  //   Animated.parallel([
-  //     Animated.spring(anim.scale, {
-  //       toValue: 1.5,
-  //       friction: 3,
-  //       tension: 100,
-  //       useNativeDriver: true,
-  //     }),
-  //     Animated.timing(anim.opacity, {
-  //       toValue: 1,
-  //       duration: 100,
-  //       useNativeDriver: true,
-  //     }),
-  //   ]).start(() => {
-  //     Animated.parallel([
-  //       Animated.timing(anim.scale, {
-  //         toValue: 0,
-  //         duration: 300,
-  //         useNativeDriver: true,
-  //       }),
-  //       Animated.timing(anim.opacity, {
-  //         toValue: 0,
-  //         duration: 300,
-  //         useNativeDriver: true,
-  //       }),
-  //     ]).start();
-  //   });
-  // };
+  const doubleTap = Gesture.Tap()
+    .numberOfTaps(2)
+    .onStart(() => {
+      scale.value = withSpring(1.5, {
+        damping: 5,
+        stiffness: 150,
+        mass: 0.4,
+      });
+      opacity.value = withTiming(1, { duration: 200 });
 
-  // useEffect(() => {
-  //   if (user?.posts) {
-  //     const newAnimations = {};
-  //     user.posts.forEach((post) => {
-  //       newAnimations[post._id] = {
-  //         scale: new Animated.Value(0),
-  //         opacity: new Animated.Value(0),
-  //       };
-  //     });
-  //     setHeartAnimations(newAnimations);
-  //   }
-  // }, [user?.posts]);
+      setTimeout(() => {
+        scale.value = withTiming(0, { duration: 300 });
+        opacity.value = withTiming(0, { duration: 300 });
+      }, 800);
+    });
 
-  // const lastTap = useRef(null);
+  const handleTap = useCallback((item) => {
+    
+    const now = Date.now();
+    const DOUBLE_PRESS_DELAY = 300; // ms
+    if (lastTap.current && now - lastTap.current < DOUBLE_PRESS_DELAY) {
+      console.log(item.likes)
+      console.log(userId)
+      if (!item.likes.includes(userId)) {
+        setSelectedMechanic((prev) =>
+          prev
+            ? {
+                ...prev,
+                posts: prev.posts.map((p) =>
+                  p._id === item._id
+                    ? { ...p, likes: p.likes ? [...p.likes, userId] : [userId] }
+                    : p
+                ),
+              }
+            : prev
+        );
 
-  // const handleDoubleTap = (post) => {
-  //   const now = Date.now();
-  //   if (!post || !Array.isArray(post.likes)) return;
-
-  //   if (lastTap.current && now - lastTap.current < 300) {
-  //     animateHeart(post._id);
-  //     if (!post.likes.includes(userId)) {
-  //       setSelectedMechanic((prev) =>
-  //         prev
-  //           ? {
-  //               ...prev,
-  //               posts: prev.posts.map((p) =>
-  //                 p._id === post._id
-  //                   ? {
-  //                       ...p,
-  //                       likes: p.likes ? [...p.likes, userId] : [userId],
-  //                     }
-  //                   : p
-  //               ),
-  //             }
-  //           : prev
-  //       );
-  //       setTimeout(() => {
-  //         handleLike({ postId: post._id }, "api/postLikes");
-  //       }, 500);
-  //     }
-  //   } else {
-  //     lastTap.current = now;
-  //   }
-  // };
-
-  const share = useCallback(
-    async (post) => {
-      try {
-        let productUrl;
-        if (Platform.OS === "web") {
-          productUrl = `https://api.machinestreets.com/E2?id=${userId}&type=user_visit&post=${post._id}`;
-        } else {
-          productUrl = Linking.createURL("E2", {
-            queryParams: { id: userId, type: "user_visit", post: post._id },
-          });
-        }
-
-        const message = `Check out this post: ${post.bio || ""}\n${productUrl}`;
-        if (Platform.OS === "web") {
-          if (navigator.share) {
-            await navigator.share({
-              title: "Check out this post!",
-              text: message,
-              url: productUrl,
-            });
-          } else {
-            await navigator.clipboard.writeText(message);
-            alert("🔗 URL copied to clipboard (Web Share not supported)");
-          }
-        } else {
-          await NativeShare.share({ message });
-        }
-      } catch (error) {
-        Alert.alert("Error", "Unable to share the post.");
+        setTimeout(() => {
+          handleLike({ postId: item._id }, "api/postLikes");
+        }, 500);
       }
-    },
-    [userId]
-  );
+      lastTap.current = null; // reset
+    } else {
+      lastTap.current = now;
+      setTimeout(() => {
+        if (lastTap.current === now) {
+          console.log("Single Tap");
+          lastTap.current = null;
+        }
+      }, DOUBLE_PRESS_DELAY);
+    }
+  },[])
+
 
   const goPrev = () =>
     setPostModal((prev) => (prev < user.posts.length - 1 ? prev + 1 : prev));
@@ -197,8 +150,9 @@ const PostViewerModal = ({
           setComment={setComment}
           setModal={setModal}
           handleLike={handleLike}
-          // handleDoubleTap={handleDoubleTap}
-          // heartAnimations={heartAnimations}
+          animatedStyle={animatedStyle}
+          doubleTap={doubleTap}
+          handleTap={handleTap}
           share={share}
           item={user.posts[postModal]}
           goPrev={goPrev}
@@ -211,27 +165,30 @@ const PostViewerModal = ({
         />
       ) : null}
       {!isDesktop && user?.posts[postModal] && (
-        <MobilePostViewer
-          screenHeight={screenHeight}
-          type={type}
-          postDelete={postDelete}
-          comment={comment}
-          setComment={setComment}
-          setModal={setModal}
-          modal={modal}
-          userId={userId}
-          user={user}
-          postModal={postModal}
-          scrollY={scrollY}
-          handleLike={handleLike}
-          // handleDoubleTap={handleDoubleTap}
-          // heartAnimations={heartAnimations}
-          share={share}
-          isDesktop={isDesktop}
-          setPostModal={setPostModal}
-          insets={insets}
-          setSelectedMechanic={setSelectedMechanic}
-        />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <MobilePostViewer
+            screenHeight={screenHeight}
+            type={type}
+            postDelete={postDelete}
+            comment={comment}
+            setComment={setComment}
+            setModal={setModal}
+            modal={modal}
+            userId={userId}
+            user={user}
+            postModal={postModal}
+            scrollY={scrollY}
+            handleLike={handleLike}
+            animatedStyle={animatedStyle}
+            doubleTap={doubleTap}
+            handleTap={handleTap}
+            share={share}
+            isDesktop={isDesktop}
+            setPostModal={setPostModal}
+            insets={insets}
+            setSelectedMechanic={setSelectedMechanic}
+          />
+        </GestureHandlerRootView>
       )}
     </SafeAreaView>
   );

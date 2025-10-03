@@ -74,19 +74,23 @@ export default function RootLayout() {
         <FileUploadProvider>
           <FormatTimeProvider>
             <AppProvider>
-              <Stack linking={linking}>
-                <Stack.Screen
-                  name="(tabs)" // corresponds to app/index.js
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen name="E2" options={{ headerShown: false }} />
-                <Stack.Screen name="Login" options={{ headerShown: false }} />
-                <Stack.Screen name="SignUp" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="ServicePage"
-                  options={{ headerShown: false }}
-                />
-              </Stack>
+                <Stack linking={linking}>
+                  <Stack.Screen
+                    name="(tabs)" // corresponds to app/index.js
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="E2" options={{ headerShown: false }} />
+                  <Stack.Screen name="Login" options={{ headerShown: false }} />
+                  <Stack.Screen
+                    name="SignUp"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="ServicePage"
+                    options={{ headerShown: false }}
+                  />
+                </Stack>
+          
               <Toast config={toastConfig} />
             </AppProvider>
           </FormatTimeProvider>

@@ -22,8 +22,8 @@ const UserDetailsForm = ({
   setUserDetails,
   page,
   handleSubmit,
+  fetchGeocodes,
 }) => {
-
   const { isDesktop } = useScreenWidth();
   const { getJsonApi } = useApi();
   const {
@@ -31,7 +31,9 @@ const UserDetailsForm = ({
     setIndustrySuggestion,
     focusedLabel,
     setFocusedLabel,
-    isLoading
+    isLoading,
+    startLoading,
+    stopLoading,
   } = useAppContext();
   const [states, setStates] = useState([]);
   const [passDisplay, setPassDisplay] = useState(false);
@@ -52,6 +54,7 @@ const UserDetailsForm = ({
           "application/json",
           { secure: false }
         );
+        console.log("data :", data);
         if (data.status === 200) {
           setIndustrySuggestion(data?.data?.industries);
           setStates(data?.data?.states[1]?.districts);
@@ -104,31 +107,20 @@ const UserDetailsForm = ({
   }, []);
 
   // --- 🔥 Mobile Input Handling with libphonenumber-js ---
-  const handleMobileInput = useCallback(()=>{
-    (text) => {
-      let input = text.trim().replace(/\s+/g, "");
-  
-      try {
-        const phoneNumber = parsePhoneNumberFromString(input);
-        if (phoneNumber) {
-          setUserDetails((prev) => ({
-            ...prev,
-            mobile: {
-              countryCode: `+${phoneNumber.countryCallingCode}`,
-              number: phoneNumber.nationalNumber,
-            },
-          }));
-        } else {
-          // fallback: just strip non-digits
-          setUserDetails((prev) => ({
-            ...prev,
-            mobile: {
-              ...prev.mobile,
-              number: input.replace(/\D/g, ""),
-            },
-          }));
-        }
-      } catch (error) {
+  const handleMobileInput = useCallback((text) => {
+    let input = text.trim().replace(/\s+/g, "");
+    try {
+      const phoneNumber = parsePhoneNumberFromString(input);
+      if (phoneNumber) {
+        setUserDetails((prev) => ({
+          ...prev,
+          mobile: {
+            countryCode: `+${phoneNumber.countryCallingCode}`,
+            number: phoneNumber.nationalNumber,
+          },
+        }));
+      } else {
+        // fallback: just strip non-digits
         setUserDetails((prev) => ({
           ...prev,
           mobile: {
@@ -137,12 +129,22 @@ const UserDetailsForm = ({
           },
         }));
       }
-    };
-  },[])
+    } catch (error) {
+      setUserDetails((prev) => ({
+        ...prev,
+        mobile: {
+          ...prev.mobile,
+          number: input.replace(/\D/g, ""),
+        },
+      }));
+    }
+  }, []);
 
   return (
     <ScrollView
-      className={`w-full ${page !== "profile" ? "h-full" : "h-[90%]"} bg-white rounded-md`}
+      className={`w-full ${
+        page !== "profile" ? "h-full" : "h-[90%]"
+      } bg-white rounded-md `}
       keyboardShouldPersistTaps="always"
     >
       <View style={{ height: "100%", width: "100%", paddingBottom: 20 }}>
@@ -182,14 +184,6 @@ const UserDetailsForm = ({
 
         {userDetails?.role === "mechanic" && (
           <>
-            <InputWOL
-              label="Bio"
-              placeholder="Write a short bio"
-              value={userDetails?.bio}
-              onChangeText={(text) =>
-                setUserDetails((prev) => ({ ...prev, bio: text }))
-              }
-            />
             <InputWOL
               placeholder="Aquila AutoMobiles"
               label="Organization Name"
@@ -341,12 +335,45 @@ const UserDetailsForm = ({
           ))}
 
         {userDetails?.role === "mechanic" && (
-          <Location
-            states={states}
-            userDetails={userDetails}
-            setUserDetails={setUserDetails}
-          />
+          <>
+            <View className="mt-5">
+              <Text className="text-lg font-semibold mb-2">
+                Address Details
+              </Text>
+
+              {/* Manual Entry */}
+
+              <InputWOL
+                label="Street"
+                placeholder={`Enter Street`}
+                value={userDetails.street}
+                onChangeText={(value) =>
+                  setUserDetails((prev) => ({ ...prev, street: value }))
+                }
+              />
+            </View>
+            <Location
+              states={states}
+              userDetails={userDetails}
+              setUserDetails={setUserDetails}
+            />
+            <View className="-z-10">
+              <InputWOL
+                label="pincode"
+                placeholder="Enter pincode"
+                keyboardType="numeric"
+                value={userDetails.pincode}
+                onChangeText={(value) =>
+                  setUserDetails((prev) => ({
+                    ...prev,
+                    pincode: value.replace(/[^0-9]/g, ""), // allow only numbers
+                  }))
+                }
+              />
+            </View>
+          </>
         )}
+
         {page === " profile " && (
           <Pressable className="bg-teal-600 py-4 rounded-lg items-center mt-20 mb-4">
             <Text className="text-white text-lg font-bold">Update</Text>
@@ -355,7 +382,24 @@ const UserDetailsForm = ({
 
         <Pressable
           disabled={isLoading}
-          onPress={() => handleSubmit(userDetails)}
+          onPress={async () => {
+            startLoading();
+
+            let data = { ...userDetails };
+
+            if (userDetails.role === "mechanic") {
+              const address = `${userDetails.city}, ${userDetails.region}, ${userDetails.pincode}, ${userDetails.country}`;
+              const coords = await fetchGeocodes(address); // get lat/lon
+              data = {
+                ...data,
+                lat: coords?.latitude,
+                long: coords?.longitude,
+              };
+            }
+
+            // handleSubmit is called in all cases
+            handleSubmit(data);
+          }}
           className={`h-12 -z-10 bg-TealGreen items-center justify-center px-4 mx-auto mt-24 rounded-md overflow-hidden ${
             isDesktop ? "w-[75%]" : "w-full"
           } ${isLoading ? "opacity-50" : ""}`}

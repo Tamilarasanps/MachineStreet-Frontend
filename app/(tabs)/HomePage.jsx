@@ -22,6 +22,8 @@ import QrModal from "../HomePage/QrModal";
 import * as SecureStore from "expo-secure-store";
 import Loading from "@/components/Loading";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useLocation } from "@/context/LocationContext";
 
 const HomePage = () => {
   const [filterItems, setFilterItems] = useState({
@@ -39,10 +41,16 @@ const HomePage = () => {
     selectedMechanic,
     setSelectedMechanic,
     isLoading,
-    userRole,filterData, setFIlterData,
+    userRole,
+    filterData,
+    setFIlterData,
   } = useAppContext();
   const { isDesktop, width, isTablet, isMobile, height } = useScreenWidth();
   const { getJsonApi, postJsonApi } = useApi();
+
+  const { geoCoords, status } = useLocation();
+
+  console.log(geoCoords, status);
 
   const [review, setReview] = useState({
     star: null,
@@ -75,40 +83,40 @@ const HomePage = () => {
   };
   // remove: const mechanicsCache = useRef(null);
 
-const getmechanics = useCallback(async () => {
-  try {
-    const result = await getJsonApi(
-      `homepage/getmechanics/?page=${page}&limit=50`,
-      "application/json",
-      { secure: true }
-    );
+  const getmechanics = useCallback(async () => {
+    try {
+      const result = await getJsonApi(
+        `homepage/getmechanics/?page=${page}&limit=50`,
+        "application/json",
+        { secure: true }
+      );
 
-    if (result?.status === 200) {
-      setPage((prev) => prev + 1);
-      setTotalPages(result?.data?.totalPages);
+      if (result?.status === 200) {
+        setPage((prev) => prev + 1);
+        setTotalPages(result?.data?.totalPages);
 
-      // ✅ append with deduplication
-      setUserDetails((prev) => {
-        const combined = [...(prev || []), ...(result?.data?.userData || [])];
-        return combined.filter(
-          (item, index, arr) =>
-            index === arr.findIndex((x) => x._id === item._id)
-        );
-      });
+        // ✅ append with deduplication
+        setUserDetails((prev) => {
+          const combined = [...(prev || []), ...(result?.data?.userData || [])];
+          return combined.filter(
+            (item, index, arr) =>
+              index === arr.findIndex((x) => x._id === item._id)
+          );
+        });
 
-      setFIlterData(result?.data?.filterData);
-      setQr(result.data.qr);
+        setFIlterData(result?.data?.filterData);
+        setQr(result.data.qr);
+      }
+    } catch (err) {
+      console.log(err);
     }
-  } catch (err) {
-    console.log(err);
-  }
-}, [getJsonApi, page]);
+  }, [getJsonApi, page]);
 
-useEffect(() => {
-  if (!userDetails?.length) {
-    getmechanics();
-  }
-}, []);
+  useEffect(() => {
+    if (!userDetails?.length) {
+      getmechanics();
+    }
+  }, []);
 
   // post review
 
@@ -284,211 +292,208 @@ useEffect(() => {
       setSearchResults([]);
     }
   }, [searchBarValue]);
-console.log('totalPages :', totalPages )
+
   return (
-    <SafeAreaView
-      edges={["top", "left", "right"]} // ignore bottom to let tab bar handle it
-      style={{ flex: 1, backgroundColor: "#e5e7eb" }}
-    >
-      {/* header */}
-      {(reviewModal === "read" || reviewModal === "write") && (
-        <Modal_R
-          isTablet={isTablet}
-          isDesktop={isDesktop}
-          isMobile={isMobile}
-          height={height}
-          setReviewModal={setReviewModal}
-          selectedMechanic={selectedMechanic}
-          width={width}
-          review={review}
-          setReview={setReview}
-          postReview={postReview}
-          reviewModal={reviewModal}
+    <GestureHandlerRootView>
+      <SafeAreaView
+        edges={["top", "left", "right"]} // ignore bottom to let tab bar handle it
+        style={{ flex: 1, backgroundColor: "#e5e7eb" }}
+      >
+        {/* header */}
+        {(reviewModal === "read" || reviewModal === "write") && (
+          <Modal_R
+            isTablet={isTablet}
+            isDesktop={isDesktop}
+            isMobile={isMobile}
+            height={height}
+            setReviewModal={setReviewModal}
+            selectedMechanic={selectedMechanic}
+            width={width}
+            review={review}
+            setReview={setReview}
+            postReview={postReview}
+            reviewModal={reviewModal}
+          />
+        )}
+        <Header
+          isOpen={isOpen}
+          searchBarValue={searchBarValue}
+          setSearchBarValue={setSearchBarValue}
         />
-      )}
-      <Header
-        isOpen={isOpen}
-        searchBarValue={searchBarValue}
-        setSearchBarValue={setSearchBarValue}
-      />
 
-      {/* filter icon */}
-      {width <= 1024 && (
-        <Pressable onPress={() => setIsOpen(true)} className="mt-4 ml-3">
-          <Ionicons name="filter-outline" size={40} color="black" />
-        </Pressable>
-      )}
-
-      <View className="flex-row w-full flex-1 ">
-
-        {/* filter component */}
-        {(width > 1024 || isOpen) && (
-          <View
-            style={{
-              height: "100%",
-              position: width <= 1024 ? "absolute" : "relative",
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              width: isTablet
-                ? "40%"
-                : width > 1024
-                ? "20%"
-                : isMobile
-                ? "100%"
-                : null,
-              zIndex: 999,
-              paddingHorizontal: 8,
-              paddingVertical: 8,
-              backgroundColor: "#fff",
-              elevation: 10,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              overflow : 'hidden'
-            }}
-          >
-            <Filter
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-              isDesktop={isDesktop}
-              filterData={filterData}
-              filterItems={filterItems}
-              setFilterItems={setFilterItems}
-              width={width}
-            />
-          </View>
+        {/* filter icon */}
+        {width <= 1024 && (
+          <Pressable onPress={() => setIsOpen(true)} className="mt-4 ml-3">
+            <Ionicons name="filter-outline" size={40} color="black" />
+          </Pressable>
         )}
 
-        {qr === false && userRole === "mechanic" && (
+        <View className="flex-row w-full flex-1 ">
+          {/* filter component */}
+          {(width > 1024 || isOpen) && (
+            <View
+              style={{
+                height: "100%",
+                position: width <= 1024 ? "absolute" : "relative",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                width: isTablet
+                  ? "40%"
+                  : width > 1024
+                  ? "20%"
+                  : isMobile
+                  ? "100%"
+                  : null,
+                zIndex: 999,
+                paddingHorizontal: 8,
+                paddingVertical: 8,
+                backgroundColor: "#fff",
+                elevation: 10,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                overflow: "hidden",
+              }}
+            >
+              <Filter
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                isDesktop={isDesktop}
+                filterData={filterData}
+                filterItems={filterItems}
+                setFilterItems={setFilterItems}
+                width={width}
+              />
+            </View>
+          )}
+
+          {/* {qr === false && userRole === "mechanic" && (
           <QrModal
             visible={true}
             onClose={() => setQr(true)}
             getItem={getItem}
           />
-        )}
-        {/* userDetails */}
+        )} */}
+          {/* userDetails */}
 
-        <View
-          className={`flex-1 ${
-            Platform.OS === "web" && width >= 1024 ? "p-4" : null
-          } `}
-        >
-          <FlatList
-            key={isDesktop ? "desktop" : "mobile"}
-            data={filteredMechanics}
-            keyExtractor={(item) => item._id.toString()}
-            numColumns={isDesktop ? 2 : 1}
-            contentContainerStyle={{
-              padding: isDesktop ? 10 : 0,
-              flexGrow: 1,
-              justifyContent:
-                filteredMechanics?.length === 0 ? "center" : "flex-start",
-            }}
-            columnWrapperStyle={
-              isDesktop ? { justifyContent: "space-between" } : undefined
-            }
-            renderItem={({ item }) => (
-              <View
-                key={item._id.toString()}
-                className={`${
-                  Platform.OS === "web"
-                    ? isDesktop
-                      ? "w-[49%] h-[440px]"
-                      : "w-[95%] h-[640px]"
-                    : "w-[95%] h-[640px]"
-                } m-2 rounded-md mx-auto`}
-              >
-                <UserCard
-                  width={width}
-                  mechanic={item}
-                  isDesktop={isDesktop}
-                  setServiceModal={setServiceModal}
-                  setSelectedMechanic={setSelectedMechanic}
-                  setReviewModal={setReviewModal}
-                  setReview={setReview}
-                />
-              </View>
-            )}
-            ListHeaderComponentStyle={{
-              position: "sticky",
-              top: 0,
-              zIndex: 10,
-              width: "100%",
-              backgroundColor: "#E5E7EB",
-              padding: 5,
-            }}
-            ListHeaderComponent={() => (
-              <Animated.View
-                style={{
-                  opacity: selectedFIlterAnim,
-                  transform: [
-                    {
-                      translateY: selectedFIlterAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [-20, 0],
-                      }),
-                    },
-                  ],
-                  overflow: "hidden",
-                }}
-              >
-                <SelectedFilter
-                  filterItems={filterItems}
-                  setFilterItems={setFilterItems}
-                />
-              </Animated.View>
-            )}
-            ListEmptyComponent={() => (
-              <View className="flex-1 justify-center items-center">
-                {isLoading && page === 1 ? (
-                  <Loading />
-                ) : userDetails.length > 0 ? (
-                  <Text className="text-gray-500 text-lg font-semibold">
-                    No Data Found
-                  </Text>
-                ) : null}
-              </View>
-            )}
-            ListFooterComponent={() => {
-              if (userDetails?.length > 0) {
-                return page > totalPages ? (
-                  <Text className="text-gray-500 text-center py-4">
-                    No more mechanics
-                  </Text>
-                ) : (
-                  <Pressable
-                    className="mt-24 mb-8 overflow-hidden rounded-md bg-TealGreen h-12 w-48 items-center justify-center mx-auto"
-                    onPress={getmechanics}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <Loading bgColor="#2095A2" gearColor="#ffffffff" />
-                    ) : (
-                      <Text className="text-white w-full font-bold text-center">
-                        Load more
-                      </Text>
-                    )}
-                  </Pressable>
-                );
+          <View
+            className={`flex-1 ${
+              Platform.OS === "web" && width >= 1024 ? "p-4" : null
+            } `}
+          >
+            <FlatList
+              key={isDesktop ? "desktop" : "mobile"}
+              data={filteredMechanics}
+              keyExtractor={(item) => item._id.toString()}
+              numColumns={isDesktop ? 2 : 1}
+              contentContainerStyle={{
+                padding: isDesktop ? 10 : 0,
+                flexGrow: 1,
+                justifyContent:
+                  filteredMechanics?.length === 0 ? "center" : "flex-start",
+              }}
+              columnWrapperStyle={
+                isDesktop ? { justifyContent: "space-between" } : undefined
               }
-              return null;
-            }}
-          />
+              renderItem={({ item }) => (
+                <View
+                  key={item._id.toString()}
+                  className={`${
+                    isDesktop ? "w-[49%] h-[460px]" : "w-[95%] h-auto"
+                  } m-2 rounded-md mx-auto`}
+                >
+                  <UserCard
+                    width={width}
+                    mechanic={item}
+                    isDesktop={isDesktop}
+                    setServiceModal={setServiceModal}
+                    setSelectedMechanic={setSelectedMechanic}
+                    setReviewModal={setReviewModal}
+                    setReview={setReview}
+                  />
+                </View>
+              )}
+              ListHeaderComponentStyle={{
+                position: "sticky",
+                top: 0,
+                zIndex: 10,
+                width: "100%",
+                backgroundColor: "#E5E7EB",
+                padding: 5,
+              }}
+              ListHeaderComponent={() => (
+                <Animated.View
+                  style={{
+                    opacity: selectedFIlterAnim,
+                    transform: [
+                      {
+                        translateY: selectedFIlterAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [-20, 0],
+                        }),
+                      },
+                    ],
+                    overflow: "hidden",
+                  }}
+                >
+                  <SelectedFilter
+                    filterItems={filterItems}
+                    setFilterItems={setFilterItems}
+                  />
+                </Animated.View>
+              )}
+              ListEmptyComponent={() => (
+                <View className="flex-1 justify-center items-center">
+                  {isLoading && page === 1 ? (
+                    <Loading />
+                  ) : userDetails.length > 0 ? (
+                    <Text className="text-gray-500 text-lg font-semibold">
+                      No Data Found
+                    </Text>
+                  ) : null}
+                </View>
+              )}
+              ListFooterComponent={() => {
+                if (userDetails?.length > 0) {
+                  return page > totalPages ? (
+                    <Text className="text-gray-500 text-center py-4">
+                      No more mechanics
+                    </Text>
+                  ) : (
+                    <Pressable
+                      className="mt-24 mb-8 overflow-hidden rounded-md bg-TealGreen h-12 w-48 items-center justify-center mx-auto"
+                      onPress={getmechanics}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <Loading bgColor="#2095A2" gearColor="#ffffffff" />
+                      ) : (
+                        <Text className="text-white w-full font-bold text-center">
+                          Load more
+                        </Text>
+                      )}
+                    </Pressable>
+                  );
+                }
+                return null;
+              }}
+            />
+          </View>
         </View>
-      </View>
-      {/* service display modal */}
-      {serviceModal && (
-        <ServiceModal
-          onclose={() => setServiceModal(false)}
-          serviceModal={serviceModal}
-          selectedMechanic={selectedMechanic}
-          isDesktop={isDesktop}
-        />
-      )}
-    </SafeAreaView>
+        {/* service display modal */}
+        {serviceModal && (
+          <ServiceModal
+            onclose={() => setServiceModal(false)}
+            serviceModal={serviceModal}
+            selectedMechanic={selectedMechanic}
+            isDesktop={isDesktop}
+          />
+        )}
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 

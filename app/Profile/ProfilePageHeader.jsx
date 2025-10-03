@@ -111,11 +111,11 @@ const ProfilePageHeader = ({
           selectedMechanic?.username?.slice(1) : null}
       </Text>
 
-      {selectedMechanic?.role === "mechanic" && (
+      {/* {selectedMechanic?.role === "mechanic" && (
         <Text className="text-md font-semibold text-gray-500 text-center mt-2 mb-4">
           {selectedMechanic?.bio || "bio"}
         </Text>
-      )}
+      )} */}
     </>
   );
 };

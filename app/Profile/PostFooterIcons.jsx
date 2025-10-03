@@ -10,47 +10,35 @@ const PostFooterIcons = ({
   handleLike,
   setModal,
   share,
-  setSelectedMechanic
+  setSelectedMechanic,
+  user,
 }) => {
   return (
     <View className="flex-row">
       <Pressable
         onPress={() => {
-          if (item?.likes?.includes(userId)) {
-            setSelectedMechanic((prev) =>
-              prev
-                ? {
-                    ...prev,
-                    posts: prev.posts.map((p) =>
-                      p._id === item._id
-                        ? {
-                            ...p,
-                            likes: p.likes
-                              ? p.likes.filter((id) => id !== userId)
-                              : [],
-                          }
-                        : p
-                    ),
-                  }
-                : prev
-            );
-          } else {
-            setSelectedMechanic((prev) =>
-              prev
-                ? {
-                    ...prev,
-                    posts: prev.posts.map((p) =>
-                      p._id === item._id
-                        ? {
-                            ...p,
-                            likes: p.likes ? [...p.likes, userId] : [userId],
-                          }
-                        : p
-                    ),
-                  }
-                : prev
-            );
-          }
+          if (!user || !user._id) return;
+
+          setSelectedMechanic((prev) => {
+            if (!prev) return prev;
+
+            return {
+              ...prev,
+              posts: prev.posts.map((post) => {
+                if (post._id === item._id) {
+                  const alreadyLiked = post.likes?.includes(userId);
+
+                  return {
+                    ...post,
+                    likes: alreadyLiked
+                      ? post.likes.filter((id) => id !== userId) // remove if exists
+                      : [...(post.likes || []), user._id], // add if not exists
+                  };
+                }
+                return post;
+              }),
+            };
+          });
           handleLike({ postId: item._id }, "api/postLikes");
         }}
         style={{

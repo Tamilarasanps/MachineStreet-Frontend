@@ -10,18 +10,16 @@ const Location = ({ states, userDetails, setUserDetails }) => {
   // Convert array of objects to key array for state list
   const stateList = states.map((s) => Object.keys(s)[0]);
 
-  // Get districts based on selectedState
+  // Get citys based on selectedState
   const selectedStateObj = states.find(
     (s) => Object.keys(s)[0] === userDetails.region
   );
-  const districtList = selectedStateObj
-    ? Object.values(selectedStateObj)[0]
-    : [];
+  const cityList = selectedStateObj ? Object.values(selectedStateObj)[0] : [];
 
   return (
     <View>
       {/* Other than India checkbox */}
-      <View
+      {/* <View
         style={{
           flexDirection: "row",
           alignItems: "center",
@@ -35,7 +33,7 @@ const Location = ({ states, userDetails, setUserDetails }) => {
           onValueChange={() => {
             setUserDetails((prev) => ({
               ...prev,
-              district: "",
+              city: "",
               region: "",
               country: otherThanIndia ? "India" : "", // when true, set empty; else set "India"
             }));
@@ -52,65 +50,65 @@ const Location = ({ states, userDetails, setUserDetails }) => {
         <Text style={{ marginLeft: 8, color: "#374151" }}>
           Other than India
         </Text>
-      </View>
+      </View> */}
 
       {!otherThanIndia ? (
-          <View>
-            {/* State Input with suggestions */}
-            <InputWOL
-              placeholder="Select State"
-              label="State"
-              value={userDetails?.region || ""}
-              onChangeText={(value) => {
-                setUserDetails((prev) => ({
-                  ...prev,
-                  region: value,
-                  district: "", // reset district if state changes
-                }));
-              }}
-              sugesstionData={stateList.map((state) => ({
-                label: state,
-                value: state,
-              }))}
-            />
-
-            {/* District Input with suggestions */}
-            <InputWOL
-              placeholder="Select District"
-              label="District"
-              value={userDetails?.district || ""}
-              onChangeText={(value) => {
-                setUserDetails((prev) => ({
-                  ...prev,
-                  district: value,
-                }));
-              }}
-              sugesstionData={districtList.map((district, index) => ({
-                label: district,
-                value: district,
-              }))}
-            />
-          </View>
+        <View>
+          {/* city Input with suggestions */}
+          <InputWOL
+            placeholder="Select city"
+            label="city"
+            value={userDetails?.city || ""}
+            onChangeText={(value) => {
+              setUserDetails((prev) => ({
+                ...prev,
+                city: value,
+              }));
+            }}
+            sugesstionData={cityList.map((city, index) => ({
+              label: city,
+              value: city,
+            }))}
+          />
+          {/* State Input with suggestions */}
+          <InputWOL
+            placeholder="Select State"
+            label="State"
+            value={userDetails?.region || ""}
+            onChangeText={(value) => {
+              setUserDetails((prev) => ({
+                ...prev,
+                region: value,
+                city: "", // reset city if state changes
+              }));
+            }}
+            sugesstionData={stateList.map((state) => ({
+              label: state,
+              value: state,
+            }))}
+          />
+        </View>
       ) : (
         // Other than India inputs
-        <View className="mt-4">
-          {[
-            { key: "country", label: "Country" },
-            { key: "region", label: "Region" },
-          ].map((field) => (
-            <InputWOL
-              key={field.key}
-              label={field.label}
-              value={userDetails[field.key] || ""}
-              onChangeText={(value) => {
-                setUserDetails((prev) => ({
-                  ...prev,
-                  [field.key]: value,
-                }));
-              }}
-            />
-          ))}
-        </View>
+        // <View className="mt-4">
+        //   {[
+        //     { key: "country", label: "Country" },
+        //     { key: "region", label: "Region" },
+        //   ].map((field) => (
+        //     <InputWOL
+        //       key={field.key}
+        //       label={field.label}
+        //       value={userDetails[field.key] || ""}
+        //       onChangeText={(value) => {
+        //         setUserDetails((prev) => ({
+        //           ...prev,
+        //           [field.key]: value,
+        //         }));
+        //       }}
+        //     />
+        //   ))}
+        // </View>
+        <></>
       )}
     </View>
   );

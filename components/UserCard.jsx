@@ -1,11 +1,11 @@
 import { Pressable, View, Text, Platform, Image, Linking } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
-import { useState } from "react";
-import ScrollingEffect from "@/app/HomePage/ScrollingEffect";
+import CryptoJS from "react-native-crypto-js";
+import { Marquee } from "@animatereactnative/marquee";
 
 const UserCard = ({
   mechanic,
@@ -15,224 +15,205 @@ const UserCard = ({
   setReviewModal,
   setReview,
 }) => {
-  const [tickerWidth, setTickerWidth] = useState(0);
+  // Encrypt
+  const encrypted = CryptoJS.AES.encrypt('user_visit', 'f9b7nvctr72942chh39h9rc').toString();
 
-  function openDialer(mechanic) {
-    const { countryCode, number } = mechanic.mobile || {};
+  const openDialer = () => {
+    const { countryCode, number } = mechanic?.mobile || {};
     if (countryCode && number) {
-      // Dial the phone number with the country code
-      const phoneNumber = `${countryCode}${number}`;
-      Linking.openURL(`tel:${phoneNumber}`);
-    } else {
-      console.log("No contact number available");
+      Linking.openURL(`tel:${countryCode}${number}`);
     }
-  }
+  };
+
+  // Build Full Address
+  const fullAddress = `${mechanic?.street || ""}, ${mechanic?.city || ""}, ${
+    mechanic?.region || ""
+  } - ${mechanic?.pincode || ""}, ${mechanic?.country || ""}`;
   return (
-    // main container
     <Pressable
       onPress={() => {
         setSelectedMechanic(mechanic);
         router.push({
           pathname: "/E2",
-          params: { id: mechanic._id, type: "user_visit" },
+          params: { id: mechanic._id, type: encrypted },
         });
       }}
-      className={`h-full w-full ${!isDesktop ? "flex-col" : "flex-row"} `}
+      className={`rounded-2xl shadow-md overflow-hidden bg-white ${
+        !isDesktop ? "flex-col" : "flex-row"
+      }`}
+      style={{ flex: 1, }} // ✅ allow flex growth
     >
+      {/* Left Panel */}
       <LinearGradient
-        colors={["#6B7280", "#FAFAFA"]}
+        colors={["#4B5563", "#F3F4F6"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{
-          width: !isDesktop ? "100%" : "40%",
-          height: !isDesktop ? 220 : "100%",
-          paddingTop: 16,
-          paddingBottom: 16,
-          borderTopLeftRadius: 16,
-          borderBottomLeftRadius: !isDesktop ? 0 : 16,
-          borderTopRightRadius: !isDesktop ? 16 : 0,
+          width: !isDesktop ? "100%" : "38%",
+          height: !isDesktop ? "auto" : "100%", // ✅ allow auto height in mobile
+          minHeight: 220, // ✅ keep balanced
+          paddingVertical: 20,
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        {/* profile picture */}
+        {/* Profile Image */}
         {mechanic?.profileImage ? (
           <Image
             source={{
-              // uri: `http://192.168.43.158:5000/api/mediaDownload/${mechanic?.profileImage}`,
               uri: `https://api.machinestreets.com/api/mediaDownload/${mechanic?.profileImage}`,
             }}
             resizeMode="cover"
             style={{
-              width: 150,
-              height: 150,
-              borderRadius: 75,
+              width: 120,
+              height: 120,
+              borderRadius: 60,
+              borderWidth: 3,
+              borderColor: "white",
             }}
           />
         ) : (
-          <Icon
-            name="account-circle"
-            size={150}
-            color="#374151"
-            className="mx-auto"
-          />
+          <Icon name="account-circle" size={120} color="#374151" />
         )}
 
-        {/* username */}
-
-        <Text className="text-lg font-extrabold text-gray-600 text-center md:text-left mx-auto">
-          {mechanic?.username?.charAt(0)?.toUpperCase() +
-            mechanic?.username?.slice(1)}
+        {/* Username */}
+        <Text className="text-lg font-bold text-gray-700 text-center mt-3">
+          {mechanic?.username
+            ? mechanic.username.charAt(0).toUpperCase() +
+              mechanic.username.slice(1)
+            : ""}
         </Text>
 
-        {/*  */}
-
-        <View className="flex-row items-center mx-auto mt-2 rounded-r-md">
+        {/* Posts */}
+        <View className="flex-row items-center mt-1">
           <MaterialCommunityIcons
             name="postage-stamp"
-            size={24}
+            size={20}
             color="black"
           />
-          <Text className="ml-2 font-semibold">{mechanic?.posts?.length}</Text>
+          <Text className="ml-1 font-medium text-sm text-gray-700">
+            {mechanic?.posts?.length} posts
+          </Text>
         </View>
       </LinearGradient>
 
-      {/* right panel */}
-
+      {/* Right Panel */}
       <View
-        className="bg-white px-4 py-4 "
+        className="px-4 py-5"
         style={{
-          width: !isDesktop ? "100%" : "60%",
-          flex: 1,
+          width: !isDesktop ? "100%" : "62%",
+          flex: 1, // ✅ ensures panel expands
+          minHeight: 220, // ✅ same as left panel so it shows in mobile         
+          paddingBottom:30
         }}
       >
-        {/* username */}
-        <Text className="text-lg font-bold" style={{ flexShrink: 1 }}>
-          {mechanic.organization}
+        {/* Organization */}
+        <Text className="text-xl font-extrabold text-gray-900">
+          {mechanic?.organization}
         </Text>
 
-        {/* industryName */}
-        <Text className="font-bold mt-4">
-          {mechanic?.industry?.charAt(0)?.toUpperCase() +
-            mechanic.industry?.slice(1)}
-        </Text>
-
-        {/* view more button */}
-        <View className="bg-gray-100 p-2 mt-2">
-          <View className="flex flex-row">
-            <View className="w-max">
-              <Text>{mechanic.subcategory[0].name} :</Text>
-            </View>
-
-            <View
-              className="flex-1 flex-row"
-              onLayout={(e) => {
-                const { width } = e.nativeEvent.layout;
-                if (width > 0 && width !== tickerWidth) {
-                  setTickerWidth(width);
-                }
-              }}
-            >
-              {tickerWidth > 0 && (
-                <ScrollingEffect
-                  width={tickerWidth}
-                  data={mechanic.subcategory[0].services}
-                />
-              )}
-            </View>
-          </View>
-
-          <Pressable
-            onPress={() => {
-              setSelectedMechanic(mechanic);
-              setServiceModal(true);
-            }}
-            className="mt-4 rounded-md items-end"
-          >
-            <View>
-              <Text className="font-semibold underline">View more</Text>
-            </View>
-          </Pressable>
-        </View>
-
-        {/* special services */}
-
-        <Text className="font-bold mt-4">Specialization / services</Text>
-        <View className="bg-gray-100 p-2 mt-2">
-          <View>
-            <Text>
-              {mechanic?.services[0]?.length > 25
-                ? `${mechanic.services[0].substring(0, 25)}...`
-                : `${mechanic.services[0]} ...`}
+        {/* Industry + View more */}
+        <View className="flex-row items-center justify-between mt-8 mb-4">
+          {mechanic?.industry && (
+            <Text className="text-gray-600 font-semibold text-base">
+              {mechanic.industry.charAt(0).toUpperCase() +
+                mechanic.industry.slice(1)}
             </Text>
-          </View>
-
+          )}
           <Pressable
             onPress={() => {
               setSelectedMechanic(mechanic);
               setServiceModal(true);
             }}
-            className="mt-4 items-end"
           >
-            <View>
-              <Text className="font-semibold underline">View more</Text>
-            </View>
+            <Text className="font-semibold text-teal-700 underline">
+              View more
+            </Text>
           </Pressable>
         </View>
 
-        {/* location */}
+        {/* Services Marquee */}
+        {mechanic?.subcategory?.length > 0 && (
+          <View className="bg-gray-100 p-2 rounded-xl overflow-hidden">
+            <Marquee spacing={16} speed={0.6} style={{ width: "100%" }}>
+              <View className="flex-row flex-nowrap">
+                {mechanic.subcategory?.map((service, i) => (
+                  <View
+                    key={i}
+                    className="mr-3"
+                    style={{
+                      minWidth: 100,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text className="text-white bg-gray-800 px-4 py-2 rounded-full text-sm">
+                      {service?.name}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </Marquee>
+          </View>
+        )}
 
-        <View className="flex-row items-center mt-6">
-          <FontAwesome name="map-marker" size={18} color="#2095A2" />
+        {/* Specialization */}
+        {mechanic?.services?.length > 0 && (
+          <>
+            <Text className="font-bold mt-5 mb-2 text-gray-800">
+              Specialization
+            </Text>
+            <View className="bg-gray-100 p-2 rounded-lg">
+              <Text className="text-gray-700 text-sm">
+                {mechanic.services[0].length > 25
+                  ? `${mechanic.services[0].substring(0, 25)}...`
+                  : `${mechanic.services[0]} ...`}
+              </Text>
+            </View>
+          </>
+        )}
+
+        {/* Location */}
+        <View className="flex-row items-start mt-6 ">
+          <FontAwesome name="map-marker" size={18} color="#2095A2" className='my-auto'/>
+
+          {/* Address - styled match */}
           <Text
-            className="ml-2 font-semibold text-md"
-            style={{ flexShrink: 1 }}
+            className="ml-3 text-gray-700 text-base leading-6 flex-1"
+            numberOfLines={2} // ✅ max 3 lines
+            ellipsizeMode="tail"
           >
-            {mechanic?.district || mechanic?.region || mechanic?.country}
+            {fullAddress}
           </Text>
         </View>
 
-        {/* contact */}
-
-        <View className="flex-row mt-4 items-center justify-between gap-2">
-          <View className="flex flex-row items-center">
-            <FontAwesome
-              name="phone"
-              size={20}
-              color="#2095A2"
-              style={{
-                marginTop: "8px",
-                marginRight: 7,
-              }}
-            />
-            <Text className="text-md font-semibold " style={{ flexShrink: 1 }}>
-              {mechanic.mobile?.countryCode} {mechanic.mobile?.number}
+        {/* Contact */}
+        <View className="flex-row items-center justify-between mt-4">
+          <View className="flex-row items-center">
+            <FontAwesome name="phone" size={18} color="#2095A2" />
+            <Text className="ml-3 font-medium text-gray-800 text-base">
+              {mechanic?.mobile?.countryCode} {mechanic?.mobile?.number}
             </Text>
           </View>
-          {Platform.OS !== "web" ? (
+          {Platform.OS !== "web" && (
             <Pressable
-              className=" h-10  w-[100px] bg-TealGreen justify-center items-center rounded-md"
-              // onPress={openDailer}
-              key={mechanic.id}
-              onPress={() => openDialer(mechanic)}
+              className="h-10 px-5 bg-teal-600 justify-center items-center rounded-lg"
+              onPress={openDialer}
             >
-              <Text className="text-white text-lg">Call</Text>
+              <Text className="text-white font-semibold text-base">Call</Text>
             </Pressable>
-          ) : (
-            <Text></Text>
           )}
         </View>
 
-        {/* ratings */}
-
-        <View className="flex-row gap-4 items-center mt-6">
+        {/* Ratings / Reviews */}
+        <View className="flex-row items-center gap-6 mt-6">
           {mechanic?.averageRating ? (
             <>
-              <View className="bg-green-600 px-3 py-1 rounded-lg flex-row gap-2 items-center">
-                <Text className="text-white font-bold text-base">
+              <View className="bg-green-600 px-3 py-1 rounded-lg flex-row items-center">
+                <Text className="text-white font-bold text-base mr-1">
                   {mechanic.averageRating}
                 </Text>
-                <FontAwesome name="star" size={16} color="white" />
+                <FontAwesome name="star" size={14} color="white" />
               </View>
               <Pressable
                 onPress={() => {
@@ -241,15 +222,14 @@ const UserCard = ({
                   setReviewModal("read");
                 }}
               >
-                <Text>See all reviews</Text>
+                <Text className="underline text-teal-700 font-medium text-base">
+                  See all reviews
+                </Text>
               </Pressable>
             </>
           ) : (
-            <View
-              style={{ pointerEvents: "box-none" }}
-              className="flex flex-row gap-4 "
-            >
-              <Text>No Reviews Yet</Text>
+            <View className="flex-row items-center justify-between w-full">
+              <Text className="text-gray-500 text-base">No Reviews Yet</Text>
               <Pressable
                 onPress={() => {
                   setSelectedMechanic(mechanic);
@@ -257,12 +237,7 @@ const UserCard = ({
                   setReviewModal("write");
                 }}
               >
-                <Text
-                  style={{
-                    color: "#3B82F6",
-                    textDecorationLine: "underline",
-                  }}
-                >
+                <Text className="text-blue-500 underline font-medium text-base">
                   Add yours
                 </Text>
               </Pressable>

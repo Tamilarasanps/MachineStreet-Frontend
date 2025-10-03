@@ -7,17 +7,22 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import FadeSlideView from "@/components/FadeSlideView";
 import { Dimensions } from "react-native";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const screenWidth = Dimensions.get("window").width;
-
-const UserDetails = ({ userDetails, isMobile }) => {
+const UserDetails = ({ userDetails, isMobile, isDesktop }) => {
   const [reviewData, setReviewData] = useState([]);
 
   useEffect(() => {
     setReviewData(userDetails?.reviews);
   }, [userDetails]);
 
-  console.log('rendered')
+  // Build Full Address
+  const fullAddress = `${userDetails?.street || ""}, ${
+    userDetails?.city || ""
+  }, ${userDetails?.region || ""} - ${userDetails?.pincode || ""}, ${
+    userDetails?.country || ""
+  }`;
+
   return (
     <FadeSlideView>
       <LinearGradient
@@ -27,19 +32,22 @@ const UserDetails = ({ userDetails, isMobile }) => {
         className="flex-1 bg-gray-200 rounded-md"
       >
         <Card.Content>
-          <View>
+          <View className="mb-6">
             <Text className="text-white text-2xl font-bold text-center mt-8">
               {userDetails?.organization?.charAt(0).toUpperCase() +
                 userDetails?.organization?.slice(1)}
             </Text>
 
-            <Text className="text-white text-center mb-2 text-lg mt-2">
-              <MaterialIcons name="location-on" size={16} color="white" />{" "}
-              {userDetails?.district ||
-                userDetails?.region ||
-                userDetails?.country?.charAt(0).toUpperCase() +
-                  userDetails?.district?.slice(1)}
-            </Text>
+            {/* Location */}
+            <View className="flex-row items-center justify-center w-full mt-6 mb-6">
+              <FontAwesome name="map-marker" size={18} color="#fff" />
+
+              <Text
+                className="ml-3 text-white text-base leading-6 text-center"
+              >
+                {fullAddress}
+              </Text>
+            </View>
 
             <Text className="text-xl text-white font-bold ml-2 mt-1">
               <MaterialCommunityIcons name="factory" size={20} color="white" />{" "}
@@ -110,14 +118,21 @@ const UserDetails = ({ userDetails, isMobile }) => {
                   <Animated.View
                     key={data._id || index}
                     entering={FadeInUp.delay(index * 120)}
-                    className={`bg-white rounded-2xl p-6 mb-6 shadow-lg border border-gray-200 
-            ${screenWidth > 768 ? "w-[48%]" : "w-full"}`}
+                    style={{
+                      backgroundColor: "white",
+                      padding: 20,
+                      borderRadius: 10,
+                      marginBottom: 10,
+                      width: isDesktop ? "48%" : "100%",
+                    }}
+                    className={` rounded-2xl  shadow-lg border border-gray-200 
+            `}
                   >
                     {/* User */}
                     <View className="flex-row items-center mb-4">
                       <Image
                         source={{
-                          uri: `data:image/jpeg;base64,${data.user?.profileImage}`,
+                          uri: `https://api.machinestreets.com/api/mediaDownload/${data?.userId?.profileImage}`,
                         }}
                         style={{
                           width: 48,
@@ -128,19 +143,20 @@ const UserDetails = ({ userDetails, isMobile }) => {
                       />
                       <View className="ml-3">
                         <Text className="text-lg font-semibold text-gray-900">
-                          {data?.user?.username
-                            ? data.user?.username?.charAt(0).toUpperCase() +
-                              data.user?.username?.slice(1)
+                          {data?.userId?.username
+                            ? data.userId?.username?.charAt(0).toUpperCase() +
+                              data.userId?.username?.slice(1)
                             : "Guest User"}
                         </Text>
-                        <View className="flex-row">
-                          {Array.from({ length: data.stars }).map((_, i) => (
-                            <Text
+                        <View className="flex-row items-center mt-1">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <MaterialCommunityIcons
                               key={i}
-                              className="text-yellow-500 text-sm mr-0.5"
-                            >
-                              ⭐
-                            </Text>
+                              name={i < data?.star ? "star" : "star-outline"} // ✅ filled & outline
+                              size={18}
+                              color="#facc15" // Tailwind yellow-400
+                              style={{ marginRight: 2 }}
+                            />
                           ))}
                         </View>
                       </View>

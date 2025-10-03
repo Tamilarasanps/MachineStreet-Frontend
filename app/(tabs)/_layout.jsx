@@ -2,7 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
 import { useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
-import { Platform, StyleSheet } from "react-native";
+import { Platform } from "react-native";
 import Animated, {
   useSharedValue,
   withTiming,
@@ -47,63 +47,60 @@ export default function TabLayout() {
   };
 
   return (
-
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          tabBarShowLabel: true,
-          tabBarActiveTintColor: "#2095A2",
-          tabBarInactiveTintColor: "gray",
-          tabBarHideOnKeyboard: true,
-          tabBarStyle:
-            Platform.OS === "web"
-              ? { display: "none" } // 👈 hide tabs on web
-              : {
-                  height: 70 + insets.bottom,
-                  paddingBottom: 10 + insets.bottom,
-                },
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontWeight: "600",
-            marginTop: 4,
-          },
-          tabBarItemStyle: {
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          },
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: true,
+        tabBarActiveTintColor: "#2095A2",
+        tabBarInactiveTintColor: "gray",
+        tabBarHideOnKeyboard: true,
+        tabBarStyle:
+          Platform.OS === "web"
+            ? { display: "none" } // 👈 hide tabs on web
+            : {
+                height: 70 + insets.bottom,
+                paddingBottom: 10 + insets.bottom,
+              },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "600",
+          marginTop: 4,
+        },
+        tabBarItemStyle: {
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ focused }) => (
+            <AnimatedIcon name="home" focused={focused} />
+          ),
         }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: "Home",
-            tabBarIcon: ({ focused }) => (
-              <AnimatedIcon name="home" focused={focused} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="HomePage"
-          options={{
-            title: "Mechanics",
-            tabBarIcon: ({ focused }) => (
-              <AnimatedIcon name="cogs" focused={focused} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="Profile"
-          options={{
-            title: "Profile",
-            tabBarIcon: ({ focused }) => (
-              <AnimatedIcon name="user" focused={focused} />
-            ),
-          }}
-        />
-      </Tabs>
-
+      />
+      <Tabs.Screen
+        name="HomePage"
+        options={{
+          title: "Mechanics",
+          tabBarIcon: ({ focused }) => (
+            <AnimatedIcon name="cogs" focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ focused }) => (
+            <AnimatedIcon name="user" focused={focused} />
+          ),
+        }}
+        
+      />
+    </Tabs>
   );
 }
-
-

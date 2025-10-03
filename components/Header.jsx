@@ -2,27 +2,40 @@ import React from "react";
 import { View, Text, TextInput, Pressable, Platform } from "react-native";
 import { router } from "expo-router";
 import useScreenWidth from "../hooks/useScreenWidth";
-import Feather from '@expo/vector-icons/Feather';
+import Feather from "@expo/vector-icons/Feather";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
-import { useNavigation } from "expo-router";
+import CryptoJS from "react-native-crypto-js";
 
 const Header = ({ isOpen, searchBarValue, setSearchBarValue }) => {
   const { isDesktop } = useScreenWidth();
-  const navigation = useNavigation();
 
   // route to profile
 
   const goToProfile = async () => {
-    const userId =
-      Platform.OS === "web"
-        ? localStorage.getItem("userId")
-        : await SecureStore.getItemAsync("userId");
+    try {
+      // 1️⃣ Encrypt a string
+      const encrypted = CryptoJS.AES.encrypt("jsvdj", secretkey).toString();
 
-    const params = { id: userId };
-    Platform.OS === "web"
-      ? router.push({ pathname: "/Profile", params })
-      : navigation.navigate("Profile", params);
+      // 2️⃣ Get userId depending on platform
+      const userId =
+        Platform.OS === "web"
+          ? localStorage.getItem("userId")
+          : await SecureStore.getItemAsync("userId");
+
+      if (!userId) {
+        console.warn("User ID not found!");
+        return;
+      }
+
+      // 3️⃣ Push to Profile page with params
+       router.push({
+          pathname: "/(tabs)/Profile",
+          params: { id: userId, type: encrypted },
+        });
+    } catch (err) {
+      console.error("Failed to go to profile:", err);
+    }
   };
 
   return (
@@ -57,7 +70,7 @@ const Header = ({ isOpen, searchBarValue, setSearchBarValue }) => {
           />
           {/* <Link href={`/(screen)/ProductList?searchTerms=${searchBar}`} asChild> */}
           <Pressable className="absolute right-1">
-          <Feather name="search" size={20} color="gray" />
+            <Feather name="search" size={20} color="gray" />
           </Pressable>
           {/* </Link> */}
         </View>
@@ -136,7 +149,7 @@ const Header = ({ isOpen, searchBarValue, setSearchBarValue }) => {
       {/* Mobile Dropdown Menu */}
       {/* {!isDesktop && isOpen && (
         <View className="absolute right-2 top-[60px] bg-gray-300 p-4 w-[250px] p-2 rounded-sm shadow-lg"> */}
-          {/* <Pressable
+      {/* <Pressable
             onPress={() => {
               router.push("/screens/(wishlists)/WishlistScreen");
               setIsOpen(false);
@@ -174,7 +187,7 @@ const Header = ({ isOpen, searchBarValue, setSearchBarValue }) => {
             </Text>
           </Pressable> */}
 
-          {/* <Pressable
+      {/* <Pressable
             className="flex flex-row items-center space-x-3 p-4 bg-gray-100 rounded-sm mb-2"
             onPress={() => {
               router.push("/screens/(profile)/ProfilePage");
@@ -186,7 +199,7 @@ const Header = ({ isOpen, searchBarValue, setSearchBarValue }) => {
               Profile
             </Text>
           </Pressable> */}
-        {/* </View> */}
+      {/* </View> */}
       {/* )} */}
     </View>
   );

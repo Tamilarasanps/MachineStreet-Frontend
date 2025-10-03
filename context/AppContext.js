@@ -10,6 +10,7 @@ export const AppProvider = ({ children }) => {
   const [userRole, setUserRole] = useState("");
   const [userId, setUserId] = useState();
   // const [token, setToken] = useState("");
+  const [secretkey,setSecretkey] = useState('f9b7nvctr72942chh39h9rc')
   const [userName, setUserName] = useState("");
   const [industrySuggestion, setIndustrySuggestion] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
@@ -109,7 +110,6 @@ export const AppProvider = ({ children }) => {
         // review updation
 
         newSocket.on("update-review", (updatedUser) => {
-          console.log('updatedUser :', updatedUser)
           setUserDetails((prev) =>
             prev.map((mech) => {
               if (mech._id === updatedUser._id) {
@@ -174,7 +174,7 @@ export const AppProvider = ({ children }) => {
         setReviews,
         socket,
         userId,
-        setUserId,filterData, setFIlterData
+        setUserId,filterData, setFIlterData,secretkey
       }}
     >
       {children}

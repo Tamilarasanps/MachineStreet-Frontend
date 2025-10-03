@@ -20,13 +20,17 @@ import LottieView from "lottie-react-native";
 import welcomeAnimation from "../assets/animations/welocme.json";
 import FadeSlideView from "@/components/FadeSlideView";
 import * as SecureStore from "expo-secure-store";
+import { useLocation } from "@/context/LocationContext";
+import { Modal, Pressable, Linking } from "react-native";
+import * as Location from "expo-location";
 
 // const { width, height } = Dimensions.get("window");
 
 const SignUp = () => {
-  const { isDesktop, isTablet } = useScreenWidth();
+  const { isDesktop, isTablet, isMobile } = useScreenWidth();
   const { isLoading } = useAppContext();
   const { postJsonApi } = useApi();
+  const { status } = useLocation();
 
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [step, setStep] = useState(0);
@@ -34,7 +38,6 @@ const SignUp = () => {
   const [userDetails, setUserDetails] = useState({
     username: "",
     role: "",
-    bio: "",
     password: "",
     confirmPassword: "",
     organization: "",
@@ -49,14 +52,22 @@ const SignUp = () => {
     lon: "",
     country: "India",
     region: "",
-    district: "",
+    city: "",
+    street: "",
+    pincode: "",
   });
 
-  useEffect(() => {
-    locationAccess(setUserDetails);
-  }, []);
+  // useEffect(() => {
+  //   // locationAccess(setUserDetails);
+  //   if (status === "granted") {
+  //     setUserDetails((prev) => ({
+  //       ...prev,
+  //       lat: geoCoords.latitude,
+  //       lon: geoCoords.longitude,
+  //     }));
+  //   }
+  // }, [geoCoords]);
 
-  // validation check
   // validation check
   const checkEmptyFields = useCallback(() => {
     const { role, username, password, confirmPassword } = userDetails;
@@ -141,18 +152,75 @@ const SignUp = () => {
         text2: customMsg
           ? customMsg
           : parent
-            ? `${field} is required in ${parent}.`
-            : isArray
-              ? `${field} has empty values.`
-              : `${field} is required.`,
+          ? `${field} is required in ${parent}.`
+          : isArray
+          ? `${field} has empty values.`
+          : `${field} is required.`,
       });
     },
     []
   );
 
-  const handleSubmit = useCallback(async () => {
-    if (!checkEmptyFields()) return;
+  const fetchCoordinatesWeb = async (address) => {
 
+    const res = await fetch(
+      `https://api.machinestreets.com/api/geocode?address=${encodeURIComponent(
+        address
+      )}`
+    );
+    const data = await res.json();
+    console.log("geices :", data);
+
+    if (data.length > 0) {
+      return {
+        latitude: parseFloat(data[0].lat),
+        longitude: parseFloat(data[0].lon),
+      };
+    }
+    return null;
+  };
+
+
+  // Main function
+  const fetchGeocodes = useCallback(async (address) => {
+    try {
+      if (Platform.OS === "web") {
+        const webCoords = await fetchCoordinatesWeb(address);
+        if (webCoords) {
+          setUserDetails((prev) => ({
+            ...prev,
+            lat: webCoords.latitude,
+            lon: webCoords.longitude,
+          }));
+          return webCoords; // ✅ return so caller knows it's ready
+        }
+      } else {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          alert("Permission to access location was denied");
+          return null;
+        }
+        const location = await Location.geocodeAsync(address);
+        if (location.length > 0) {
+          setUserDetails((prev) => ({
+            ...prev,
+            lat: location[0].latitude,
+            lon: location[0].longitude,
+          }));
+          return {
+            latitude: location[0].latitude,
+            longitude: location[0].longitude,
+          };
+        }
+      }
+    } catch (error) {
+      console.error("Geocode fetch failed:", error);
+    }
+  }, []);
+
+  const handleSubmit = useCallback(async () => {
+
+    if (!checkEmptyFields()) return;
     try {
       const result = await postJsonApi(
         "signUp/sendOtp",
@@ -193,7 +261,7 @@ const SignUp = () => {
       );
 
       if (result.status === 200 || 201) {
-        setShowWelcome(true);
+        // setShowWelcome(true);
         if (Platform.OS !== "web") {
           await SecureStore.setItemAsync("token", result?.data?.token);
           await SecureStore.setItemAsync("role", result?.data?.role);
@@ -202,10 +270,10 @@ const SignUp = () => {
           localStorage.setItem("role", response?.data?.role);
           localStorage.setItem("userId", response?.data?.userId);
         }
-        setTimeout(() => {
-          setShowWelcome(false);
-          router.push('/(tabs)/HomePage');
-        }, 5000);
+        // setTimeout(() => {
+        //   setShowWelcome(false);
+          router.push("/(tabs)/HomePage");
+        // }, 10);
       }
     } catch (err) {
       console.log(err);
@@ -226,6 +294,65 @@ const SignUp = () => {
           paddingVertical: 20,
         }}
       >
+        {status !== "granted" && Platform.OS !== "web" ? (
+          <Modal transparent={true} animationType="fade" visible={true}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: "rgba(0,0,0,0.5)",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  width: 300,
+                  backgroundColor: "#fff",
+                  borderRadius: 12,
+                  padding: 20,
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
+                >
+                  Location Permission Needed
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    textAlign: "left",
+                    marginBottom: 20,
+                  }}
+                >
+                  We need your location to continue. Please enable it in
+                  settings.
+                </Text>
+
+                <Pressable
+                  onPress={() => {
+                    if (Platform.OS === "ios") {
+                      Linking.openURL("app-settings:");
+                    } else {
+                      Linking.openSettings();
+                    }
+                  }}
+                  style={{
+                    backgroundColor: "#0d9488",
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    borderRadius: 8,
+                  }}
+                >
+                  <Text style={{ color: "#fff", fontWeight: "600" }}>
+                    Open Settings
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
+        ) : null}
+
         {showWelcome ? (
           // ✅ Responsive Welcome Animation Screen
           <View className="h-full w-full bg-white">
@@ -243,11 +370,15 @@ const SignUp = () => {
             </View>
 
             <View
-              className={`h-[80%] w-full overflow-hidden ${isDesktop ? "flex-row" : "flex-col"}`}
+              className={`h-[80%] w-full overflow-hidden ${
+                isDesktop ? "flex-row" : "flex-col"
+              }`}
             >
               {/* Animation */}
               <View
-                className={`${isDesktop ? "h-full w-[50%]" : "h-[60%] w-full"} justify-center`}
+                className={`${
+                  isDesktop ? "h-full w-[50%]" : "h-[60%] w-full"
+                } justify-center`}
               >
                 <LottieView
                   source={welcomeAnimation}
@@ -259,23 +390,25 @@ const SignUp = () => {
 
               {/* Text Section */}
               <View
-                className={`${isDesktop ? "h-full w-[50%]" : "flex-1 w-full"} items-center justify-center px-6`}
+                className={`${
+                  isDesktop ? "h-full w-[50%]" : "flex-1 w-full"
+                } items-center justify-center px-6`}
               >
                 <FadeSlideView>
                   <Text className="text-3xl font-bold text-gray-800 text-center mb-4">
                     {userDetails?.role === "mechanic"
                       ? "🚀 Grow Your Business"
                       : userDetails?.role === "recruiter"
-                        ? "🔍 Find the Right Talent"
-                        : "✨ Let’s Get Started"}
+                      ? "🔍 Find the Right Talent"
+                      : "✨ Let’s Get Started"}
                   </Text>
 
                   <Text className="text-lg font-medium text-gray-600 text-center leading-relaxed">
                     {userDetails?.role === "mechanic"
                       ? "Expand your reach, manage clients with ease, and boost your success."
                       : userDetails?.role === "recruiter"
-                        ? "Connect with skilled mechanics faster and simplify your hiring process."
-                        : "Explore all the tools you need to achieve your goals today."}
+                      ? "Connect with skilled mechanics faster and simplify your hiring process."
+                      : "Explore all the tools you need to achieve your goals today."}
                   </Text>
                 </FadeSlideView>
               </View>
@@ -326,10 +459,10 @@ const SignUp = () => {
               style={{
                 width: Platform.OS === "web" && isDesktop ? "60%" : "100%",
                 height: Platform.OS === "web" ? 600 : "",
-                backgroundColor: "#fff",
+                backgroundColor: isMobile ? (step === 2 ? "" : "#fff") : "#fff",
                 justifyContent: "center",
                 alignItems: "center",
-                padding: 20,
+                padding: isMobile ? (step === 2 ? 2 : 20) : 20,
               }}
             >
               {step === 0 && (
@@ -350,6 +483,7 @@ const SignUp = () => {
                   isDesktop={isDesktop}
                   isTablet={isTablet}
                   handleSubmit={handleSubmit}
+                  fetchGeocodes={fetchGeocodes}
                 />
               )}
               {step === 2 && (
@@ -360,6 +494,7 @@ const SignUp = () => {
                   setOtp={setOtp}
                   handleSubmit={handleSubmit}
                   setStep={setStep}
+                  isDesktop={isDesktop}
                 />
               )}
             </View>

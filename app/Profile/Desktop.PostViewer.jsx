@@ -5,6 +5,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import VideoGridItem from "./VideoGridItem";
 import CommentSection from "./CommentSection";
 import DeleteIcon from "./DeleteIcon";
+import { GestureDetector } from "react-native-gesture-handler";
 
 const DesktopPostViewer = ({
   type,
@@ -21,17 +22,14 @@ const DesktopPostViewer = ({
   postModal,
   totalPosts,
   width,
-  handleDoubleTap, // ✅ from parent
-  heartAnimations, // ✅ from parent
+  doubleTap,
+  handleTap,
   share,
   user, // ✅ from parent
 }) => {
   const [deleteIcon, setDeleteIcon] = useState("");
-  const anim = heartAnimations[item._id] || {
-    scale: new Animated.Value(0),
-    opacity: new Animated.Value(0),
-  };
-  console.log('postModal :', postModal)
+    const [heartPostId, setHeartPostId] = useState(null);
+
   return (
     <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.6)" }}>
       <View
@@ -50,40 +48,48 @@ const DesktopPostViewer = ({
               isDesktop={isDesktop}
             />
           </View>
-          <Pressable
-            onPress={() => handleDoubleTap(item)}
-            className="h-[90%] w-full justify-center items-center py-4"
-          >
-            {item?.contentType === "video" ? (
-              <VideoGridItem
-                // source={`http://192.168.1.10:5000/api/mediaDownload/${item?.media}`}
-                source={`https://api.machinestreets.com/api/mediaDownload/${item?.media}`}
-                isVisible={true}
-                page={"pvm"}
-              />
-            ) : (
-              <Image
-                source={{
-                  uri: `https://api.machinestreets.com/api/mediaDownload/${item?.media}`,
-                  // uri: `http://192.168.1.10:5000/api/mediaDownload/${item?.media}`,
-                }}
-                className="w-full h-full"
-                resizeMode="contain"
-              />
-            )}
-
-            {/* ❤️ heart animation */}
-            <Animated.View
-              style={{
-                position: "absolute",
-                alignSelf: "center",
-                opacity: anim.opacity,
-                transform: [{ scale: anim.scale }],
+          <GestureDetector gesture={doubleTap}>
+            <Pressable
+              onPress={() => {
+                setHeartPostId(null);
+                setTimeout(() => setHeartPostId(item._id), 0);
+                handleTap(item);
               }}
+              className="h-[90%] w-full justify-center items-center py-4"
             >
-              <Ionicons name="heart" size={120} color="white" />
-            </Animated.View>
-          </Pressable>
+              {item?.contentType === "video" ? (
+                <VideoGridItem
+                  // source={`http://192.168.1.10:5000/api/mediaDownload/${item?.media}`}
+                  source={`https://api.machinestreets.com/api/mediaDownload/${item?.media}`}
+                  isVisible={true}
+                  page={"pvm"}
+                />
+              ) : (
+                <Image
+                  source={{
+                    uri: `https://api.machinestreets.com/api/mediaDownload/${item?.media}`,
+                    // uri: `http://192.168.1.10:5000/api/mediaDownload/${item?.media}`,
+                  }}
+                  className="w-full h-full"
+                  resizeMode="contain"
+                />
+              )}
+
+              {/* ❤️ heart animation */}
+              {/* Heart Animation */}
+              {heartPostId === item._id && (
+                <Animated.View
+                  key={`${item._id}-${Date.now()}`}
+                  style={[
+                    { position: "absolute", top: "40%", left: "40%" },
+                    animatedStyle,
+                  ]}
+                >
+                  <AntDesign name="heart" size={100} color="red" />
+                </Animated.View>
+              )}
+            </Pressable>
+          </GestureDetector>
         </View>
 
         {/* Comments */}
@@ -104,9 +110,9 @@ const DesktopPostViewer = ({
       </View>
 
       {/* Arrows */}
-      {postModal  > 0  && (
+      {postModal > 0 && (
         <Pressable
-          onPress={goNext }
+          onPress={goNext}
           className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 p-3 rounded-full"
         >
           <Icon name="chevron-left" size={28} color="white" />

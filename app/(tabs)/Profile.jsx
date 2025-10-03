@@ -1,15 +1,15 @@
 import {
   SectionList,
   Platform,
-  Share,
   Modal,
   Pressable,
   View,
   Text,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  Share,
+  Alert,
 } from "react-native";
-import * as Linking from "expo-linking";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppContext } from "@/context/AppContext";
@@ -29,20 +29,40 @@ import UserDetails from "../Profile/UserDetails";
 import UserDetailsForm from "../SignUp/UserDetailsForm";
 import ProfilePageHeader from "../Profile/ProfilePageHeader";
 import UploadPopUp from "../Profile/UploadPopUp";
+import CryptoJS from "react-native-crypto-js";
+import Constants from 'expo-constants';
+import Loading from "@/components/Loading";
+import { useFocusEffect } from "@react-navigation/native";
+
+
 
 export default function Profile() {
-  const { selectedMechanic, setSelectedMechanic, userId } = useAppContext();
+  const {
+    selectedMechanic,
+    setSelectedMechanic,
+    userId,
+    startLoading,
+    stopLoading,
+    isLoading,
+  } = useAppContext();
   const { postJsonApi, patchApi, getJsonApi, deleteApi } = useApi();
   const { upload, media, setMedia } = useFileUploadContext();
   const { width, isDesktop, isMobile, height } = useScreenWidth();
   const [tempMech, setTempMech] = useState(selectedMechanic);
   const { id, type, post } = useLocalSearchParams();
-  const [uploadType, setUploadType] = useState("");
+  const [displayLoader, setDisplayLoader] = useState(true);
 
+  const [uploadType, setUploadType] = useState("");
   const [description, setDescription] = useState("");
   const [modal, setModal] = useState("");
   const [postModal, setPostModal] = useState(null);
   const [comment, setComment] = useState({ comment: "", userId: null });
+
+  let decrypted = null;
+  if (type) {
+    const bytes = CryptoJS.AES.decrypt(type, 'f9b7nvctr72942chh39h9rc');
+    decrypted = bytes.toString(CryptoJS.enc.Utf8);
+  }
 
   useEffect(() => {
     setComment((prev) => ({ ...prev, userId: userId }));
@@ -66,7 +86,7 @@ export default function Profile() {
   const getMechanic = useCallback(async () => {
     try {
       const user =
-        Platform.OS === "web" ? id : type === "user_visit" ? id : userId;
+        Platform.OS === "web" ? id : decrypted === "user_visit" ? id : userId;
       console.log("userid :", user);
       const result = await getJsonApi(
         `api/getSelectedMechanic/${user}`,
@@ -87,13 +107,27 @@ export default function Profile() {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setDisplayLoader(false);
     }
   });
 
-  useEffect(() => {
-    console.log("userId :", userId);
-    getMechanic();
-  }, [id, type]);
+  // Refresh every time screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      getMechanic();
+    }, [id, decrypted])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      setDisplayLoader(true);
+      // Optional: cleanup when screen loses focus
+      return () => {
+        setDisplayLoader(false);
+      };
+    }, [])
+  );
 
   // media upload
   const handleMediaupload = async () => {
@@ -161,6 +195,64 @@ export default function Profile() {
     }
   }, []);
 
+  const fetchCoordinatesWeb = async (address) => {
+    const res = await fetch(
+      `https://api.machinestreets.com/api/geocode?address=${encodeURIComponent(
+        address
+      )}`
+    );
+    const data = await res.json();
+
+    if (data.length > 0) {
+      return {
+        latitude: parseFloat(data[0].lat),
+        longitude: parseFloat(data[0].lon),
+      };
+    }
+    return null;
+  };
+
+  // Main function
+  const fetchGeocodes = useCallback(async (address) => {
+    startLoading();
+
+    try {
+      if (Platform.OS === "web") {
+        const webCoords = await fetchCoordinatesWeb(address);
+        if (webCoords) {
+          setSelectedMechanic((prev) => ({
+            ...prev,
+            lat: webCoords.latitude,
+            lon: webCoords.longitude,
+          }));
+          return webCoords; // ✅ return so caller knows it's ready
+        }
+      } else {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          alert("Permission to access location was denied");
+          return null;
+        }
+        const location = await Location.geocodeAsync(address);
+        if (location.length > 0) {
+          setSelectedMechanic((prev) => ({
+            ...prev,
+            lat: location[0].latitude,
+            lon: location[0].longitude,
+          }));
+          return {
+            latitude: location[0].latitude,
+            longitude: location[0].longitude,
+          };
+        }
+      }
+    } catch (error) {
+      console.error("Geocode fetch failed:", error);
+    } finally {
+      stopLoading();
+    }
+  }, []);
+
   // userDetails updation
   const hanldeUpdate = useCallback(async (userDetails) => {
     try {
@@ -181,30 +273,53 @@ export default function Profile() {
   }, []);
 
   // share user
-  const shareProfile = useCallback(async () => {
-    try {
-      const profileId = id;
+  // const shareProfile = useCallback(async () => {
+  //   try {
+  //     const profileId = id;
 
-      let url;
+  //     const url = `https://api.machinestreets.com/Profile?id=${profileId}&type=user_visit`;
 
-      if (Platform.OS === "web") {
-        // Use localhost or your dev server URL for web
-        url = `https://api.machinestreets.com/Profile?id=${profileId}&type=user_visit`;
-      } else {
-        // Use Expo Linking for native deep link
-        url = Linking.createURL("Profile", {
-          queryParams: { id: profileId, type: "user_visit" },
-        });
+  //     await Share.share({
+  //       message: `Check out this profile in MachineStreets: ${url}`,
+  //     });
+  //   } catch (error) {
+  //     console.log("Error sharing profile:", error.message);
+  //   }
+  // }, [id]);
+
+  const share = useCallback(
+    async (post) => {
+      try {
+        let productUrl;
+        if (post) {
+          productUrl = `https://machinestreets.com/E2?id=${userId}&type=user_visit&post=${post._id}`;
+        } else {
+          productUrl = `https://machinestreets.com/Profile?id=${id}&type=user_visit`;
+        }
+
+        const message = `Check this out: ${productUrl}`;
+
+        if (Platform.OS === "web") {
+          if (navigator.share) {
+            await navigator.share({
+              title: "Check this out!",
+              text: message,
+              url: productUrl,
+            });
+          } else {
+            await navigator.clipboard.writeText(message);
+            alert("🔗 URL copied to clipboard (Web Share not supported)");
+          }
+        } else {
+          await Share.share({ message });
+        }
+      } catch (error) {
+        Alert.alert("Error", "Unable to share.");
+        console.log("Share error:", error);
       }
-
-      await Share.share({
-        message: `Check out my profile: ${url}`,
-      });
-    } catch (error) {
-      console.log("Error sharing profile:", error.message);
-    }
-  }, [id]);
-
+    },
+    [id, userId]
+  );
   const handleIconClick = useCallback(async (name) => {
     setViewType(name);
     if (name === "plus-square") {
@@ -212,7 +327,7 @@ export default function Profile() {
       await upload();
     }
     if (name === "share") {
-      shareProfile();
+      share();
     }
   }, []);
 
@@ -240,7 +355,7 @@ export default function Profile() {
         "application/json",
         { secure: true }
       );
-      console.log(result)
+      console.log(result);
       if (result?.status === 200) {
         setSelectedMechanic((prev) => {
           const newPosts = prev.posts.filter((post) => post._id !== postId);
@@ -266,242 +381,252 @@ export default function Profile() {
       }}
       edges={["top", "left", "right"]} // ignore bottom to let tab bar handle it
     >
-      {/* upload popup */}
-      {media?.length > 0 && viewType === "plus-square" && (
-        <UploadPopUp
-          onRequestClose={() => {
-            setViewType("user");
-            setMedia([]);
-          }}
-          isDesktop={isDesktop}
-          media={media}
-          setMedia={setMedia}
-          description={description}
-          setDescription={setDescription}
-          handleMediaupload={handleMediaupload}
-        />
-      )}
-
-      <SectionList
-        style={{ flex: 1 }}
-        sections={sections}
-        keyExtractor={(item, index) => item._id?.toString() || index.toString()}
-        stickySectionHeadersEnabled={true}
-        ListHeaderComponent={
-          <ProfilePageHeader
-            media={media}
-            selectedMechanic={selectedMechanic}
-            type={type}
-            isMobile={isMobile}
-            upload={upload}
-            setUploadType={setUploadType}
-            setModal={setModal}
-          />
-        }
-        renderSectionHeader={() =>
-          selectedMechanic?.role === "mechanic" && (
-            <View
-              className="flex-row justify-between h-fit items-center px-4 py-2 bg-gray-100"
-              style={{ zIndex: Platform.OS === "web" ? 999 : 1 }}
-            >
-              {["plus-square", "share", "grid", "user", "edit-2"]
-                .filter(
-                  (name) =>
-                    !(
-                      type === "user_visit" &&
-                      (name === "plus-square" || name === "edit-2")
-                    )
-                )
-                .map((name) => (
-                  <Pressable
-                    key={name}
-                    className={`flex-1 mr-1 h-fit py-2 items-center justify-center rounded
-                  ${viewType === name ? "bg-TealGreen" : "bg-white"}`}
-                    onPress={() => handleIconClick(name)}
-                  >
-                    <Feather
-                      name={name}
-                      size={22}
-                      color={viewType === name ? "white" : "#2095A2"}
-                    />
-                  </Pressable>
-                ))}
-            </View>
-          )
-        }
-        renderItem={({ item }) => (
-          <View className="mt-2 p-4 rounded-md -z-10">
-            {selectedMechanic?.role === "mechanic" &&
-              viewType !== "grid" &&
-              viewType !== "plus-square" && (
-                <UserDetails
-                  userDetails={selectedMechanic}
-                  isMobile={isMobile}
-                />
-              )}
-            {(viewType === "grid" || viewType === "plus-square") &&
-              (selectedMechanic?.posts.length > 0 ? (
-                <PostGrid
-                  setPostModal={setPostModal}
-                  isDesktop={isDesktop}
-                  selectedMechanic={selectedMechanic}
-                  page="pro"
-                />
-              ) : (
-                <View className="h-screen w-full  items-center justify-center">
-                  <View
-                    className={`${
-                      isDesktop ? "w-[500px]" : "w-[90%]"
-                    }  bg-gray`}
-                  >
-                    <LottieView
-                      source={postsAnimation}
-                      autoPlay
-                      loop
-                      style={{ width: "100%", height: "100%" }}
-                    />
-                  </View>
-                </View>
-              ))}
-          </View>
-        )}
-      />
-
-      {/* settings and update form */}
-      <Modal
-        visible={
-          viewType === "edit-2" || modal === "settings" || modal === "reset"
-        }
-        animationType="slide"
-        transparent={modal !== "edit-2"} // overlay for settings/reset, not edit
-        presentationStyle={modal === "edit-2" ? "fullScreen" : "overFullScreen"}
-        statusBarTranslucent
-        onRequestClose={() => {
-          setTempMech(selectedMechanic);
-          setViewType("user");
-          setModal("");
-        }}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : 'padding'}
-          style={styles.fullScreen}
-        >
-          <SafeAreaView
-            className="w-full h-full items-center justify-center "
-            style={{
-              flex: 1,
-              paddingTop: Platform.OS === "ios" ? insets.top : 0,
-              paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
-            }}
-            edges={["top", "bottom"]}
-          >
-            {/* Background close */}
-            <TouchableWithoutFeedback
-              onPress={() => {
-                setTempMech(selectedMechanic);
+      {displayLoader ? (
+        <Loading />
+      ) : (
+        <>
+          {/* upload popup */}
+          {media?.length > 0 && viewType === "plus-square" && (
+            <UploadPopUp
+              onRequestClose={() => {
                 setViewType("user");
-                setModal("");
+                setMedia([]);
               }}
-            >
-              <View
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  // backgroundColor: "rgba(0,0,0,0.5)",
-                }}
+              isDesktop={isDesktop}
+              media={media}
+              setMedia={setMedia}
+              description={description}
+              setDescription={setDescription}
+              handleMediaupload={handleMediaupload}
+            />
+          )}
+          <SectionList
+            style={{ flex: 1 }}
+            sections={sections}
+            keyExtractor={(item, index) =>
+              item._id?.toString() || index.toString()
+            }
+            stickySectionHeadersEnabled={true}
+            ListHeaderComponent={
+              <ProfilePageHeader
+                media={media}
+                selectedMechanic={selectedMechanic}
+                type={decrypted}
+                isMobile={isMobile}
+                upload={upload}
+                setUploadType={setUploadType}
+                setModal={setModal}
               />
-            </TouchableWithoutFeedback>
-
-            {/* Modal Content */}
-            <View
-              style={{
-                width: isDesktop ? 600 : "90%",
-                backgroundColor: "#fff",
-                borderRadius: 24,
-                padding: 20,
-                height:
-                  Platform.OS === "web"
-                    ? viewType === "edit-2"
-                      ? "95%"
-                      : "auto"
-                    : "auto", // height for non-web platforms
-
-                // shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 10,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+            }
+            renderSectionHeader={() =>
+              selectedMechanic?.role === "mechanic" && (
+                <View
+                  className="flex-row justify-between h-fit items-center px-4 py-2 bg-gray-100"
+                  style={{ zIndex: Platform.OS === "web" ? 999 : 1 }}
+                >
+                  {["plus-square", "share", "grid", "user", "edit-2"]
+                    .filter(
+                      (name) =>
+                        !(
+                          decrypted === "user_visit" &&
+                          (name === "plus-square" || name === "edit-2")
+                        )
+                    )
+                    .map((name) => (
+                      <Pressable
+                        key={name}
+                        className={`flex-1 mr-1 h-fit py-2 items-center justify-center rounded
+                  ${viewType === name ? "bg-TealGreen" : "bg-white"}`}
+                        onPress={() => handleIconClick(name)}
+                      >
+                        <Feather
+                          name={name}
+                          size={22}
+                          color={viewType === name ? "white" : "#2095A2"}
+                        />
+                      </Pressable>
+                    ))}
+                </View>
+              )
+            }
+            renderItem={({ item }) => (
+              <View className="mt-2 p-4 rounded-md -z-10">
+                {selectedMechanic?.role === "mechanic" &&
+                  viewType !== "grid" &&
+                  viewType !== "plus-square" && (
+                    <UserDetails
+                      userDetails={selectedMechanic}
+                      isMobile={isMobile}
+                      isDesktop={isDesktop}
+                    />
+                  )}
+                {(viewType === "grid" || viewType === "plus-square") &&
+                  (selectedMechanic?.posts.length > 0 ? (
+                    <PostGrid
+                      setPostModal={setPostModal}
+                      isDesktop={isDesktop}
+                      selectedMechanic={selectedMechanic}
+                      page="pro"
+                    />
+                  ) : (
+                    <View className="h-screen w-full  items-center justify-center">
+                      <View
+                        className={`${
+                          isDesktop ? "w-[500px]" : "w-[90%]"
+                        }  bg-gray`}
+                      >
+                        <LottieView
+                          source={postsAnimation}
+                          autoPlay
+                          loop
+                          style={{ width: "100%", height: "100%" }}
+                        />
+                      </View>
+                    </View>
+                  ))}
+              </View>
+            )}
+          />
+          {/* settings and update form */}
+          <Modal
+            visible={
+              viewType === "edit-2" || modal === "settings" || modal === "reset"
+            }
+            animationType="slide"
+            transparent={modal !== "edit-2"} // overlay for settings/reset, not edit
+            presentationStyle={
+              modal === "edit-2" ? "fullScreen" : "overFullScreen"
+            }
+            statusBarTranslucent
+            onRequestClose={() => {
+              setTempMech(selectedMechanic);
+              setViewType("user");
+              setModal("");
+            }}
+          >
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "padding"}
+              style={styles.fullScreen}
             >
-              {viewType === "edit-2" && (
-                <UserDetailsForm
-                  onRequestClose={() => {
+              <SafeAreaView
+                className="w-full h-full items-center justify-center "
+                style={{
+                  flex: 1,
+                  paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                  paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+                }}
+                edges={["top", "bottom"]}
+              >
+                {/* Background close */}
+                <TouchableWithoutFeedback
+                  onPress={() => {
                     setTempMech(selectedMechanic);
                     setViewType("user");
                     setModal("");
                   }}
-                  userDetails={tempMech}
-                  setUserDetails={setTempMech}
-                  page="profile"
-                  handleSubmit={hanldeUpdate}
+                >
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      // backgroundColor: "rgba(0,0,0,0.5)",
+                    }}
+                  />
+                </TouchableWithoutFeedback>
+
+                {/* Modal Content */}
+                <View
+                  style={{
+                    width: isDesktop ? 600 : "90%",
+                    backgroundColor: "#fff",
+                    borderRadius: 24,
+                    padding: 20,
+                    height:
+                      Platform.OS === "web"
+                        ? viewType === "edit-2"
+                          ? "95%"
+                          : "auto"
+                        : "auto", // height for non-web platforms
+
+                    // shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {viewType === "edit-2" && (
+                    <UserDetailsForm
+                      onRequestClose={() => {
+                        setTempMech(selectedMechanic);
+                        setViewType("user");
+                        setModal("");
+                      }}
+                      userDetails={tempMech}
+                      setUserDetails={setTempMech}
+                      page="profile"
+                      handleSubmit={hanldeUpdate}
+                      fetchGeocodes={fetchGeocodes}
+                    />
+                  )}
+
+                  {modal === "settings" && (
+                    <Settings setModal={setModal} setViewType={setViewType} />
+                  )}
+
+                  {modal === "reset" && (
+                    <ResetPassword handlePasswordReset={handlePasswordReset} />
+                  )}
+                </View>
+              </SafeAreaView>
+            </KeyboardAvoidingView>
+          </Modal>
+          {/* posts modal */}
+          <Modal
+            visible={postModal !== null}
+            onRequestClose={() => setPostModal(null)}
+            statusBarTranslucent={true}
+            transparent={Platform.OS === "web" && isDesktop} // never true on iOS
+            animationType="slide"
+            // presentationStyle={Platform.OS === "ios" ? "fullScreen" : "overFullScreen"}
+          >
+            <SafeAreaView
+              style={{
+                flex: 1,
+                paddingTop: Platform.OS === "ios" ? insets.top : 0,
+                paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
+              }}
+              edges={["top", "bottom"]}
+            >
+              {selectedMechanic?.posts?.length > 0 && (
+                <PostViewerModal
+                  setSelectedMechanic={setSelectedMechanic}
+                  type={type}
+                  postDelete={postDelete}
+                  comment={comment}
+                  setComment={setComment}
+                  userId={userId}
+                  handleLike={handleLike}
+                  user={selectedMechanic}
+                  setPostModal={setPostModal}
+                  setModal={setModal}
+                  share={share}
+                  modal={modal}
+                  postModal={postModal}
+                  height={height}
+                  width={width * 0.8}
+                  isDesktop={isDesktop}
                 />
               )}
-
-              {modal === "settings" && (
-                <Settings setModal={setModal} setViewType={setViewType} />
-              )}
-
-              {modal === "reset" && (
-                <ResetPassword handlePasswordReset={handlePasswordReset} />
-              )}
-            </View>
-          </SafeAreaView>
-        </KeyboardAvoidingView>
-      </Modal>
-
-      {/* posts modal */}
-      <Modal
-        visible={postModal !== null}
-        onRequestClose={() => setPostModal(null)}
-        statusBarTranslucent={true}
-        transparent={Platform.OS === "web" && isDesktop} // never true on iOS
-        animationType="slide"
-        // presentationStyle={Platform.OS === "ios" ? "fullScreen" : "overFullScreen"}
-      >
-        <SafeAreaView
-          style={{
-            flex: 1,
-            paddingTop: Platform.OS === "ios" ? insets.top : 0,
-            paddingBottom: Platform.OS === "ios" ? insets.bottom : 0,
-          }}
-          edges={["top", "bottom"]}
-        >
-          {selectedMechanic?.posts?.length > 0 && (
-            <PostViewerModal
-            setSelectedMechanic={setSelectedMechanic}
-              type={type}
-              postDelete={postDelete}
-              comment={comment}
-              setComment={setComment}
-              userId={userId}
-              handleLike={handleLike}
-              user={selectedMechanic}
-              setPostModal={setPostModal}
-              setModal={setModal}
-              modal={modal}
-              postModal={postModal}
-              height={height}
-              width={width * 0.8}
-              isDesktop={isDesktop}
-            />
-          )}
-        </SafeAreaView>
-      </Modal>
+            </SafeAreaView>
+          </Modal>
+        </>
+      )}
     </SafeAreaView>
   );
 }

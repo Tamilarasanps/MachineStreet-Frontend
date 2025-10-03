@@ -1,27 +1,30 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Platform,
-  Pressable,
-} from "react-native";
+import React, { useRef, useState, useEffect } from "react";
+import { View, Text, Pressable, Platform } from "react-native";
 import Loading from "@/components/Loading";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { OtpInput } from "react-native-otp-entry";
 
-const OtpScreen = ({ otp, setOtp, register, handleSubmit, isLoading, setStep }) => {
-  const inputs = useRef([]);
-  const [counter, setCounter] = useState(60); // countdown state
+const OtpScreen = ({
+  otp,
+  setOtp,
+  register,
+  handleSubmit,
+  isLoading,
+  setStep,
+  isDesktop,
+}) => {
+  const otpRef = useRef(null);
+  const [counter, setCounter] = useState(60);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
 
-  // Countdown effect
+  // Convert array OTP to string for OtpInput
+  const otpString = otp.join("");
+
+  // Countdown timer
   useEffect(() => {
     let timer;
     if (isResendDisabled && counter > 0) {
-      timer = setInterval(() => {
-        setCounter((prev) => prev - 1);
-      }, 1000);
+      timer = setInterval(() => setCounter((prev) => prev - 1), 1000);
     } else if (counter === 0) {
       setIsResendDisabled(false);
       clearInterval(timer);
@@ -29,54 +32,23 @@ const OtpScreen = ({ otp, setOtp, register, handleSubmit, isLoading, setStep }) 
     return () => clearInterval(timer);
   }, [counter, isResendDisabled]);
 
-  // 👇 Auto-focus first input when screen loads
-  useEffect(() => {
-    if (inputs.current[0]) {
-      inputs.current[0].focus();
-    }
-  }, []);
-
-  const handleChange = (text, index) => {
-    let newOtp = [...otp];
-    newOtp[index] = text;
-    setOtp(newOtp);
-    if (text && index < otp.length - 1) {
-      inputs.current[index + 1].focus();
-    }
-  };
-
-  const handleBackspace = (text, index) => {
-    let newOtp = [...otp];
-
-    if (otp[index]) {
-      // Case 1: Current box has a value → just clear it
-      newOtp[index] = "";
-      setOtp(newOtp);
-    } else if (!otp[index] && index > 0) {
-      // Case 2: Current box empty → move focus back
-      inputs.current[index - 1].focus();
-    }
-  };
-
   const handleResend = () => {
     setIsResendDisabled(true);
-    setCounter(60); // reset timer
+    setCounter(60);
     handleSubmit();
-  };
-
-  const handleKeyPress = (e) => {
-    if (Platform.OS === "web" && e.key === "Enter") {
-      register(); // fixed: was formSubmit()
-    }
   };
 
   return (
     <View
       className={`${
-        Platform.OS === "web" ? "w-[400px] h-[550px]" : "w-full"
+        Platform.OS === "web"
+          ? isDesktop
+            ? "w-[400px] h-[550px]"
+            : "w-full"
+          : "w-full"
       } flex flex-col items-center bg-white rounded-2xl shadow-lg p-6`}
     >
-      {/* Header Back Button */}
+      {/* Header */}
       <View className="flex-row items-center self-start mb-6">
         <Pressable
           onPress={() => setStep(0)}
@@ -96,41 +68,45 @@ const OtpScreen = ({ otp, setOtp, register, handleSubmit, isLoading, setStep }) 
         We’ve sent a verification code to your registered number.
       </Text>
 
-      {/* OTP Input Boxes */}
-      <View className="flex-row justify-center gap-3 mb-8">
-        {otp.map((digit, index) => (
-          <TextInput
-            key={index}
-            ref={(el) => (inputs.current[index] = el)}
-            className="w-12 h-14 text-center border border-gray-300 rounded-lg text-xl font-semibold text-black focus:border-TealGreen"
-            keyboardType="numeric"
-            maxLength={1}
-            value={digit}
-            onChangeText={(text) => handleChange(text, index)}
-            onKeyPress={(e) => {
-              if (e.nativeEvent.key === "Backspace") {
-                handleBackspace("", index);
-              }
-              handleKeyPress(e);
-            }}
-            onFocus={() => {
-              if (otp[index]) {
-                if (Platform.OS === "web") {
-                  inputs.current[index]?.setSelectionRange(0, 1);
-                } else {
-                  inputs.current[index]?.setNativeProps({
-                    selection: { start: 0, end: 1 },
-                  });
-                }
-              }
-            }}
-          />
-        ))}
-      </View>
+      {/* OTP Input */}
+      <OtpInput
+        ref={otpRef}
+        numberOfDigits={otp.length}
+        autoFocus={true}
+        blurOnFilled={false}
+        hideStick={false}
+        focusColor="#2095A2"
+        type="numeric"
+        value={otpString} // Use string value
+        onTextChange={(text) => {
+          // Update otp array from string
+          const arr = text.split("").slice(0, otp.length);
+          while (arr.length < otp.length) arr.push("");
+          setOtp(arr);
+        }}
+        onFilled={(text) => console.log("Filled OTP:", text)}
+        textInputProps={{
+          textAlign: "center",
+          className: "w-14 h-14 border rounded-lg text-xl font-bold",
+        }}
+        theme={{
+          pinCodeContainerStyle: {
+            marginHorizontal: 5,
+            borderWidth: 1,
+            borderColor: "#ccc",
+          },
+          focusedPinCodeContainerStyle: {
+            borderColor: "#2095A2",
+            borderWidth: 2,
+          },
+        }}
+      />
 
       {/* Verify Button */}
       <Pressable
-        className={`bg-TealGreen w-full justify-center ${isLoading ? "h-12 overflow-hidden" : 'py-3'} rounded-lg shadow-md`}
+        className={`bg-TealGreen w-full justify-center mt-8 ${
+          isLoading ? "h-12 overflow-hidden" : "py-3"
+        } rounded-lg shadow-md`}
         onPress={register}
       >
         {isLoading ? (
@@ -142,7 +118,7 @@ const OtpScreen = ({ otp, setOtp, register, handleSubmit, isLoading, setStep }) 
         )}
       </Pressable>
 
-      {/* Resend OTP */}
+      {/* Resend */}
       <Pressable
         className="mt-6"
         onPress={handleResend}
