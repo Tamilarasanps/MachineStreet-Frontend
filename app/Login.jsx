@@ -11,7 +11,7 @@ import useScreenWidth from "@/hooks/useScreenWidth";
 import { useCallback, useState } from "react";
 import InputWOL from "@/components/InputWOL";
 import ForgotPassword from "./Login/ForgotPassword";
-import Toast from "react-native-toast-message";
+import  { Toast } from "toastify-react-native";
 import useApi from "@/hooks/useApi";
 import * as SecureStore from "expo-secure-store";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -19,7 +19,6 @@ import { router } from "expo-router";
 import Loading from "@/components/Loading";
 import { useAppContext } from "@/context/AppContext";
 import ResetPassword from "./Profile/ResetPassword";
-import axios from "axios";
 
 const Login = () => {
   const { postJsonApi, patchApi } = useApi();
@@ -37,13 +36,10 @@ const Login = () => {
   // login form submit
   const Loginbtn = useCallback(async (e) => {
     if (!userDetails.mobile || !userDetails.password) {
-      Toast.show({
-        type: "error",
-        text1: `Please enter ${!userDetails.mobile ? "Mobile number" : "Password"}`,
-        visibilityTime: 2000,
-        position: "top",
-      });
-
+      Toast.error(
+        `Please enter ${!userDetails.mobile ? "Mobile number" : "Password"}`,
+        { duration: 2000, position: "top" }
+      );
       return;
     }
 
@@ -68,16 +64,20 @@ const Login = () => {
           localStorage.setItem("userId", response?.data?.userId);
         }
         setTimeout(() => {
-          router.replace('/(tabs)/HomePage');
+          router.replace("/(tabs)/HomePage");
         }, 2000);
       }
     } catch (error) {
       console.error("Invalid Data:", error);
+      Toast.error("Login failed. Please try again.", {
+        duration: 2000,
+        position: "top",
+      });
     }
   });
 
   // passwordReset
- 
+
   const handlePasswordReset = useCallback(async (password) => {
     try {
       const result = await patchApi(
@@ -86,12 +86,13 @@ const Login = () => {
         "application/json",
         { secure: false }
       );
+      console.log('result :' , result)
       if (result?.status === 200) {
-        setStep(0)
+        setStep(0);
         setShowForgot(false);
       }
     } catch (err) {
-      console.log(err);
+      console.log('err :', err);
     }
   }, []);
 
@@ -105,7 +106,11 @@ const Login = () => {
         { secure: false }
       );
       if (response && response.status === 200) {
-        if(step===0) setUserDetails((prev) => ({ ...prev, userId: response?.data?.userId }));
+        if (step === 0)
+          setUserDetails((prev) => ({
+            ...prev,
+            userId: response?.data?.userId,
+          }));
         setStep((prev) => prev + 1);
       }
     } catch (error) {

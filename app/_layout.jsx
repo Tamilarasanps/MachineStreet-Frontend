@@ -1,97 +1,96 @@
 // app/_layout.js
-import Header from "@/components/Header";
+import { useState, useEffect } from "react";
 import { AppProvider } from "@/context/AppContext";
 import { Stack } from "expo-router";
 import "../global.css";
 import { LocationProvider } from "@/context/LocationContext";
-import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import { FileUploadProvider } from "@/context/FileUpload";
 import { FormatTimeProvider } from "@/context/FormatTime";
 import { linking } from "./linking";
+import ToastManager from "toastify-react-native";
+import { View, Text } from "react-native";
+import SplashScreen from "@/components/SplashScreen"; // import your splash
 
 export default function RootLayout() {
+  const [showSplash, setShowSplash] = useState(true);
+
   const toastConfig = {
     success: (props) => (
-      <BaseToast
-        {...props}
-        autoHide={props.autoHide}
-        visibilityTime={props.visibilityTime} // <--- forward visibilityTime
-        style={{ borderLeftColor: "green", backgroundColor: "#e6ffe6" }}
-        contentContainerStyle={{ paddingHorizontal: 15 }}
-        text1Style={{
-          fontSize: 16,
-          fontWeight: "bold",
-          color: "green",
+      <View
+        style={{
+          backgroundColor: "#4CAF50",
+          padding: 16,
+          borderRadius: 10,
+          maxWidth: 400,
+          alignSelf: "center",
         }}
-        text2Style={{
-          fontSize: 14,
-          color: "black",
-        }}
-      />
-    ),
-    info: (props) => (
-      <BaseToast
-        {...props}
-        autoHide={props.autoHide}
-        visibilityTime={props.visibilityTime} // <--- forward visibilityTime
-        style={{ borderLeftColor: "orange", backgroundColor: "#ffffffff" }}
-        contentContainerStyle={{ paddingHorizontal: 15 }}
-        text1Style={{
-          fontSize: 16,
-          fontWeight: "bold",
-          color: "orange",
-        }}
-        text2Style={{
-          fontSize: 10,
-          color: "black",
-        }}
-      />
+      >
+        <Text style={{ color: "white", fontWeight: "bold" }}>
+          {props.text1}
+        </Text>
+        {props.text2 && <Text style={{ color: "white" }}>{props.text2}</Text>}
+      </View>
     ),
     error: (props) => (
-      <ErrorToast
-        {...props}
-        autoHide={props.autoHide}
-        visibilityTime={props.visibilityTime} // <--- forward visibilityTime
-        style={{ borderLeftColor: "red", backgroundColor: "#ffe6e6" }}
-        contentContainerStyle={{ paddingHorizontal: 15 }}
-        text1Style={{
-          fontSize: 16,
-          fontWeight: "bold",
-          color: "red",
+      <View
+        style={{
+          backgroundColor: "#F44336",
+          padding: 16,
+          borderRadius: 10,
+          maxWidth: 400,
+          alignSelf: "center",
         }}
-        text2Style={{
-          fontSize: 14,
-          color: "black",
+      >
+        <Text style={{ color: "white", fontWeight: "bold" }}>
+          {props.text1}
+        </Text>
+        {props.text2 && <Text style={{ color: "white" }}>{props.text2}</Text>}
+      </View>
+    ),
+    info: (props) => (
+      <View
+        style={{
+          backgroundColor: "#2196F3",
+          padding: 16,
+          borderRadius: 10,
+          maxWidth: 400,
+          alignSelf: "center",
         }}
-      />
+      >
+        <Text style={{ color: "white", fontWeight: "bold" }}>
+          {props.text1}
+        </Text>
+        {props.text2 && <Text style={{ color: "white" }}>{props.text2}</Text>}
+      </View>
     ),
   };
+
+  // Render SplashScreen first
+  if (showSplash) {
+    return <SplashScreen onAnimationComplete={() => setShowSplash(false)} />;
+  }
+
   return (
     <>
-      {/* <Header /> */}
+      <ToastManager config={toastConfig} />
 
       <LocationProvider>
         <FileUploadProvider>
           <FormatTimeProvider>
             <AppProvider>
-                <Stack linking={linking}>
-                  <Stack.Screen
-                    name="(tabs)" // corresponds to app/index.js
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen name="E2" options={{ headerShown: false }} />
-                  <Stack.Screen name="Login" options={{ headerShown: false }} />
-                  <Stack.Screen
-                    name="SignUp"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="ServicePage"
-                    options={{ headerShown: false }}
-                  />
-                </Stack>
-          
-              <Toast config={toastConfig} />
+              <Stack linking={linking}>
+                <Stack.Screen
+                  name="(tabs)" // corresponds to app/index.js
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="E2" options={{ headerShown: false }} />
+                <Stack.Screen name="Login" options={{ headerShown: false }} />
+                <Stack.Screen name="SignUp" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="ServicePage"
+                  options={{ headerShown: false }}
+                />
+              </Stack>
             </AppProvider>
           </FormatTimeProvider>
         </FileUploadProvider>

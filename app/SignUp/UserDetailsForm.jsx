@@ -342,7 +342,11 @@ const UserDetailsForm = ({
               </Text>
 
               {/* Manual Entry */}
-
+              <Location
+                states={states}
+                userDetails={userDetails}
+                setUserDetails={setUserDetails}
+              />
               <InputWOL
                 label="Street"
                 placeholder={`Enter Street`}
@@ -352,11 +356,7 @@ const UserDetailsForm = ({
                 }
               />
             </View>
-            <Location
-              states={states}
-              userDetails={userDetails}
-              setUserDetails={setUserDetails}
-            />
+
             <View className="-z-10">
               <InputWOL
                 label="pincode"
@@ -390,10 +390,11 @@ const UserDetailsForm = ({
             if (userDetails.role === "mechanic") {
               const address = `${userDetails.city}, ${userDetails.region}, ${userDetails.pincode}, ${userDetails.country}`;
               const coords = await fetchGeocodes(address); // get lat/lon
+              console.log('coords :', coords)
               data = {
                 ...data,
                 lat: coords?.latitude,
-                long: coords?.longitude,
+                lon: coords?.longitude,
               };
             }
 

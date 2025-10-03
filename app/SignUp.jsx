@@ -12,7 +12,7 @@ import {
   Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
+import { Toast } from "toastify-react-native"; // ✅ replaced
 import OtpScreen from "./SignUp/OtpScreen";
 import RoleSelection from "./SignUp/RoleSelction";
 import UserDetailsForm from "./SignUp/UserDetailsForm";
@@ -23,12 +23,13 @@ import * as SecureStore from "expo-secure-store";
 import { useLocation } from "@/context/LocationContext";
 import { Modal, Pressable, Linking } from "react-native";
 import * as Location from "expo-location";
+import PermissionModal from "./SignUp/PermissionModal";
 
 // const { width, height } = Dimensions.get("window");
 
 const SignUp = () => {
   const { isDesktop, isTablet, isMobile } = useScreenWidth();
-  const { isLoading } = useAppContext();
+  const { isLoading, stopLoading } = useAppContext();
   const { postJsonApi } = useApi();
   const { status } = useLocation();
 
@@ -146,30 +147,29 @@ const SignUp = () => {
 
   const showError = useCallback(
     (field, parent = null, isArray = false, customMsg = null) => {
-      Toast.show({
-        type: "error",
-        text1: "Validation Error",
-        text2: customMsg
-          ? customMsg
-          : parent
-          ? `${field} is required in ${parent}.`
-          : isArray
-          ? `${field} has empty values.`
-          : `${field} is required.`,
-      });
+      Toast.error(
+        customMsg ||
+          (parent
+            ? `${field} is required in ${parent}.`
+            : isArray
+            ? `${field} has empty values.`
+            : `${field} is required.`),
+        {
+          duration: 3000,
+          position: "top",
+        }
+      );
     },
     []
   );
-
   const fetchCoordinatesWeb = async (address) => {
-
     const res = await fetch(
       `https://api.machinestreets.com/api/geocode?address=${encodeURIComponent(
         address
       )}`
     );
     const data = await res.json();
-    console.log("geices :", data);
+    console.log('data :', data)
 
     if (data.length > 0) {
       return {
@@ -179,7 +179,6 @@ const SignUp = () => {
     }
     return null;
   };
-
 
   // Main function
   const fetchGeocodes = useCallback(async (address) => {
@@ -201,6 +200,7 @@ const SignUp = () => {
           return null;
         }
         const location = await Location.geocodeAsync(address);
+        console.log('location :', location)
         if (location.length > 0) {
           setUserDetails((prev) => ({
             ...prev,
@@ -219,8 +219,10 @@ const SignUp = () => {
   }, []);
 
   const handleSubmit = useCallback(async () => {
-
-    if (!checkEmptyFields()) return;
+    if (!checkEmptyFields()) {
+      stopLoading();
+      return;
+    }
     try {
       const result = await postJsonApi(
         "signUp/sendOtp",
@@ -242,13 +244,10 @@ const SignUp = () => {
 
   const register = useCallback(async () => {
     if (!otp || !userDetails) {
-      Toast.show({
-        type: "error",
-        text1: "Oops!",
-        text2: "Something went wrong.",
-      });
+      Toast.error("Something went wrong.", { duration: 3000, position: "top" });
       return "";
     }
+    console.log('userDetails :', userDetails)
     try {
       const result = await postJsonApi(
         "signup/register",
@@ -272,7 +271,7 @@ const SignUp = () => {
         }
         // setTimeout(() => {
         //   setShowWelcome(false);
-          router.push("/(tabs)/HomePage");
+        router.push("/(tabs)/HomePage");
         // }, 10);
       }
     } catch (err) {
@@ -295,62 +294,7 @@ const SignUp = () => {
         }}
       >
         {status !== "granted" && Platform.OS !== "web" ? (
-          <Modal transparent={true} animationType="fade" visible={true}>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: "rgba(0,0,0,0.5)",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  width: 300,
-                  backgroundColor: "#fff",
-                  borderRadius: 12,
-                  padding: 20,
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
-                >
-                  Location Permission Needed
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    textAlign: "left",
-                    marginBottom: 20,
-                  }}
-                >
-                  We need your location to continue. Please enable it in
-                  settings.
-                </Text>
-
-                <Pressable
-                  onPress={() => {
-                    if (Platform.OS === "ios") {
-                      Linking.openURL("app-settings:");
-                    } else {
-                      Linking.openSettings();
-                    }
-                  }}
-                  style={{
-                    backgroundColor: "#0d9488",
-                    paddingVertical: 10,
-                    paddingHorizontal: 20,
-                    borderRadius: 8,
-                  }}
-                >
-                  <Text style={{ color: "#fff", fontWeight: "600" }}>
-                    Open Settings
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-          </Modal>
+          <PermissionModal />
         ) : null}
 
         {showWelcome ? (

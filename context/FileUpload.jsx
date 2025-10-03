@@ -1,7 +1,7 @@
 import { useMediaLibraryPermissions } from "expo-image-picker";
 import * as ImagePicker from "expo-image-picker";
 import { createContext, useContext, useState } from "react";
-import Toast from "react-native-toast-message";
+import { Toast } from "toastify-react-native";
 
 export const FileUpload = createContext();
 
@@ -36,16 +36,14 @@ export const FileUploadProvider = ({ children }) => {
           : 0);
 
       if (fileSize > 10 * 1024 * 1024) {
-        Toast.show({
-          type: "info",
-          text1: "Media size exceeds 10MB",
-          text2: "Please upload media within 10MB",
+        Toast.info("Media size exceeds 10MB. Please upload media within 10MB", {
+          duration: 2000,
           position: "top",
-          visibilityTime: 2000,
         });
+
         return;
       }
-      
+
       setMedia([asset]);
     }
   };

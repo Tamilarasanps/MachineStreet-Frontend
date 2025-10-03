@@ -86,10 +86,10 @@ const HomePage = () => {
   const getmechanics = useCallback(async () => {
     try {
       const result = await getJsonApi(
-        `homepage/getmechanics/?page=${page}&limit=50`,
+        `homepage/getmechanics/?page=${page}&limit=50&lat=${geoCoords.latitude}&long=${geoCoords.longitude}`,
         "application/json",
         { secure: true }
-      );
+      );  
 
       if (result?.status === 200) {
         setPage((prev) => prev + 1);
@@ -224,7 +224,7 @@ const HomePage = () => {
         const matchesDistrict =
           selectedDistrict.length > 0
             ? selectedDistrict.includes(
-                otherThanIndia ? mechanic.region : mechanic.district
+                otherThanIndia ? mechanic.region : mechanic.city
               )
             : true;
 
@@ -370,13 +370,13 @@ const HomePage = () => {
             </View>
           )}
 
-          {/* {qr === false && userRole === "mechanic" && (
+          {qr === false && userRole === "mechanic" && (
           <QrModal
             visible={true}
             onClose={() => setQr(true)}
             getItem={getItem}
           />
-        )} */}
+        )}
           {/* userDetails */}
 
           <View

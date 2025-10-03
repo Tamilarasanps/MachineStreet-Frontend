@@ -54,22 +54,6 @@ const Location = ({ states, userDetails, setUserDetails }) => {
 
       {!otherThanIndia ? (
         <View>
-          {/* city Input with suggestions */}
-          <InputWOL
-            placeholder="Select city"
-            label="city"
-            value={userDetails?.city || ""}
-            onChangeText={(value) => {
-              setUserDetails((prev) => ({
-                ...prev,
-                city: value,
-              }));
-            }}
-            sugesstionData={cityList.map((city, index) => ({
-              label: city,
-              value: city,
-            }))}
-          />
           {/* State Input with suggestions */}
           <InputWOL
             placeholder="Select State"
@@ -85,6 +69,22 @@ const Location = ({ states, userDetails, setUserDetails }) => {
             sugesstionData={stateList.map((state) => ({
               label: state,
               value: state,
+            }))}
+          />
+          {/* city Input with suggestions */}
+          <InputWOL
+            placeholder="Select city"
+            label="city"
+            value={userDetails?.city || ""}
+            onChangeText={(value) => {
+              setUserDetails((prev) => ({
+                ...prev,
+                city: value,
+              }));
+            }}
+            sugesstionData={cityList.map((city, index) => ({
+              label: city,
+              value: city,
             }))}
           />
         </View>

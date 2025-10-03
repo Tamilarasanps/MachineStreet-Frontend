@@ -58,6 +58,8 @@ const Filter = ({
     };
   };
 
+  console.log('filter data :', filterData)
+
   return (
     <View
       className={`bg-gray-100 rounded-md p-3 shadow-md overflow-hidden   ${

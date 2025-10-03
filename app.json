@@ -2,7 +2,7 @@
   "expo": {
     "name": "MachineStreets",
     "slug": "machine-streets",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "scheme": "machinestreets",
@@ -27,7 +27,7 @@
       }
     },
     "android": {
-      "versionCode": 16,
+      "versionCode": 17,
       "intentFilters": [
         {
           "action": "VIEW",

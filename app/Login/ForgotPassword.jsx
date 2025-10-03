@@ -10,6 +10,7 @@ const ForgotPassword = ({
   setShowForgot,
   placehoders,
   setUserDetails,
+  setStep
 }) => {
   const { isLoading } = useAppContext();
   return (
@@ -48,7 +49,10 @@ const ForgotPassword = ({
         {[
           {
             text: "Cancel",
-            onPress: () => setShowForgot(false),
+            onPress: () => {
+              setStep(0)
+              setShowForgot(false)
+            },
             bg: "bg-gray-300",
             textColor: "text-gray-800",
           },

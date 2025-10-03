@@ -29,7 +29,7 @@ export default function Footer() {
         </View>
 
         {/* Quick Links */}
-        <View>
+        {/* <View>
           {["Home", "Services"].map((item, idx) => (
             <TouchableOpacity
               key={idx}
@@ -41,7 +41,7 @@ export default function Footer() {
               </Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </View> */}
 
         {/* Contact */}
         <View className="mb-8 md:mb-0">

@@ -16,7 +16,10 @@ const UserCard = ({
   setReview,
 }) => {
   // Encrypt
-  const encrypted = CryptoJS.AES.encrypt('user_visit', 'f9b7nvctr72942chh39h9rc').toString();
+  const encrypted = CryptoJS.AES.encrypt(
+    "user_visit",
+    "f9b7nvctr72942chh39h9rc"
+  ).toString();
 
   const openDialer = () => {
     const { countryCode, number } = mechanic?.mobile || {};
@@ -41,7 +44,7 @@ const UserCard = ({
       className={`rounded-2xl shadow-md overflow-hidden bg-white ${
         !isDesktop ? "flex-col" : "flex-row"
       }`}
-      style={{ flex: 1, }} // ✅ allow flex growth
+      style={{ flex: 1 }} // ✅ allow flex growth
     >
       {/* Left Panel */}
       <LinearGradient
@@ -52,7 +55,7 @@ const UserCard = ({
           width: !isDesktop ? "100%" : "38%",
           height: !isDesktop ? "auto" : "100%", // ✅ allow auto height in mobile
           minHeight: 220, // ✅ keep balanced
-          paddingVertical: 20,
+          paddingVertical: 20,  
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -103,8 +106,8 @@ const UserCard = ({
         style={{
           width: !isDesktop ? "100%" : "62%",
           flex: 1, // ✅ ensures panel expands
-          minHeight: 220, // ✅ same as left panel so it shows in mobile         
-          paddingBottom:30
+          minHeight: 220, // ✅ same as left panel so it shows in mobile
+          paddingBottom: 30,
         }}
       >
         {/* Organization */}
@@ -164,18 +167,39 @@ const UserCard = ({
               Specialization
             </Text>
             <View className="bg-gray-100 p-2 rounded-lg">
-              <Text className="text-gray-700 text-sm">
-                {mechanic.services[0].length > 25
-                  ? `${mechanic.services[0].substring(0, 25)}...`
-                  : `${mechanic.services[0]} ...`}
-              </Text>
+              {isDesktop ? (
+                <Text
+                  className="text-gray-700 text-sm"
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {mechanic.services?.[0]}
+                </Text>
+              ) : (
+                mechanic.services?.slice(0, 3).map((service, index) => (
+                  <Text
+                    key={index}
+                    className="text-gray-700 text-sm mt-2"
+                    numberOfLines={3}
+                    ellipsizeMode="tail"
+                    style={{ flexShrink: 1, flexWrap: "wrap" }}
+                  >
+                    {service}
+                  </Text>
+                ))
+              )}
             </View>
           </>
         )}
 
         {/* Location */}
         <View className="flex-row items-start mt-6 ">
-          <FontAwesome name="map-marker" size={18} color="#2095A2" className='my-auto'/>
+          <FontAwesome
+            name="map-marker"
+            size={18}
+            color="#2095A2"
+            className="my-auto"
+          />
 
           {/* Address - styled match */}
           <Text
