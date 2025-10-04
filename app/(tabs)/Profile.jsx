@@ -30,11 +30,9 @@ import UserDetailsForm from "../SignUp/UserDetailsForm";
 import ProfilePageHeader from "../Profile/ProfilePageHeader";
 import UploadPopUp from "../Profile/UploadPopUp";
 import CryptoJS from "react-native-crypto-js";
-import Constants from 'expo-constants';
+import { Toast } from "toastify-react-native";
 import Loading from "@/components/Loading";
 import { useFocusEffect } from "@react-navigation/native";
-
-
 
 export default function Profile() {
   const {
@@ -60,7 +58,7 @@ export default function Profile() {
 
   let decrypted = null;
   if (type) {
-    const bytes = CryptoJS.AES.decrypt(type, 'f9b7nvctr72942chh39h9rc');
+    const bytes = CryptoJS.AES.decrypt(type, "f9b7nvctr72942chh39h9rc");
     decrypted = bytes.toString(CryptoJS.enc.Utf8);
   }
 
@@ -253,8 +251,85 @@ export default function Profile() {
     }
   }, []);
 
+  // Validation check
+  const checkEmptyFields = useCallback((userDetails) => {
+    const { username } = userDetails;
+    console.log("userDetails:", userDetails);
+
+    // Fields to skip (optional)
+    const optionalFields = ["lat", "lon", "bio"];
+
+    // Map nested keys to friendly labels
+    const fieldLabels = {
+      name: "category",
+      services: "subcategory",
+    };
+
+    // Show toast error
+    const showError = (field, parent = null) => {
+      const label = fieldLabels[field] || field;
+      const message = parent
+        ? `${parent} is required for ${label}`
+        : `${label} is required`;
+
+      Toast.error(message, {
+        duration: 3000,
+        position: "top",
+      });
+    };
+
+    // Recursive check for empty values
+    const isEmpty = (value, key, parent = null) => {
+      if (optionalFields.includes(key)) return false; // skip optional fields
+
+      if (typeof value === "string") {
+        if (!value.trim()) {
+          showError(key, parent);
+          return true;
+        }
+        return false;
+      }
+
+      if (Array.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+          if (isEmpty(value[i], key, parent)) return true;
+        }
+      }
+
+      if (typeof value === "object" && value !== null) {
+        for (const innerKey in value) {
+          if (isEmpty(value[innerKey], innerKey, key)) return true;
+        }
+      }
+
+      return false;
+    };
+
+    // Iterate over top-level userDetails
+    for (const key in userDetails) {
+      if (optionalFields.includes(key)) continue;
+
+      if (isEmpty(userDetails[key], key)) return false;
+    }
+
+    // Specific username validation
+    if (username.trim().length > 0 && username.trim().length < 3) {
+      Toast.error("Username must be at least 3 characters", {
+        duration: 3000,
+        position: "top",
+      });
+      return false;
+    }
+
+    return true;
+  }, []);
+
   // userDetails updation
   const hanldeUpdate = useCallback(async (userDetails) => {
+    if (!checkEmptyFields(userDetails)) {
+      stopLoading();
+      return;
+    }
     try {
       const result = await patchApi(
         "api/userDetailsUpdate",
@@ -324,7 +399,7 @@ export default function Profile() {
     setViewType(name);
     if (name === "plus-square") {
       setUploadType("posts");
-      await upload();
+      await upload("posts");
     }
     if (name === "share") {
       share();
@@ -606,7 +681,7 @@ export default function Profile() {
               {selectedMechanic?.posts?.length > 0 && (
                 <PostViewerModal
                   setSelectedMechanic={setSelectedMechanic}
-                  type={type}
+                  type={decrypted}
                   postDelete={postDelete}
                   comment={comment}
                   setComment={setComment}

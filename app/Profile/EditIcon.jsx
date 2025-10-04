@@ -13,7 +13,7 @@ const EditIcon = ({ isMobile, upload,setUploadType,type}) => {
       }}
       onPress={async () => {
         setUploadType(type)
-        await upload();
+        await upload(type);
       }}
     >
       <MaterialIcons name="edit" size={24} color="#2095A2" />

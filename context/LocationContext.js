@@ -15,6 +15,7 @@ export const LocationProvider = ({ children }) => {
       try {
         // Ask for permission
         const { status } = await Location.requestForegroundPermissionsAsync();
+        console.log('status :', status)
         setStatus(status);
 
         if (status !== "granted") {
@@ -24,6 +25,7 @@ export const LocationProvider = ({ children }) => {
 
         // Get current location
         const location = await Location.getCurrentPositionAsync({});
+        console.log('location :', location)
         setGeoCoords({
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,

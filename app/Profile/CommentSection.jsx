@@ -131,7 +131,7 @@ const CommentSection = ({
       {/* Footer input */}
       <View className="border-t border-gray-300 bg-white px-4 py-2 flex-row items-center">
         <TextInput
-          className="flex-1 h-12 border border-gray-300 rounded-lg px-3 text-gray-800"
+          className="flex-1 h-12 border border-gray-300 rounded-lg px-3 text-gray-800 outline-TealGreen"
           placeholder="Write a comment..."
           placeholderTextColor="#9CA3AF"
           value={comment.comment}

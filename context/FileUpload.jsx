@@ -10,7 +10,8 @@ export const FileUploadProvider = ({ children }) => {
   const [status, requestPermission] = useMediaLibraryPermissions();
   const [media, setMedia] = useState([]);
 
-  const upload = async () => {
+  const upload = async (type) => {
+    console.log('uc :', type)
     if (!status?.granted) {
       const { granted } = await requestPermission();
       if (!granted) {
@@ -22,7 +23,7 @@ export const FileUploadProvider = ({ children }) => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images", "videos"],
       allowsEditing: true,
-      aspect: [1, 1],
+      aspect: type==='banner' ? [16,9] : [1, 1],
       quality: 1,
     });
 

@@ -15,7 +15,7 @@ const Header = ({ isOpen, searchBarValue, setSearchBarValue }) => {
   const goToProfile = async () => {
     try {
       // 1️⃣ Encrypt a string
-      const encrypted = CryptoJS.AES.encrypt("jsvdj", secretkey).toString();
+      // const encrypted = CryptoJS.AES.encrypt("jsvdj", secretkey).toString();
 
       // 2️⃣ Get userId depending on platform
       const userId =
@@ -31,7 +31,7 @@ const Header = ({ isOpen, searchBarValue, setSearchBarValue }) => {
       // 3️⃣ Push to Profile page with params
        router.push({
           pathname: "/(tabs)/Profile",
-          params: { id: userId, type: encrypted },
+          params: { id: userId},
         });
     } catch (err) {
       console.error("Failed to go to profile:", err);

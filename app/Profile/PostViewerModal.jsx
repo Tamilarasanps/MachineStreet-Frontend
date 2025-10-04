@@ -110,7 +110,7 @@ const PostViewerModal = ({
   const goPrev = () =>
     setPostModal((prev) => (prev < user.posts.length - 1 ? prev + 1 : prev));
   const goNext = () => setPostModal((prev) => (prev > 0 ? prev - 1 : prev));
-
+console.log('pvm :', type)
   return (
     <SafeAreaView className="z-50 flex-1 ">
       {/* Desktop close button */}

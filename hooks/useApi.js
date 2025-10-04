@@ -6,10 +6,10 @@ import { router } from "expo-router";
 import { useAppContext } from "@/context/AppContext";
 
 const useApi = () => {
-   // const API_URL =
+  //  const API_URL =
   //   Platform.OS === "web"
   //     ? "http://localhost:5000"
-  //     : "http://192.168.43.158:5000";
+  //     : "http://192.168.1.10:5000";
   const API_URL = "https://api.machinestreets.com";
   const { startLoading, stopLoading } = useAppContext();
 
@@ -17,7 +17,7 @@ const useApi = () => {
     try {
       startLoading();
       const response = await request();
-
+      console.log('response :', response)
       const successMessage = response?.data?.message || response?.data;
       const description = response?.data?.description || response?.data;
 

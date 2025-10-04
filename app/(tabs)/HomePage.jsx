@@ -24,6 +24,7 @@ import Loading from "@/components/Loading";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useLocation } from "@/context/LocationContext";
+import { RefreshControl } from "react-native";
 
 const HomePage = () => {
   const [filterItems, setFilterItems] = useState({
@@ -44,13 +45,12 @@ const HomePage = () => {
     userRole,
     filterData,
     setFIlterData,
+    socketInit,
   } = useAppContext();
   const { isDesktop, width, isTablet, isMobile, height } = useScreenWidth();
   const { getJsonApi, postJsonApi } = useApi();
 
   const { geoCoords, status } = useLocation();
-
-  console.log(geoCoords, status);
 
   const [review, setReview] = useState({
     star: null,
@@ -74,6 +74,8 @@ const HomePage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
 
+  const [refreshing, setRefreshing] = useState(false);
+
   const getItem = async (key) => {
     if (Platform.OS === "web") {
       return localStorage.getItem(key);
@@ -83,40 +85,51 @@ const HomePage = () => {
   };
   // remove: const mechanicsCache = useRef(null);
 
-  const getmechanics = useCallback(async () => {
-    try {
-      const result = await getJsonApi(
-        `homepage/getmechanics/?page=${page}&limit=50&lat=${geoCoords.latitude}&long=${geoCoords.longitude}`,
-        "application/json",
-        { secure: true }
-      );  
+  const getmechanics = useCallback(
+    async (reset = false) => {
+      try {
+        if (!geoCoords) return;
 
-      if (result?.status === 200) {
-        setPage((prev) => prev + 1);
-        setTotalPages(result?.data?.totalPages);
+        const result = await getJsonApi(
+          `homepage/getmechanics/?page=1&limit=50&lat=${
+            geoCoords?.latitude || 0
+          }&long=${geoCoords?.longitude || 0}`,
+          "application/json",
+          { secure: true }
+        );
 
-        // ✅ append with deduplication
-        setUserDetails((prev) => {
-          const combined = [...(prev || []), ...(result?.data?.userData || [])];
-          return combined.filter(
-            (item, index, arr) =>
-              index === arr.findIndex((x) => x._id === item._id)
-          );
-        });
-
-        setFIlterData(result?.data?.filterData);
-        setQr(result.data.qr);
+        if (result?.status === 200) {
+          setPage(2);
+          setTotalPages(result?.data?.totalPages);
+          if (reset) {
+            setUserDetails(result?.data?.userData || []);
+          } else {
+            setUserDetails((prev) => [
+              ...(prev || []),
+              ...(result?.data?.userData || []),
+            ]);
+          }
+          setFIlterData(result?.data?.filterData);
+          setQr(result.data.qr);
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
-    }
-  }, [getJsonApi, page]);
+    },
+    [geoCoords, page]
+  );
 
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await getmechanics(true); // refresh list
+    setRefreshing(false);
+  }, [getmechanics]);
   useEffect(() => {
-    if (!userDetails?.length) {
+    socketInit();
+    if (geoCoords) {
       getmechanics();
     }
-  }, []);
+  }, [geoCoords]); // run again once location is ready
 
   // post review
 
@@ -371,12 +384,12 @@ const HomePage = () => {
           )}
 
           {qr === false && userRole === "mechanic" && (
-          <QrModal
-            visible={true}
-            onClose={() => setQr(true)}
-            getItem={getItem}
-          />
-        )}
+            <QrModal
+              visible={true}
+              onClose={() => setQr(true)}
+              getItem={getItem}
+            />
+          )}
           {/* userDetails */}
 
           <View
@@ -384,7 +397,7 @@ const HomePage = () => {
               Platform.OS === "web" && width >= 1024 ? "p-4" : null
             } `}
           >
-            <FlatList
+           <FlatList
               key={isDesktop ? "desktop" : "mobile"}
               data={filteredMechanics}
               keyExtractor={(item) => item._id.toString()}
@@ -424,6 +437,14 @@ const HomePage = () => {
                 backgroundColor: "#E5E7EB",
                 padding: 5,
               }}
+               refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={["#2095A2"]}
+                  tintColor="#2095A2"
+                />
+              }
               ListHeaderComponent={() => (
                 <Animated.View
                   style={{

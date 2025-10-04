@@ -25,8 +25,7 @@ export const AppProvider = ({ children }) => {
 
   const [socket, setSocket] = useState(null);
 
-  useEffect(() => {
-    let newSocket;
+   let newSocket;
     const socketInit = async () => {
       try {
         let storedToken;
@@ -36,22 +35,21 @@ export const AppProvider = ({ children }) => {
         if (Platform.OS === "web") {
           storedUserId = localStorage.getItem("userId");
           storedUserRole = localStorage.getItem("role");
-          storedToken = localStorage.getItem("token"); // add this
+          // storedToken = localStorage.getItem("token"); // add this
         } else {
           storedUserId = await SecureStore.getItemAsync("userId");
           storedUserRole = await SecureStore.getItemAsync("role");
           storedToken = await SecureStore.getItemAsync("token"); // add this
         }
         
-
+        
         setUserId(storedUserId);
         setUserRole(storedUserRole);
         // setToken(storedToken);
 
         // ✅ initialize socket
         newSocket = io(
-        "https://api.machinestreets.com",
-          
+        "https://api.machinestreets.com",          
         //  "http://192.168.1.10:5000",
           {
             transports: ["websocket", "polling"],
@@ -75,18 +73,19 @@ export const AppProvider = ({ children }) => {
         });
 
         // // likes updation
-        // newSocket.on("likes-update", (updatedPost) => {
-        //   setSelectedMechanic((prev) =>
-        //     prev
-        //       ? {
-        //           ...prev,
-        //           posts: prev.posts.map((p) =>
-        //             p._id === updatedPost._id ? updatedPost : p
-        //           ),
-        //         }
-        //       : prev
-        //   );
-        // });
+        newSocket.on("comment-update", (updatedPost) => {
+          console.log('updated comment :', updatedPost)
+          setSelectedMechanic((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  posts: prev.posts.map((p) =>
+                    p._id === updatedPost._id ? updatedPost : p
+                  ),
+                }
+              : prev
+          );
+        });
 
         // coments updation
 
@@ -134,6 +133,7 @@ export const AppProvider = ({ children }) => {
       }
     };
 
+  useEffect(() => {
     socketInit();
 
     // ✅ cleanup on unmount
@@ -174,7 +174,7 @@ export const AppProvider = ({ children }) => {
         setReviews,
         socket,
         userId,
-        setUserId,filterData, setFIlterData,secretkey
+        setUserId,filterData, setFIlterData,secretkey,socketInit
       }}
     >
       {children}

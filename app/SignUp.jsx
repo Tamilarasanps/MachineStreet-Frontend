@@ -84,7 +84,7 @@ const SignUp = () => {
           (role === "recruiter" &&
             !["password", "confirmPassword"].includes(key)) ||
           (userDetails.country.toLowerCase().trim() !== "india" &&
-            !userDetails.district)
+            !userDetails.city)
         )
           continue;
 

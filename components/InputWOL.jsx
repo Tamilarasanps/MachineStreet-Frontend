@@ -3,6 +3,7 @@ import { useAppContext } from "@/context/AppContext";
 import SuggestionList from "./SuggestionList";
 import { useState, useMemo } from "react";
 
+
 const InputWOL = ({
   ref,
   label,

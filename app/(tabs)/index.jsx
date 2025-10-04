@@ -16,7 +16,7 @@ import Carousel from "react-native-reanimated-carousel";
 import Footer from "@/components/Footer";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const carouselImages = [
   require("../../assets/landingpage/mech_1.jpg"),
@@ -25,18 +25,17 @@ const carouselImages = [
 
 const LandingPage = () => {
   const { isDesktop } = useScreenWidth();
-
   const [mechanicLimit, setMechanicLimit] = useState(0);
   const [machineLimit, setMachineLimit] = useState(0);
   const [mechanicCount, setMechanicCount] = useState(0);
   const [machineCount, setMachineCount] = useState(0);
-
   const { getJsonApi } = useApi();
 
   const getCounts = useCallback(async () => {
     try {
-      const response = await getJsonApi("api/landingPage", "application/json",
-        { secure: false });
+      const response = await getJsonApi("api/landingPage", "application/json", {
+        secure: false,
+      });
       if (response.status === 200) {
         const mech = response?.data?.data?.mechanicCount || 0;
         const mach = response?.data?.data?.industryCount || 0;
@@ -52,30 +51,23 @@ const LandingPage = () => {
     getCounts();
   }, []);
 
-  // Animate counts
   useEffect(() => {
     if (mechanicCount < mechanicLimit) {
-      const timer = setTimeout(
-        () =>
-          setMechanicCount((prev) =>
-            prev + 1 > mechanicLimit ? mechanicLimit : prev + 1
-          ),
+      const t = setTimeout(
+        () => setMechanicCount((p) => (p + 1 > mechanicLimit ? mechanicLimit : p + 1)),
         20
       );
-      return () => clearTimeout(timer);
+      return () => clearTimeout(t);
     }
   }, [mechanicCount, mechanicLimit]);
 
   useEffect(() => {
     if (machineCount < machineLimit) {
-      const timer = setTimeout(
-        () =>
-          setMachineCount((prev) =>
-            prev + 1 > machineLimit ? machineLimit : prev + 1
-          ),
+      const t = setTimeout(
+        () => setMachineCount((p) => (p + 1 > machineLimit ? machineLimit : p + 1)),
         20
       );
-      return () => clearTimeout(timer);
+      return () => clearTimeout(t);
     }
   }, [machineCount, machineLimit]);
 
@@ -87,22 +79,21 @@ const LandingPage = () => {
     </View>
   );
 
-  const Arrow = () => (
-    <Text style={styles.arrow}>{isDesktop ? "➡️" : "⬇️"}</Text>
-  );
+  const Arrow = () => <Text style={styles.arrow}>{isDesktop ? "➡️" : "⬇️"}</Text>;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView
         style={{ backgroundColor: "#f8fafc" }}
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={{ paddingBottom: 60 }}
+        showsVerticalScrollIndicator={false}
       >
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.brand}>Machine Streets</Text>
         </View>
 
-        {/* Hero Section */}
+        {/* Hero */}
         <View style={styles.mainContainer}>
           <View
             style={[
@@ -110,20 +101,20 @@ const LandingPage = () => {
               { flexDirection: isDesktop ? "row" : "column" },
             ]}
           >
-            {/* Left Text */}
+            {/* Text */}
             <View style={styles.heroTextBox}>
               <Text style={styles.heroTitle}>
                 Find Professional Mechanics Across All Industries
               </Text>
               <Text style={styles.heroSubtitle}>
-                Machine Street connects you with verified mechanics for
-                automotive, industrial, marine, agricultural, and more. Browse
-                our directory, view profiles, and contact the right expert for
-                your needs—quickly and easily.
+                Machine Street connects you with verified mechanics for automotive,
+                industrial, marine, agricultural, and more. Browse our directory,
+                view profiles, and contact the right expert for your needs—quickly and easily.
               </Text>
               <TouchableOpacity
                 style={styles.primaryBtn}
                 onPress={() => router.push("/HomePage")}
+                activeOpacity={0.8}
               >
                 <Text style={styles.primaryBtnText}>Get Started</Text>
               </TouchableOpacity>
@@ -136,14 +127,14 @@ const LandingPage = () => {
                 autoPlay
                 autoPlayInterval={3000}
                 width={!isDesktop ? width * 0.9 : width * 0.45}
-                height={!isDesktop ? width * 0.5 : width * 0.3}
+                height={!isDesktop ? width * 0.55 : width * 0.3}
                 data={carouselImages}
                 scrollAnimationDuration={1000}
                 renderItem={({ item }) => (
                   <View style={styles.carouselItem}>
                     <Image
                       source={item}
-                      style={{ width: "100%", height: "100%" }}
+                      style={styles.carouselImage}
                       resizeMode="cover"
                     />
                   </View>
@@ -168,27 +159,16 @@ const LandingPage = () => {
                 { flexDirection: isDesktop ? "row" : "column" },
               ]}
             >
-              <Step
-                icon="🔍"
-                title="Search"
-                description="Find mechanics by industry, location, or specialty."
-              />
+              <Step icon="🔍" title="Search" description="Find mechanics by industry, location, or specialty." />
               <Arrow />
-              <Step
-                icon="📄"
-                title="View Profiles"
-                description="Check detailed profiles, ratings, and skills."
-              />
+              <Step icon="📄" title="View Profiles" description="Check detailed profiles, ratings, and skills." />
               <Arrow />
-              <Step
-                icon="🤝"
-                title="Connect"
-                description="Contact mechanics directly and get your job done."
-              />
+              <Step icon="🤝" title="Connect" description="Contact mechanics directly and get your job done." />
             </View>
           </View>
         </View>
-          {Platform.OS === 'web' ? <Footer/> : <></>}
+
+        {Platform.OS === "web" && <Footer />}
       </ScrollView>
     </SafeAreaView>
   );
@@ -229,13 +209,16 @@ const styles = StyleSheet.create({
   },
   heroTextBox: {
     flex: 1,
-    marginBottom: 24,
+    marginBottom: 20,
+    alignSelf: "flex-start", // ✅ keep to the left
+    width: "100%",
   },
   heroTitle: {
     fontSize: 28,
     fontWeight: "bold",
     color: "#1a2236",
-    marginBottom: 14,
+    marginBottom: 12,
+    textAlign: "left", // ✅ left aligned
   },
   heroSubtitle: {
     fontSize: 17,
@@ -243,6 +226,7 @@ const styles = StyleSheet.create({
     color: "#475569",
     marginBottom: 16,
     lineHeight: 24,
+    textAlign: "left", // ✅ left aligned
   },
   primaryBtn: {
     backgroundColor: "#2095A2",
@@ -250,7 +234,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 12,
     marginTop: 8,
-    alignSelf: "flex-start",
+    alignSelf: "flex-start", // ✅ button aligned left
   },
   primaryBtnText: {
     color: "#fff",
@@ -261,13 +245,18 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 48,
+    marginTop: 20,
+    marginBottom: height * 0.05, // ✅ adaptive space for small screens
   },
   carouselItem: {
     flex: 1,
     borderRadius: 16,
     overflow: "hidden",
     elevation: 3,
+  },
+  carouselImage: {
+    width: "100%",
+    height: "100%",
   },
   statsRow: {
     flexDirection: "row",
