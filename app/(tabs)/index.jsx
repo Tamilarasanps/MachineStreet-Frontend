@@ -15,6 +15,12 @@ import useApi from "../../hooks/useApi";
 import Carousel from "react-native-reanimated-carousel";
 import Footer from "@/components/Footer";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFonts } from "expo-font";
+import {
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_700Bold,
+} from "@expo-google-fonts/poppins";
 
 const { width, height } = Dimensions.get("window");
 
@@ -22,6 +28,8 @@ const carouselImages = [
   require("../../assets/landingpage/mech_1.jpg"),
   require("../../assets/landingpage/mech_2.jpg"),
 ];
+const heroCarouselWidth = Math.min(width * 0.9);
+const heroCarouselHeight = heroCarouselWidth * 0.55;
 
 const LandingPage = () => {
   const { isDesktop } = useScreenWidth();
@@ -30,6 +38,13 @@ const LandingPage = () => {
   const [mechanicCount, setMechanicCount] = useState(0);
   const [machineCount, setMachineCount] = useState(0);
   const { getJsonApi } = useApi();
+
+  const [fontsLoaded] = useFonts({
+    Salsa: require("../../assets/fonts/Salsa-Regular.ttf"),
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_700Bold,
+  });
 
   const getCounts = useCallback(async () => {
     try {
@@ -49,12 +64,15 @@ const LandingPage = () => {
 
   useEffect(() => {
     getCounts();
-  }, []);
+  }, [getCounts]);
 
   useEffect(() => {
     if (mechanicCount < mechanicLimit) {
       const t = setTimeout(
-        () => setMechanicCount((p) => (p + 1 > mechanicLimit ? mechanicLimit : p + 1)),
+        () =>
+          setMechanicCount((p) =>
+            p + 1 > mechanicLimit ? mechanicLimit : p + 1
+          ),
         20
       );
       return () => clearTimeout(t);
@@ -64,22 +82,35 @@ const LandingPage = () => {
   useEffect(() => {
     if (machineCount < machineLimit) {
       const t = setTimeout(
-        () => setMachineCount((p) => (p + 1 > machineLimit ? machineLimit : p + 1)),
+        () =>
+          setMachineCount((p) => (p + 1 > machineLimit ? machineLimit : p + 1)),
         20
       );
       return () => clearTimeout(t);
     }
   }, [machineCount, machineLimit]);
 
+  if (!fontsLoaded) return null;
+
   const Step = ({ icon, title, description }) => (
     <View style={styles.stepBox}>
-      <Text style={styles.stepIcon}>{icon}</Text>
-      <Text style={styles.stepTitle}>{title}</Text>
-      <Text style={styles.stepDesc}>{description}</Text>
+      <Text style={[styles.stepIcon, { fontFamily: "Poppins_400Regular" }]}>
+        {icon}
+      </Text>
+      <Text style={[styles.stepTitle, { fontFamily: "Poppins_700Bold" }]}>
+        {title}
+      </Text>
+      <Text style={[styles.stepDesc, { fontFamily: "Poppins_400Regular" }]}>
+        {description}
+      </Text>
     </View>
   );
 
-  const Arrow = () => <Text style={styles.arrow}>{isDesktop ? "➡️" : "⬇️"}</Text>;
+  const Arrow = () => (
+    <Text style={[styles.arrow, { fontFamily: "Poppins_400Regular" }]}>
+      {isDesktop ? "➡️" : "⬇️"}
+    </Text>
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -90,7 +121,9 @@ const LandingPage = () => {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.brand}>Machine Streets</Text>
+          <Text style={[styles.brand, { fontFamily: "Salsa" }]}>
+            Machine Streets
+          </Text>
         </View>
 
         {/* Hero */}
@@ -103,20 +136,35 @@ const LandingPage = () => {
           >
             {/* Text */}
             <View style={styles.heroTextBox}>
-              <Text style={styles.heroTitle}>
+              <Text
+                style={[styles.heroTitle, { fontFamily: "Poppins_700Bold" }]}
+              >
                 Find Professional Mechanics Across All Industries
               </Text>
-              <Text style={styles.heroSubtitle}>
-                Machine Street connects you with verified mechanics for automotive,
-                industrial, marine, agricultural, and more. Browse our directory,
-                view profiles, and contact the right expert for your needs—quickly and easily.
+              <Text
+                style={[
+                  styles.heroSubtitle,
+                  { fontFamily: "Poppins_400Regular" },
+                ]}
+              >
+                Machine Street connects you with verified mechanics for
+                automotive, industrial, marine, agricultural, and more. Browse
+                our directory, view profiles, and contact the right expert for
+                your needs—quickly and easily.
               </Text>
               <TouchableOpacity
                 style={styles.primaryBtn}
                 onPress={() => router.push("/HomePage")}
                 activeOpacity={0.8}
               >
-                <Text style={styles.primaryBtnText}>Get Started</Text>
+                <Text
+                  style={[
+                    styles.primaryBtnText,
+                    { fontFamily: "Poppins_700Bold" },
+                  ]}
+                >
+                  Get Started
+                </Text>
               </TouchableOpacity>
             </View>
 
@@ -126,15 +174,19 @@ const LandingPage = () => {
                 loop
                 autoPlay
                 autoPlayInterval={3000}
-                width={!isDesktop ? width * 0.9 : width * 0.45}
-                height={!isDesktop ? width * 0.55 : width * 0.3}
+                width={heroCarouselWidth}
+                height={heroCarouselHeight}
                 data={carouselImages}
                 scrollAnimationDuration={1000}
                 renderItem={({ item }) => (
                   <View style={styles.carouselItem}>
                     <Image
                       source={item}
-                      style={styles.carouselImage}
+                      style={{
+                        width: heroCarouselWidth,
+                        height: heroCarouselHeight,
+                        borderRadius: 16,
+                      }}
                       resizeMode="cover"
                     />
                   </View>
@@ -152,18 +204,34 @@ const LandingPage = () => {
 
           {/* How It Works */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>How It Works</Text>
+            <Text
+              style={[styles.sectionTitle, { fontFamily: "Poppins_700Bold" }]}
+            >
+              How It Works
+            </Text>
             <View
               style={[
                 styles.stepsRow,
                 { flexDirection: isDesktop ? "row" : "column" },
               ]}
             >
-              <Step icon="🔍" title="Search" description="Find mechanics by industry, location, or specialty." />
+              <Step
+                icon="🔍"
+                title="Search"
+                description="Find mechanics by industry, location, or specialty."
+              />
               <Arrow />
-              <Step icon="📄" title="View Profiles" description="Check detailed profiles, ratings, and skills." />
+              <Step
+                icon="📄"
+                title="View Profiles"
+                description="Check detailed profiles, ratings, and skills."
+              />
               <Arrow />
-              <Step icon="🤝" title="Connect" description="Contact mechanics directly and get your job done." />
+              <Step
+                icon="🤝"
+                title="Connect"
+                description="Contact mechanics directly and get your job done."
+              />
             </View>
           </View>
         </View>
@@ -176,8 +244,12 @@ const LandingPage = () => {
 
 const StatBox = ({ value, label }) => (
   <View style={styles.statBox}>
-    <Text style={styles.statValue}>{value}</Text>
-    <Text style={styles.statLabel}>{label}</Text>
+    <Text style={[styles.statValue, { fontFamily: "Poppins_700Bold" }]}>
+      {value}
+    </Text>
+    <Text style={[styles.statLabel, { fontFamily: "Poppins_400Regular" }]}>
+      {label}
+    </Text>
   </View>
 );
 
@@ -191,8 +263,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   brand: {
-    fontSize: 28,
-    fontWeight: "700",
+    fontSize: Platform.OS === "web" ? 36 : 28,
     color: "#f5c242",
     letterSpacing: 1.2,
   },
@@ -203,38 +274,38 @@ const styles = StyleSheet.create({
   },
   heroRow: {
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
     marginTop: 32,
     paddingHorizontal: 16,
   },
   heroTextBox: {
     flex: 1,
     marginBottom: 20,
-    alignSelf: "flex-start", // ✅ keep to the left
     width: "100%",
   },
   heroTitle: {
-    fontSize: 28,
+    fontSize: width < 360 ? 20 : 24,
+    lineHeight: width < 360 ? 26 : 32,
     fontWeight: "bold",
     color: "#1a2236",
     marginBottom: 12,
-    textAlign: "left", // ✅ left aligned
+    textAlign: "left",
   },
   heroSubtitle: {
-    fontSize: 17,
+    fontSize: width < 360 ? 14 : 16,
+    lineHeight: width < 360 ? 20 : 24,
     fontWeight: "500",
     color: "#475569",
     marginBottom: 16,
-    lineHeight: 24,
-    textAlign: "left", // ✅ left aligned
+    textAlign: "left",
   },
   primaryBtn: {
     backgroundColor: "#2095A2",
-    paddingVertical: 12,
-    paddingHorizontal: 32,
+    paddingVertical: width < 360 ? 10 : 14,
+    paddingHorizontal: width < 360 ? 20 : 28,
+    marginTop: 12,
     borderRadius: 12,
-    marginTop: 8,
-    alignSelf: "flex-start", // ✅ button aligned left
+    alignSelf: "flex-start",
   },
   primaryBtnText: {
     color: "#fff",
@@ -245,8 +316,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
-    marginBottom: height * 0.05, // ✅ adaptive space for small screens
+    marginTop: 30,
+    marginBottom: 32,
   },
   carouselItem: {
     flex: 1,
@@ -269,9 +340,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     borderRadius: 16,
-    paddingVertical: 14,
-    paddingHorizontal: 18,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
     margin: 8,
+    minWidth: "auto",
+    maxWidth: 140,
+    flexShrink: 0, // prevent shrinking and wrapping
     elevation: 3,
     shadowColor: "#000",
     shadowOpacity: 0.1,
@@ -279,10 +353,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     borderWidth: 1,
     borderColor: "#e5e7eb",
-    minWidth: 120,
   },
+
   statValue: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
     color: "#2095A2",
   },
@@ -291,6 +365,7 @@ const styles = StyleSheet.create({
     color: "#475569",
     marginTop: 4,
     textAlign: "center",
+    lineHeight: 20,
   },
   stepsRow: {
     justifyContent: "center",
@@ -318,10 +393,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   stepDesc: {
-    fontSize: 13,
+    fontSize: 14,
     color: "#475569",
     textAlign: "center",
     opacity: 0.9,
+    lineHeight: 20,
   },
   section: {
     marginTop: 32,
@@ -335,6 +411,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#1a2236",
     marginBottom: 18,
+    lineHeight: 28,
+    textAlign: "center",
   },
   arrow: {
     fontSize: 28,

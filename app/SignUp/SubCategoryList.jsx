@@ -94,7 +94,7 @@ const SubCategoryList = ({
                   {/* category input tag */}
 
                   <InputWOL
-                    placeholder="Vehicle Repair & Maintenance"
+                    placeholder="Repair & Maintenance"
                     value={cat.name}
                     onChangeText={(value) =>
                       handleChange("category", value, index)
@@ -130,7 +130,7 @@ const SubCategoryList = ({
                         {/* sub category input tag */}
 
                         <InputWOL
-                          placeholder="Car Engine Repair"
+                          placeholder="Engine Repair"
                           value={service}
                           onChangeText={(value) =>
                             handleChange("subcategory", value, index, subIndex)

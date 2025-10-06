@@ -7,21 +7,24 @@ import Animated, {
   Easing,
   runOnJS,
 } from "react-native-reanimated";
+import { useFonts } from "expo-font";
 
 export default function SplashScreen({ onAnimationComplete }) {
+  const [fontsLoaded] = useFonts({
+    Salsa: require("../assets/fonts/Salsa-Regular.ttf"),
+  });
+
   const scale = useSharedValue(0);
   const textOpacity = useSharedValue(0);
-  const textTranslate = useSharedValue(-80); // Start further left for bigger logo
+  const textTranslate = useSharedValue(-80); 
 
   useEffect(() => {
-    // Initial delay before starting animation
+    if (!fontsLoaded) return;
+
     setTimeout(() => {
-      // Smooth logo scale to 1.5
       scale.value = withTiming(1.5, { duration: 800, easing: Easing.out(Easing.exp) }, () => {
-        // Fade in and slide text
         textOpacity.value = withTiming(1, { duration: 500 });
         textTranslate.value = withTiming(0, { duration: 500, easing: Easing.out(Easing.exp) }, () => {
-          // Fade out after delay
           setTimeout(() => {
             textOpacity.value = withTiming(0, { duration: 500 });
             scale.value = withTiming(0, { duration: 500 }, () => {
@@ -30,8 +33,8 @@ export default function SplashScreen({ onAnimationComplete }) {
           }, 1000);
         });
       });
-    }, 300); // Delay of 300ms before logo animation starts
-  }, []);
+    }, 300);
+  }, [fontsLoaded]);
 
   const logoStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -42,6 +45,8 @@ export default function SplashScreen({ onAnimationComplete }) {
     transform: [{ translateX: textTranslate.value }],
   }));
 
+  if (!fontsLoaded) return null; // wait for font to load
+
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.logoContainer, logoStyle]}>
@@ -50,8 +55,8 @@ export default function SplashScreen({ onAnimationComplete }) {
           style={{ width: 120, height: 120 }}
         />
       </Animated.View>
-      <Animated.Text style={[styles.text, textStyle]}>
-        MachineStreet
+      <Animated.Text style={[styles.text, textStyle, { fontFamily: "Salsa" }]}>
+        Machine Streets
       </Animated.Text>
     </View>
   );

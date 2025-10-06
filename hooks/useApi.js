@@ -17,7 +17,6 @@ const useApi = () => {
     try {
       startLoading();
       const response = await request();
-      console.log('response :', response)
       const successMessage = response?.data?.message || response?.data;
       const description = response?.data?.description || response?.data;
 
@@ -38,15 +37,11 @@ const useApi = () => {
       console.log("err :", err);
       const errorMessage =
         err.response?.data?.message ||
-        err.response?.data ||
-        err.message ||
-        "An error occurred";
+        "server error";
 
       const description =
         err.response?.data?.description ||
-        err.response?.data ||
-        err.description ||
-        "";
+        "Please try agin later";
 
       if (errorMessage && typeof errorMessage === "string") {
         Toast.error(errorMessage, {
