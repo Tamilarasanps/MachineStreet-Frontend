@@ -61,6 +61,17 @@
     "plugins": [
       "expo-router",
       [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash_Image.png",
+          "backgroundColor": "#051829",
+          "resizeMode": "cover",
+          "dark": {
+            "image": "./assets/splash_Image.png"
+          }
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "MachineStreets needs access to your photos."

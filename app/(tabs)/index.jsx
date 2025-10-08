@@ -28,11 +28,11 @@ const carouselImages = [
   require("../../assets/landingpage/mech_1.jpg"),
   require("../../assets/landingpage/mech_2.jpg"),
 ];
-const heroCarouselWidth = Math.min(width * 0.9);
-const heroCarouselHeight = heroCarouselWidth * 0.55;
 
 const LandingPage = () => {
   const { isDesktop } = useScreenWidth();
+  const heroCarouselWidth = Math.min(isDesktop ?  700 : width * 0.9);
+  const heroCarouselHeight = heroCarouselWidth * 0.55;
   const [mechanicLimit, setMechanicLimit] = useState(0);
   const [machineLimit, setMachineLimit] = useState(0);
   const [mechanicCount, setMechanicCount] = useState(0);
@@ -60,7 +60,7 @@ const LandingPage = () => {
     } catch (err) {
       console.log(err);
     }
-  }, [getJsonApi]);
+  }, []);
 
   useEffect(() => {
     getCounts();

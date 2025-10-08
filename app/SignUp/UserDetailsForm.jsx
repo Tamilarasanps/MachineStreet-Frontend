@@ -139,7 +139,7 @@ const UserDetailsForm = ({
       }));
     }
   }, []);
-
+  console.log("userDetails?.pincode :", typeof userDetails?.pincode);
   return (
     <ScrollView
       className={`w-full ${
@@ -350,7 +350,7 @@ const UserDetailsForm = ({
               <InputWOL
                 label="Street"
                 placeholder={`Enter Street`}
-                value={userDetails.street}
+                value={userDetails?.street}
                 onChangeText={(value) =>
                   setUserDetails((prev) => ({ ...prev, street: value }))
                 }
@@ -362,11 +362,11 @@ const UserDetailsForm = ({
                 label="pincode"
                 placeholder="Enter pincode"
                 keyboardType="numeric"
-                value={userDetails.pincode}
+                value={String(userDetails?.pincode ?? "")} // ✅ ensure string
                 onChangeText={(value) =>
                   setUserDetails((prev) => ({
                     ...prev,
-                    pincode: value.replace(/[^0-9]/g, ""), // allow only numbers
+                    pincode: value.replace(/[^0-9]/g, ""),
                   }))
                 }
               />
@@ -390,7 +390,7 @@ const UserDetailsForm = ({
             if (userDetails.role === "mechanic") {
               const address = `${userDetails.city}, ${userDetails.region}, ${userDetails.pincode}, ${userDetails.country}`;
               const coords = await fetchGeocodes(address); // get lat/lon
-              console.log('coords :', coords)
+              console.log("coords :", coords);
               data = {
                 ...data,
                 lat: coords?.latitude,

@@ -85,6 +85,7 @@ const InputWOL = ({
             paddingHorizontal: 12,
             paddingRight: onDelete ? 32 : 12,
             fontSize: 14,
+            color: "#000", // ✅ add this
             backgroundColor: "#fff",
             borderColor: error
               ? "#DC2626"
