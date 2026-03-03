@@ -1,0 +1,98 @@
+{
+  "expo": {
+    "name": "MachineStreets",
+    "slug": "machine-streets",
+    "version": "1.0.9",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "scheme": "machinestreets",
+    "deepLinking": true,
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "platforms": ["ios", "android", "web"],
+    "assetBundlePatterns": ["assets/images/*", "assets/fonts/*"],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "MachineStreets needs access to your location to provide better services.",
+        "NSLocationAlwaysUsageDescription": "MachineStreets needs access to your location in the background.",
+        "NSPhotoLibraryAddUsageDescription": "MachineStreets access to your photo library to save posters."
+      }
+    },
+    "android": {
+      "versionCode": 18,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "machinestreets"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "edgeToEdgeEnabled": true,
+      "package": "com.tamilarasanps.frontend"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash_Image.png",
+          "backgroundColor": "#051829",
+          "resizeMode": "cover",
+          "dark": {
+            "image": "./assets/splash_Image.png"
+          }
+        }
+      ],
+       [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow app to save business cards to your gallery.",
+          "savePhotosPermission": "Allow app to save business cards.",
+          "isAccessMediaLocationEnabled": false
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "MachineStreets needs access to your photos."
+        }
+      ],
+      "expo-secure-store",
+      "expo-font",
+      "expo-video",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2cbb7ea4-fdca-4fb8-bd68-262c68bf9429"
+      }
+    },
+    "owner": "concept_creators"
+  }
+}
