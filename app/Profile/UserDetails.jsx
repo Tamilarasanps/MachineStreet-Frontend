@@ -42,9 +42,7 @@ const UserDetails = ({ userDetails, isMobile, isDesktop }) => {
             <View className="flex-row items-center justify-center w-full mt-6 mb-6">
               <FontAwesome name="map-marker" size={18} color="#fff" />
 
-              <Text
-                className="ml-3 text-white text-base leading-6 text-center"
-              >
+              <Text className="ml-3 text-white text-base leading-6 text-center">
                 {fullAddress}
               </Text>
             </View>
@@ -106,7 +104,7 @@ const UserDetails = ({ userDetails, isMobile, isDesktop }) => {
           </View>
 
           <Divider className="bg-white my-4" />
-          
+
           {/* review section  */}
           <View className="mt-12 mb-20 px-4">
             <Text className="text-2xl font-bold text-white mb-8 text-center">

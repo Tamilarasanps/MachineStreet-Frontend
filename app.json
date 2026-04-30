@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "scheme": "machinestreets",
-    "deepLinking": true,
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "platforms": ["ios", "android", "web"],

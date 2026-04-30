@@ -21,6 +21,7 @@ const ProfilePageHeader = ({
   upload,
   setUploadType,
   setModal,
+  setFollowingModal,
 }) => {
   const profileSize = isMobile ? 130 : 200;
 
@@ -29,7 +30,7 @@ const ProfilePageHeader = ({
   const settingsIconSize = width < 400 ? 20 : width < 768 ? 24 : 28;
 
   return (
-    <View className="bg-gray-100">
+    <View className="bg-gray-100 mb-8">
       {/* Back Button */}
       <View className="w-full h-12 justify-center bg-white z-50">
         <Pressable
@@ -146,16 +147,18 @@ const ProfilePageHeader = ({
                   }
                   className=" items-center"
                 >
-                  <Text className={`${Platform.OS === "web" && isMobile ? "text-xs" : "text-sm"} sm:text-xs lg:text-sm  text-gray-500 mt-1`}>
+                  <Text
+                    className={`${Platform.OS === "web" && isMobile ? "text-xs" : "text-sm"} sm:text-xs lg:text-sm  text-gray-500 mt-1`}
+                  >
                     {selectedMechanic?.followers?.length || 0} Followers
                   </Text>
                 </Pressable>
 
                 {/* Following */}
                 <Pressable
-                  onPress={() =>
-                    router.push(`/following/${selectedMechanic?._id}`)
-                  }
+                  onPress={() => {
+                    if (type !== "user_visit") setFollowingModal(true);
+                  }}
                   className="items-center"
                 >
                   <Text

@@ -138,6 +138,7 @@ const UserDetailsForm = ({
       }));
     }
   }, []);
+
   return (
     <ScrollView
       className={`w-full ${
@@ -175,6 +176,7 @@ const UserDetailsForm = ({
           ref={usernameRef}
           placeholder="John Adam (must be Atleast 3 character)"
           value={userDetails?.username}
+          max={20}
           onChangeText={(text) =>
             setUserDetails((prev) => ({ ...prev, username: text }))
           }
@@ -184,6 +186,7 @@ const UserDetailsForm = ({
           <>
             <InputWOL
               placeholder="Aquila AutoMobiles"
+              max={35}
               label="Organization Name"
               value={userDetails?.organization || ""}
               onChangeText={(value) => handleChange("organization", value)}
@@ -231,6 +234,7 @@ const UserDetailsForm = ({
                           : "border-gray-400"
                       }`}
                       placeholder="Enter service"
+                      max={40}
                       value={service}
                       onChangeText={(text) =>
                         setUserDetails((prev) => {

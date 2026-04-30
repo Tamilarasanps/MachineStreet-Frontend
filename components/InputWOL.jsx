@@ -3,7 +3,6 @@ import { useAppContext } from "@/context/AppContext";
 import SuggestionList from "./SuggestionList";
 import { useState, useMemo } from "react";
 
-
 const InputWOL = ({
   ref,
   label,
@@ -15,6 +14,7 @@ const InputWOL = ({
   placeholder,
   secureTextEntry,
   onDelete,
+  max,
 }) => {
   const { setFocusedLabel, focusedLabel } = useAppContext();
   const [highlightIndex, setHighlightIndex] = useState(-1);
@@ -35,7 +35,7 @@ const InputWOL = ({
       setHighlightIndex((prev) => (prev + 1) % filteredSuggestions.length);
     } else if (nativeEvent.key === "ArrowUp") {
       setHighlightIndex((prev) =>
-        prev <= 0 ? filteredSuggestions.length - 1 : prev - 1
+        prev <= 0 ? filteredSuggestions.length - 1 : prev - 1,
       );
     } else if (nativeEvent.key === "Enter" && highlightIndex >= 0) {
       const item = filteredSuggestions[highlightIndex];
@@ -77,6 +77,7 @@ const InputWOL = ({
           placeholder={placeholder}
           placeholderTextColor="#9CA3AF"
           onChangeText={onChangeText}
+          {...(max ? { maxLength: max } : {})} 
           onKeyPress={handleKeyPress}
           style={{
             height: 44,

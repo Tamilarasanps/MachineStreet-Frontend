@@ -11,7 +11,6 @@ export const FileUploadProvider = ({ children }) => {
   const [media, setMedia] = useState([]);
 
   const upload = async (type) => {
-    console.log('uc :', type)
     if (!status?.granted) {
       const { granted } = await requestPermission();
       if (!granted) {

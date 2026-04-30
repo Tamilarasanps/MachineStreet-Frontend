@@ -36,6 +36,7 @@ import Settings from "../Profile/Settings";
 import UploadPopUp from "../Profile/UploadPopUp";
 import UserDetails from "../Profile/UserDetails";
 import UserDetailsForm from "../SignUp/UserDetailsForm";
+import FollowersModal from "../Profile/FollowersModal";
 
 export default function Profile() {
   const {
@@ -52,6 +53,8 @@ export default function Profile() {
   const { id, type, post } = useLocalSearchParams();
   const [displayLoader, setDisplayLoader] = useState(true);
   const [follow, setFollow] = useState("Follow");
+  const [followingList, setFollowingList] = useState(null);
+  const [followingModal, setFollowingModal] = useState(false);
 
   const [uploadType, setUploadType] = useState("");
   const [description, setDescription] = useState("");
@@ -81,7 +84,7 @@ export default function Profile() {
           : [{ id: "placeholder" }],
     },
   ];
-  console.log("user :", viewType);
+  
   // get selectedMechnic details
 
   const getMechanic = async () => {
@@ -93,14 +96,15 @@ export default function Profile() {
         "application/json",
         { secure: true },
       );
-
+      console.log('id :', id)
       if (result.status === 200) {
         setSelectedMechanic(result?.data);
         setTempMech(result?.data);
-
+        console.log('tm :', tempMech)
+        console.log('sm :', selectedMechanic)
         if (decrypted === "user_visit")
           setFollow(() =>
-            result?.data?.followers.includes(userId) ? "Following" : "Follow",
+            result?.data?.following.includes(userId) ? "Following" : "Follow",
           );
 
         if (post) {
@@ -161,6 +165,7 @@ export default function Profile() {
           };
         }
         formData.append("media", file);
+        
       }),
     );
 
@@ -274,7 +279,7 @@ export default function Profile() {
 
     // Show toast error
     const showError = (field, parent = null) => {
-      const label = fieldLabels[field] || field;
+      const label = field || fieldLabels[field];
       const message = parent
         ? `${parent} is required for ${label}`
         : `${label} is required`;
@@ -284,11 +289,11 @@ export default function Profile() {
         position: "top",
       });
     };
-
+    console.log("opt :", optionalFields);
     // Recursive check for empty values
     const isEmpty = (value, key, parent = null) => {
       if (optionalFields.includes(key)) return false; // skip optional fields
-
+      console.log("lk :", value, key);
       if (typeof value === "string") {
         if (!value.trim()) {
           showError(key, parent);
@@ -460,11 +465,12 @@ export default function Profile() {
 
   // follow request api
 
-  const followRequest = async () => {
+  const followRequest = async (id) => {
+    const mechId = id ? id : selectedMechanic?._id;
     try {
       const result = await postJsonApi(
         "api/followRequest",
-        { mechId: selectedMechanic?._id },
+        { mechId: mechId },
         "application/json",
         { secure: true },
       );
@@ -472,11 +478,45 @@ export default function Profile() {
       if (result.status === 200) {
         const isFollowing = result.data.mechanic.followers.includes(userId);
 
-        setFollow(isFollowing ? "Following" : "Follow");
+        if (decrypted === "user_visit") {
+          setFollow(isFollowing ? "Following" : "Follow");
+          return;
+        }
+        // ✅ update list item
+        setFollowingList((prev) =>
+          prev.map((user) =>
+            user._id === mechId
+              ? { ...user, follow: isFollowing } // toggle
+              : user,
+          ),
+        );
+
+        setSelectedMechanic((prev) => {
+          const exists = prev.following.some(
+            (item) => item.toString() === id.toString(),
+          );
+
+          return {
+            ...prev,
+            following: exists
+              ? prev.following.filter(
+                  (item) => item.toString() !== id.toString(),
+                ) // 🔻 remove
+              : [...prev.following, id], // 🔺 add
+          };
+        });
       }
     } catch (err) {
       console.error("Follow request failed:", err);
     }
+  };
+  console.log("sm :", selectedMechanic);
+  // fetch followers
+  const fetchFollwers = async () => {
+    const result = await getJsonApi("api/getFollowers", "application/json", {
+      secure: true,
+    });
+    if (result.status === 200 || 201) setFollowingList(result.data || []);
   };
   return (
     <SafeAreaView
@@ -485,6 +525,13 @@ export default function Profile() {
       }}
       edges={["top", "left", "right"]} // ignore bottom to let tab bar handle it
     >
+      {/* <Image
+        source={{
+          uri: `https://api.machinestreets.com/api/mediaDownload/${selectedMechanic?.businessCards[1]}`,
+        }}
+        style={{ width: "100%", height: "100%" }}
+        resizeMode="cover"
+      /> */}
       {displayLoader ? (
         <Loading />
       ) : (
@@ -514,6 +561,7 @@ export default function Profile() {
             stickySectionHeadersEnabled={true}
             ListHeaderComponent={
               <ProfilePageHeader
+                setFollowingModal={setFollowingModal}
                 media={media}
                 selectedMechanic={selectedMechanic}
                 type={decrypted}
@@ -521,6 +569,7 @@ export default function Profile() {
                 upload={upload}
                 setUploadType={setUploadType}
                 setModal={setModal}
+                fetchFollwers={fetchFollwers}
               />
             }
             renderSectionHeader={() => {
@@ -540,7 +589,7 @@ export default function Profile() {
 
               return (
                 <View
-                  className="flex-row items-center px-4  mt-8 bg-gray-100"
+                  className="flex-row items-center px-4 py-4  bg-gray-100"
                   style={{ zIndex: Platform.OS === "web" ? 999 : 1 }}
                 >
                   {/* Icons */}
@@ -614,6 +663,14 @@ export default function Profile() {
                   ))}
               </View>
             )}
+          />
+          <FollowersModal
+            setSelectedMechanic={setSelectedMechanic}
+            fetchFollwers={fetchFollwers}
+            visible={followingModal}
+            onClose={() => setFollowingModal(false)}
+            followingList={followingList}
+            followRequest={followRequest}
           />
           {/* settings and update form */}
           <Modal
@@ -723,7 +780,12 @@ export default function Profile() {
                   {modal === "reset" && (
                     <ResetPassword handlePasswordReset={handlePasswordReset} />
                   )}
-                  {modal === "credit-card" && <CardSlider />}
+                  {modal === "credit-card" && (
+                    <CardSlider
+                      userDetails={selectedMechanic}
+                      onClose={() => setModal("")}
+                    />
+                  )}
                 </View>
               </SafeAreaView>
             </KeyboardAvoidingView>

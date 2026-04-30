@@ -48,6 +48,7 @@ const SubCategoryList = ({
       <InputWOL
         placeholder="Automobile"
         label="Industry"
+        max={40}
         value={userDetails.industry || ""}
         onChangeText={(value) => handleChange("industry", value)}
         sugesstionData={industrySuggestion.industry}
@@ -96,6 +97,7 @@ const SubCategoryList = ({
                   <InputWOL
                     placeholder="Repair & Maintenance"
                     value={cat.name}
+                    max={40}
                     onChangeText={(value) =>
                       handleChange("category", value, index)
                     }
@@ -132,6 +134,7 @@ const SubCategoryList = ({
                         <InputWOL
                           placeholder="Engine Repair"
                           value={service}
+                          max={40}
                           onChangeText={(value) =>
                             handleChange("subcategory", value, index, subIndex)
                           }
